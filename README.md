@@ -2,6 +2,11 @@
 
 This package is in private beta at this moment!
 
-Follow https://twitter.com/laminlabs to learn about a first public release.
+This package extends scanpy to for efficient and scalable handling of flow and mass cytometry data analysis. It provides
+* the functionality to read in flow data in the fcs file format as anndata objects 
+* flow and mass cytometry specific preprocessing tools 
+* access to the entire scanpy workflow functionality 
 
-For beta users: Read the [docs](https://lamin.ai/pytometry).
+Follow https://twitter.com/mbuttner to learn about a first public release.
+
+For beta users: Read the [docs](https://pytometry.netlify.app/pytometry/).
