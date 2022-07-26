@@ -4,15 +4,16 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "pytometry"
-authors = [{name = "Lamin Labs", email = "laminlabs@gmail.com"}]
+authors = [{name = "Maren Buettner", email = "maren.buettner@helmholtz-muenchen.de"}]
 readme = "README.md"
-dynamic = ["version", "description"]
+dynamic = ["version"]
+description = "Pytometry is a Python package for flow and mass cytometry analysis."
 dependencies = [
     "nbproject",
 ]
 
 [project.urls]
-Home = "https://github.com/laminlabs/pytometry"
+Home = "https://github.com/buettnerlab/pytometry"
 
 [project.optional-dependencies]
 dev = [
