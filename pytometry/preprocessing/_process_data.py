@@ -1,12 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Author:     Thomas Ryborz
-ICB         HelmholtzZentrum muenchen
-Date:       15.01.2020
-
-Module to create a compansation matrix from spillover data.
-"""
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -21,15 +12,18 @@ import math
 
 from ..tools import normalize_arcsinh
 
-
-
-
-def create_spillover_mat(fcsdata, 
+def create_spillover_mat(fcsdata: str, 
                          key = '$SPILLOVER'):
-    """Creates a spillover matrix from meta data of an .fcs file
-    :param fcsdata: Meta data from .fcs file
-    :return: Spillover matrix as panda dataframe.
-    """
+    """Create spillover matrix from meta data of an .fcs file.
+
+    Args:
+        fcsdata (str): Meta data from .fcs file.
+        key (str, optional): Spillover matrix as panda dataframe. 
+            Defaults to '$SPILLOVER'.
+
+    Returns:
+        pd.DataFrame: Spillover matrix as pd.DataFrame
+    """    
     spillover = fcsdata.meta[key].split(",")
     num_col = int(spillover[0])
     channel_names = spillover[1:(int(spillover[0]) + 1)]
@@ -50,10 +44,15 @@ def create_spillover_mat(fcsdata,
 
 def create_comp_mat(spillmat, relevant_data=''):
     """Creates a compensation matrix from a spillover matrix.
-    :param spillmat: Spillover matrix as panda dataframe.
-    :param relevant_data: A list of channels for customized selection.
-    :return: Compensation matrix as panda dataframe.
-    """
+
+    Args:
+        spillmat (pd.DataFrame): Spillover matrix as pandas dataframe.
+        relevant_data (str, optional):A list of channels for customized selection.
+            Defaults to ''.
+
+    Returns:
+        pd.DataFrame: Compensation matrix as pandas dataframe.
+    """    
     if relevant_data == '':
         comp_mat = np.linalg.inv(spillmat)
         compens = pd.DataFrame(comp_mat, columns=list(spillmat.columns))
@@ -67,12 +66,19 @@ def create_comp_mat(spillmat, relevant_data=''):
 def find_indexes(adata: AnnData, 
         key_added = 'signal_type', 
         data_type='facs'):
-    """Finds channels of interest for computing bleedthrough.
-    :param adata: anndata object
-    :param key_added: str, where result vector is added to the adata.var
-    :param data_type: str, either 'facs' or 'cytof' 
-    :return: a categorical vector in adata.var[f'{key_added}'] 
-    """
+    """Find channels of interest for computing compensation.
+
+    Args:
+        adata (AnnData): anndata object
+        key_added (str, optional): key where result vector is added to the adata.var. 
+            Defaults to 'signal_type'.
+        data_type (str, optional): either 'facs' or 'cytof'. 
+            Defaults to 'facs'.
+
+    Returns:
+        AnnData: anndata object with a categorical vector in 
+            adata.var[f'{key_added}'] 
+    """        
     index = adata.var.index
     index_array = []
     
@@ -101,16 +107,23 @@ def find_indexes(adata: AnnData,
 #rename compute bleedthr to compensate
 def compensate(adata: AnnData, key = 'signal_type'):
     """Computes bleedthrough for data channels.
-    :param adata: AnnData object to be processed
-    :return: AnnData object with calculated bleedthrough.
-    """
+
+    Args:
+        adata (AnnData): AnnData object
+        key (str, optional): key where result vector is added 
+            to the adata.var. Defaults to 'signal_type'.
+
+    Returns:
+        AnnData: AnnData object
+    """    
     key_in = key
     compens = adata.uns['comp_mat']
     # save original data as layer
     if 'original' not in adata.layers:
         adata.layers['original'] = adata.X
 
-    # Ignore channels 'FSC-H', 'FSC-A', 'SSC-H', 'SSC-A', 'FSC-Width', 'Time'
+    # Ignore channels 'FSC-H', 'FSC-A', 'SSC-H', 'SSC-A', 
+    # 'FSC-Width', 'Time'
     if key_in not in adata.var_keys():
         adata = find_indexes(adata, data_type='facs')
     #select non other indices
@@ -125,19 +138,22 @@ def compensate(adata: AnnData, key = 'signal_type'):
 def split_area(adata: AnnData, 
         key='signal_type', option='area', data_type='facs'):
     """Method to filter out height or area data.
-    :param adata: AnnData object containing data.
-    :param key: key for adata.var where the variable type is stored
-    :param option: str, for choosing 'area' or 'height' in case of FACS data
-                   and 'element' for cyTOF data.
-    :param data_type: str, either 'facs' or 'cytof'/'cyTOF'
-    :return: AnnData object containing area or height data
-    """
 
+    Args:
+        adata (AnnData): AnnData object containing data.
+        key (str, optional): key for adata.var where the variable type is stored. 
+            Defaults to 'signal_type'.
+        option (str, optional):  for choosing 'area' or 'height' in case of FACS data
+            and 'element' for cyTOF data. Defaults to 'area'.
+        data_type (str, optional): either 'facs' or 'cytof'/'cyTOF'. Defaults to 'facs'.
+
+    Returns:
+        AnnData: AnnData object containing area or height data
+    """        
     option_key = option
     key_in = key
     
     possible_options = ['area', 'height', 'other', 'element']
-  
     
     if option_key not in possible_options:
         print(f"{option_key} is not a valid category. Return all.")

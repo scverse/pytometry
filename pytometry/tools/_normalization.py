@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Nov 17 18:19:35 2021
-
-@author: buettnerm
-"""
-
 from anndata import AnnData
 import numpy as np
 from scipy import interpolate
@@ -13,8 +5,7 @@ from scipy import interpolate
 def normalize_arcsinh(
     adata: AnnData, 
     cofactor: float):
-    """
-    Inverse hyperbolic sine transformation.
+    """Inverse hyperbolic sine transformation.
 
     Args:
         adata (AnnData): anndata object
