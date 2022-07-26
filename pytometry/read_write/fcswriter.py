@@ -63,7 +63,6 @@ def write_fcs(filename, ch_shortnames, chn_names, data,
               compat_max_int16=10000):
     """Write numpy data to an .fcs file (FCS3.0 file format)
 
-
     Parameters
     ----------
     filename: str or pathlib.Path
@@ -183,15 +182,19 @@ def write_fcs(filename, ch_shortnames, chn_names, data,
     # Add placeholders for $BEGINDATA and $ENDDATA, because we don't
     # know yet how long TEXT is.
     meta_text += '{seperator}$BEGINDATA{seperator}{data_start_byte}{seperator}$ENDDATA{seperator}{data_end_byte}'
-    meta_text += '{seperator}$BYTEORD{seperator}{0}{seperator}$DATATYPE{seperator}F'.format(byteord, seperator=chr(12))
+    meta_text += '{seperator}$BYTEORD{seperator}{0}{seperator}$DATATYPE{seperator}F'.format(byteord, 
+                    seperator=chr(12))
     meta_text += '{seperator}$MODE{seperator}L{seperator}$NEXTDATA{seperator}0{seperator}$TOT{seperator}' \
                  '{0}'.format(data.shape[0], seperator=chr(12))
-    meta_text += '{seperator}$PAR{seperator}{0}'.format(data.shape[1], seperator=chr(12))
+    meta_text += '{seperator}$PAR{seperator}{0}'.format(data.shape[1], 
+                    seperator=chr(12))
     # Add fcswrite version
-    meta_text += '{seperator}fcswrite version{seperator}{0}'.format(version, seperator=chr(12))
+    meta_text += '{seperator}fcswrite version{seperator}{0}'.format(version, 
+                    seperator=chr(12))
     # Add additional key-value pairs by the user
     for key in sorted(text_kw_pr.keys()):
-        meta_text += '{seperator}{0}{seperator}{1}'.format(key, text_kw_pr[key], seperator=chr(12))
+        meta_text += '{seperator}{0}{seperator}{1}'.format(key, text_kw_pr[key], 
+                        seperator=chr(12))
     # Check for content of data columns and set range
     for jj in range(data.shape[1]):
         # Set data maximum to that of int16
@@ -218,7 +221,9 @@ def write_fcs(filename, ch_shortnames, chn_names, data,
     text_padding = 47  # for visual separation and safety
     data_start_byte = header_size + len(meta_text) + text_padding
     data_end_byte = data_start_byte + len(result_data) - 1
-    meta_text = meta_text.format(data_start_byte=data_start_byte, data_end_byte=data_end_byte, seperator=chr(12))
+    meta_text = meta_text.format(data_start_byte=data_start_byte, 
+                                 data_end_byte=data_end_byte, 
+                                 seperator=chr(12))
     lentxt = len(meta_text)
     # Pad TEXT segment with spaces until data_start_byte
     meta_text = meta_text.ljust(data_start_byte - header_size, " ")
