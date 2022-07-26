@@ -1,12 +1,10 @@
 """
 Author:     Thomas Ryborz
-ICB         HelmholtzZentrum münchen
+ICB         HelmholtzZentrum muenchen
 Date:       15.01.2020
 
 Module to create a compansation matrix from spillover data.
 """
-
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -16,7 +14,7 @@ from matplotlib import rcParams
 #import os.path
 
 #import FlowCytometryTools as fct
-import anndata as ann
+from anndata import AnnData
 import math
 
 from ..tools import normalize_arcsinh
@@ -66,7 +64,9 @@ def create_comp_mat(spillmat, relevant_data=''):
     return compens
 
 
-def find_indexes(adata, key_added = 'signal_type', data_type='facs'):
+def find_indexes(adata: AnnData, 
+        key_added = 'signal_type', 
+        data_type='facs'):
     """
     Finds channels of interest for computing bleedthrough.
     :param adata: anndata object
@@ -100,7 +100,7 @@ def find_indexes(adata, key_added = 'signal_type', data_type='facs'):
     return adata
 
 #rename compute bleedthr to compensate
-def compensate(adata, key = 'signal_type'):
+def compensate(adata: AnnData, key = 'signal_type'):
     """
     Computes bleedthrough for data channels.
     :param adata: AnnData object to be processed
@@ -124,7 +124,8 @@ def compensate(adata, key = 'signal_type'):
     return adata
 
 
-def split_area(adata, key='signal_type', option='area', data_type='facs'):
+def split_area(adata: AnnData, 
+        key='signal_type', option='area', data_type='facs'):
     """
     Methode to filter out height or area data.
     :param adata: AnnData object containing data.
@@ -162,16 +163,16 @@ def split_area(adata, key='signal_type', option='area', data_type='facs'):
         adata.obs[colname] = adata.X[:,non_idx[idx]].copy()
     
     #create new anndata object (note: removes potential objects like obsm)
-    adataN = ann.AnnData(X = adata.X[:, np.flatnonzero(index)], 
-                         obs = adata.obs, 
-                         var = adata.var.iloc[np.flatnonzero(index)],      
-                         uns = adata.uns)
+    adataN = AnnData(X = adata.X[:, np.flatnonzero(index)], 
+                     obs = adata.obs, 
+                     var = adata.var.iloc[np.flatnonzero(index)],      
+                     uns = adata.uns)
     adataN.var_names = adata.var_names[index].values 
     return adataN
 
 # TODO: move function to plotting module
 # Plot data. Choose between Area, Height both(default)
-def plotdata(adata, 
+def plotdata(adata: AnnData, 
              key = 'signal_type', 
              normalize = True,
              cofactor = 10, 
