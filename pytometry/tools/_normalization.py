@@ -6,7 +6,7 @@ Created on Wed Nov 17 18:19:35 2021
 @author: buettnerm
 """
 
-import scanpy as sc
+
 from anndata import AnnData
 import numpy as np
 from scipy import interpolate
