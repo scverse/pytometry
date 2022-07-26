@@ -54,7 +54,6 @@ def normalize_logicle(
         in the linear region
     :param a: parameter for the additional number of negative decades
     """
-    
     #initialise precision
     taylor_length = 16 
     #initialise parameter dictionary
@@ -182,7 +181,6 @@ def _solve(b, w):
         b (float): parameter for biex trafo
         w (float): parameter for biex trafo
     """    
-    
     DBL_EPSILON = 1e-9 #from C++, defined as the 
     #smallest difference between 1 
     # and the next larger number

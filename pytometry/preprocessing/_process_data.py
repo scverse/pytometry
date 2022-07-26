@@ -195,6 +195,7 @@ def plotdata(adata: AnnData,
              **kwargs
              ):
     """Creating histogram plot from Anndata object.
+    
     :param adata: AnnData object containing data.
     :param cofactor: float value to normalize with in arcsinh-transform
     :param option: Switch to choose directly between area and height data.
