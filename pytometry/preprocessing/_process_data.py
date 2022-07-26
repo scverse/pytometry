@@ -12,12 +12,12 @@ import math
 
 from ..tools import normalize_arcsinh
 
-def create_spillover_mat(fcsdata: str, 
+def create_spillover_mat(fcsdata, 
                          key = '$SPILLOVER'):
     """Create spillover matrix from meta data of an .fcs file.
 
     Args:
-        fcsdata (str): Meta data from .fcs file.
+        fcsdata (dict): Meta data from .fcs file.
         key (str, optional): Spillover matrix as panda dataframe. 
             Defaults to '$SPILLOVER'.
 

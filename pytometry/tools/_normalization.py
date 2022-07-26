@@ -27,7 +27,8 @@ def normalize_logicle(
                 m = 4.5, 
                 w = 0.5, 
                 a = 0):
-    """
+    """Logicle transformation.
+
     Logicle transformation, implemented as defined in the
     GatingML 2.0 specification, adapted from FlowKit and Flowutils 
     Python packages:
@@ -108,8 +109,7 @@ def normalize_logicle(
 
 
 def _scale(value, p):
-    """
-    Scale helper function.
+    """Scale helper function.
 
     Args:
         value (float): Entry in the anndata matrix
@@ -176,8 +176,7 @@ def _scale(value, p):
     return -1
     
 def _solve(b, w): 
-    """
-    Helper function for biexponential transformation.
+    """Helper function for biexponential transformation.
 
     Args:
         b (float): parameter for biex trafo
@@ -252,8 +251,7 @@ def _solve(b, w):
     return -1
 
 def _seriesBiexponential(p, value):
-    """
-    Helper function to compute biex trafo.
+    """Helper function to compute biex trafo.
 
     Args:
         p (dict): Parameter dictionary
@@ -278,7 +276,8 @@ def normalize_biExp(adata: AnnData,
                     positive = 4.418540,
                     max_value = 262144.000029
                     ):
-    """
+    """Biexponential transformation.
+
     Biex transform as implemented in FlowJo 10. Adapted from FlowKit 
     Python package. This transform is applied exactly as the FlowJo 10 
     is implemented, using lookup tables with only a limited set
@@ -384,7 +383,8 @@ def _generate_biex_lut(channel_range=4096,
                       neg=0.0, 
                       width_basis=-10, 
                       max_value=262144.000029):
-    """
+    """Creates a FlowJo compatible biex lookup table.
+
     Code adopted from FlowKit Python package.
     Creates a FlowJo compatible biex lookup table.
     
@@ -458,8 +458,7 @@ def _generate_biex_lut(channel_range=4096,
 
 
 def _log_root(b, w):
-    """
-    Helper function.
+    """Helper function.
 
     Args:
         b (float): Upper bound

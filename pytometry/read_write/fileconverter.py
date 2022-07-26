@@ -1,12 +1,3 @@
-"""
-Author:     Thomas Ryborz
-ICB         HelmholtzZentrum münchen
-Date:       15.01.2020
-
-Fileconverter for .fcs -> .h5ad and .h5ad -> .fcs
-"""
-
-
 import getpass
 import os.path
 from pathlib import Path
@@ -24,8 +15,8 @@ def __toanndata(filenamefcs,
                 fcsfile, 
                 spillover_key ='$SPILLOVER', 
                 save = False):
-    """
-    Converts .fcs file to .h5ad file.
+    """Converts .fcs file to .h5ad file.
+    
     :param filenamefcs: filename without extension
     :param fcsfile: path to .fcs file
     :param spillover_key: name to access the spillover matrix, if any
@@ -77,8 +68,8 @@ def __toanndata(filenamefcs,
 
 
 def __tofcs(filenameh5ad, anndatafile, save):
-    """
-    Converts .h5ad file to .fcs file.
+    """Converts .h5ad file to .fcs file.
+
     :param filenameh5ad: filename without extension
     :param anndatafile: path to .h5ad file
     :return: Metadata of the created .fcs file.
@@ -116,8 +107,8 @@ def __tofcs(filenameh5ad, anndatafile, save):
 def readandconvert(datafile='',
                    spillover_key = '$SPILLOVER',
                    save_flag=False):
-    """
-    Loads files and converts them according to their extension.
+    """Load files and converts them according to their extension.
+
     :rtype: A list of loaded files.
     """
     elementlist = []
