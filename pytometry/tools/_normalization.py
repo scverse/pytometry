@@ -12,15 +12,20 @@ from scipy import interpolate
 
 def normalize_arcsinh(
     adata: AnnData, 
-    cofactor):
+    cofactor: float):
     """
-    :param adata: anndata object
-    :param cofactor: all values are divided by this 
-                     factor before arcsinh transformation
-                     recommended values for cyTOF data: 5
-                     and for flow data: 150 
-    :return: normalised adata object
-    """
+    Inverse hyperbolic sine transformation.
+
+    Args:
+        adata (AnnData): anndata object
+        cofactor (float): all values are divided by this 
+                          factor before arcsinh transformation
+                          recommended values for cyTOF data: 5
+                          and for flow data: 150 
+
+    Returns:
+        AnnData: normalised adata object
+    """      
     
     adata.X = np.arcsinh(adata.X/cofactor)
     return adata
@@ -113,7 +118,7 @@ def normalize_logicle(
 
 def _scale(value, p):
     """
-    Scale helper function
+    Scale helper function.
 
     Args:
         value (float): Entry in the anndata matrix
@@ -191,7 +196,7 @@ def _solve(b, w):
     DBL_EPSILON = 1e-9 #from C++, defined as the 
     #smallest difference between 1 
     # and the next larger number
-    
+
 	# w == 0 means its really arcsinh
     if (w == 0):
         return b
@@ -257,7 +262,7 @@ def _solve(b, w):
 
 def _seriesBiexponential(p, value):
     """
-    Helper function to compute biex trafo
+    Helper function to compute biex trafo.
 
     Args:
         p (dict): Parameter dictionary
@@ -277,8 +282,8 @@ def _seriesBiexponential(p, value):
     
 
 def normalize_biExp(adata: AnnData, 
-                    negative = 0, 
-                    width=-10, 
+                    negative = 0.0, 
+                    width=-10.0, 
                     positive = 4.418540,
                     max_value = 262144.000029
                     ):
@@ -325,11 +330,10 @@ def normalize_biExp(adata: AnnData,
         or pd.Series
     :param max_value: parameter for the top of the linear scale 
         (default=262144) or pd.Series
-    
     """
     #check inputs
     inputs = [negative, width, positive, max_value]
-    len_param = 0
+    len_param = 0.0
     for N in inputs:
         if hasattr(N, '__len__') and (not isinstance(N, str)):
             len_param += len(N)/4
@@ -464,7 +468,7 @@ def _generate_biex_lut(channel_range=4096,
 
 def _log_root(b, w):
     """
-    Helper function
+    Helper function.
 
     Args:
         b (float): Upper bound

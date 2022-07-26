@@ -12,14 +12,12 @@ import os.path
 from pathlib import Path
 
 import FlowCytometryTools as fct
-import anndata as ann
+from anndata import AnnData
 import numpy as np
 import pandas as pd
 
 from ..preprocessing import _process_data
 from . import fcswriter
-
-
 
 def __toanndata(filenamefcs, 
                 fcsfile, 
@@ -33,7 +31,7 @@ def __toanndata(filenamefcs,
     :return: Anndata object with additional .uns entries
     """
     fcsdata = fct.FCMeasurement(ID='FCS-file', datafile=fcsfile)
-    adata = ann.AnnData(X=fcsdata.data[:].values)
+    adata = AnnData(X=fcsdata.data[:].values)
     adata.var_names = fcsdata.channel_names
     adata.uns['meta'] = fcsdata.meta
 
