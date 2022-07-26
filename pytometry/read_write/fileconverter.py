@@ -67,9 +67,9 @@ def __toanndata(filenamefcs,
             adata.uns['meta'][key] = dict_tmp
 
     if spillover_key in fcsdata.meta:
-        adata.uns['spill_mat'] = proc.create_spillover_mat(fcsdata, 
+        adata.uns['spill_mat'] = _process_data.create_spillover_mat(fcsdata, 
                                                            key=spillover_key)
-        adata.uns['comp_mat'] = proc.create_comp_mat(adata.uns['spill_mat'])
+        adata.uns['comp_mat'] = _process_data.create_comp_mat(adata.uns['spill_mat'])
 
     if save:
         adata.write_h5ad(Path(filenamefcs + '_converted' + '.h5ad'))
@@ -86,9 +86,12 @@ def __tofcs(filenameh5ad, anndatafile, save):
     """
     # String to avoid duplicate keywords
     clear_dupl = ['__header__', '_channels_', '_channel_names_',
-                  '$BEGINANALYSIS', '$ENDANALYSIS', '$BEGINSTEXT', '$ENDSTEXT',
-                  '$BEGINDATA', '$ENDDATA', '$BYTEORD', '$DATATYPE',
-                  '$MODE', '$NEXTDATA', '$TOT', '$PAR', '$fcswrite version']
+                  '$BEGINANALYSIS', '$ENDANALYSIS', 
+                  '$BEGINSTEXT', '$ENDSTEXT',
+                  '$BEGINDATA', '$ENDDATA', 
+                  '$BYTEORD', '$DATATYPE',
+                  '$MODE', '$NEXTDATA', '$TOT', 
+                  '$PAR', '$fcswrite version']
 
     adata = ann.read_h5ad(anndatafile)
     dictionary = adata.uns['meta']
