@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 Author:     Thomas Ryborz
 ICB         HelmholtzZentrum muenchen
@@ -24,8 +26,7 @@ from ..tools import normalize_arcsinh
 
 def create_spillover_mat(fcsdata, 
                          key = '$SPILLOVER'):
-    """
-    Creates a spillover matrix from meta data of an .fcs file
+    """Creates a spillover matrix from meta data of an .fcs file
     :param fcsdata: Meta data from .fcs file
     :return: Spillover matrix as panda dataframe.
     """
@@ -48,8 +49,7 @@ def create_spillover_mat(fcsdata,
 
 
 def create_comp_mat(spillmat, relevant_data=''):
-    """
-    Creates a compensation matrix from a spillover matrix.
+    """Creates a compensation matrix from a spillover matrix.
     :param spillmat: Spillover matrix as panda dataframe.
     :param relevant_data: A list of channels for customized selection.
     :return: Compensation matrix as panda dataframe.
@@ -67,8 +67,7 @@ def create_comp_mat(spillmat, relevant_data=''):
 def find_indexes(adata: AnnData, 
         key_added = 'signal_type', 
         data_type='facs'):
-    """
-    Finds channels of interest for computing bleedthrough.
+    """Finds channels of interest for computing bleedthrough.
     :param adata: anndata object
     :param key_added: str, where result vector is added to the adata.var
     :param data_type: str, either 'facs' or 'cytof' 
@@ -101,8 +100,7 @@ def find_indexes(adata: AnnData,
 
 #rename compute bleedthr to compensate
 def compensate(adata: AnnData, key = 'signal_type'):
-    """
-    Computes bleedthrough for data channels.
+    """Computes bleedthrough for data channels.
     :param adata: AnnData object to be processed
     :return: AnnData object with calculated bleedthrough.
     """
@@ -126,8 +124,7 @@ def compensate(adata: AnnData, key = 'signal_type'):
 
 def split_area(adata: AnnData, 
         key='signal_type', option='area', data_type='facs'):
-    """
-    Methode to filter out height or area data.
+    """Method to filter out height or area data.
     :param adata: AnnData object containing data.
     :param key: key for adata.var where the variable type is stored
     :param option: str, for choosing 'area' or 'height' in case of FACS data
@@ -181,8 +178,7 @@ def plotdata(adata: AnnData,
              save = '',
              **kwargs
              ):
-    """
-    Creating histogram plot from Anndata object.
+    """Creating histogram plot from Anndata object.
     :param adata: AnnData object containing data.
     :param cofactor: float value to normalize with in arcsinh-transform
     :param option: Switch to choose directly between area and height data.
