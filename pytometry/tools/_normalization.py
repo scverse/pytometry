@@ -7,11 +7,13 @@ Created on Wed Nov 17 18:19:35 2021
 """
 
 import scanpy as sc
-import anndata as ann
+from anndata import AnnData
 import numpy as np
 from scipy import interpolate
 
-def normalize_arcsinh(adata, cofactor):
+def normalize_arcsinh(
+    adata: AnnData, 
+    cofactor):
     """
     :param adata: anndata object
     :param cofactor: all values are divided by this 
@@ -24,7 +26,7 @@ def normalize_arcsinh(adata, cofactor):
     adata.X = np.arcsinh(adata.X/cofactor)
     return adata
 
-def normalize_logicle(adata, t = 262144, m = 4.5, w = 0.5, a = 0):
+def normalize_logicle(adata: AnnData, t = 262144, m = 4.5, w = 0.5, a = 0):
     """
     Logicle transformation, implemented as defined in the
     GatingML 2.0 specification, adapted from FlowKit and Flowutils Python packages:
@@ -252,7 +254,7 @@ def seriesBiexponential(p, value):
     return (sum1 * x + p['taylor'][0]) * x
     
 
-def normalize_biExp(adata, 
+def normalize_biExp(adata: AnnData, 
                     negative = 0, 
                     width=-10, 
                     positive = 4.418540,
