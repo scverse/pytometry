@@ -17,7 +17,6 @@ def normalize_arcsinh(
     Returns:
         AnnData: normalised adata object
     """      
-    
     adata.X = np.arcsinh(adata.X/cofactor)
     return adata
 
