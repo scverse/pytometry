@@ -6,7 +6,6 @@ Created on Wed Nov 17 18:19:35 2021
 @author: buettnerm
 """
 
-
 from anndata import AnnData
 import numpy as np
 from scipy import interpolate
@@ -26,27 +25,36 @@ def normalize_arcsinh(
     adata.X = np.arcsinh(adata.X/cofactor)
     return adata
 
-def normalize_logicle(adata: AnnData, t = 262144, m = 4.5, w = 0.5, a = 0):
+def normalize_logicle(
+                adata: AnnData, 
+                t = 262144, 
+                m = 4.5, 
+                w = 0.5, 
+                a = 0):
     """
     Logicle transformation, implemented as defined in the
-    GatingML 2.0 specification, adapted from FlowKit and Flowutils Python packages:
+    GatingML 2.0 specification, adapted from FlowKit and Flowutils 
+    Python packages:
         
-    logicle(x, T, W, M, A) = root(B(y, T, W, M, A) − x)
+    logicle(x, T, W, M, A) = root(B(y, T, W, M, A) - x)
     
     where B is a modified bi-exponential function defined as:
         
-    B(y, T, W, M, A) = ae^(by) − ce^(−dy) − f
+    B(y, T, W, M, A) = ae^(by) - ce^(-dy) - f
     
     The Logicle transformation was originally defined in the publication:
         
-    Moore WA and Parks DR. Update for the logicle data scale including operational
-    code implementations. Cytometry A., 2012:81A(4):273–277.
+    Moore WA and Parks DR. Update for the logicle data scale 
+    including operational code implementations. 
+    Cytometry A., 2012:81A(4):273-277.
     
     :param adata: anndata object 
-    :param t: parameter for the top of the linear scale (e.g. 262144)
-    :param m: parameter for the number of decades the true logarithmic scale
-        approaches at the high end of the scale
-    :param w: parameter for the approximate number of decades in the linear region
+    :param t: parameter for the top of the linear scale 
+        (e.g. 262144)
+    :param m: parameter for the number of decades the true 
+        logarithmic scale approaches at the high end of the scale
+    :param w: parameter for the approximate number of decades 
+        in the linear region
     :param a: parameter for the additional number of negative decades
     """
     
@@ -67,7 +75,7 @@ def normalize_logicle(adata: AnnData, t = 262144, m = 4.5, w = 0.5, a = 0):
     p['x1'] = p['x2'] + p['w']
     p['x0'] = p['x2'] + 2 * p['w']
     p['b'] = (M + A) * np.log(10)
-    p['d'] = solve(p['b'], p['w'])
+    p['d'] = _solve(p['b'], p['w'])
     
     c_a = np.exp(p['x0'] * (p['b'] + p['d']))
     mf_a = np.exp(p['b'] * p['x1']) - c_a / np.exp(p['d'] * p['x1'])
@@ -98,14 +106,24 @@ def normalize_logicle(adata: AnnData, t = 262144, m = 4.5, w = 0.5, a = 0):
     #apply scaling to each value
     for i in range(0, adata.n_vars):
         for j in range(0,adata.n_obs): 
-            adata.X[j,i] = scale(adata.X[j,i], p)
+            adata.X[j,i] = _scale(adata.X[j,i], p)
     
     return adata
 
 
-def scale(value, p):
-    
-    DBL_EPSILON = 1e-9 #from C++, defined as the smallest difference between 1 
+def _scale(value, p):
+    """
+    Scale helper function
+
+    Args:
+        value (float): Entry in the anndata matrix
+        p (dict): Parameter dictionary 
+
+    Returns:
+       float: Scaled value or -1 
+    """    
+    DBL_EPSILON = 1e-9 #from C++, 
+    #defined as the smallest difference between 1 
     # and the next larger number
     #handle true zero separately
     if (value == 0):
@@ -137,7 +155,7 @@ def scale(value, p):
 
         if (x < p['xTaylor']):
 			#near zero use the Taylor series
-            y = seriesBiexponential(p, x) - value
+            y = _seriesBiexponential(p, x) - value
         else:
 			# this formulation has better round-off behavior
             y = (ae2bx + p['f']) - (ce2mdx + value)
@@ -161,17 +179,19 @@ def scale(value, p):
 	# if we get here, scale did not converge
     return -1
     
+def _solve(b, w): 
+    """
+    Helper function for biexponential transformation.
 
+    Args:
+        b (float): parameter for biex trafo
+        w (float): parameter for biex trafo
+    """    
     
-
-def solve(b, w): 
-    
-    
-    DBL_EPSILON = 1e-9 #from C++, defined as the smallest difference between 1 
+    DBL_EPSILON = 1e-9 #from C++, defined as the 
+    #smallest difference between 1 
     # and the next larger number
     
-
-
 	# w == 0 means its really arcsinh
     if (w == 0):
         return b
@@ -208,9 +228,7 @@ def solve(b, w):
             d = d_lo + delta
             if (d == d_lo):
                 return d # nothing changed, we're done
-		
-        else:
-		
+        else:	
 			# otherwise take a Newton's method step
             delta = f / df
             t = d
@@ -233,14 +251,18 @@ def solve(b, w):
         if (f < 0):
             d_lo = d
         else:
-            d_hi = d
-	
+            d_hi = d	
 
     return -1
 
+def _seriesBiexponential(p, value):
+    """
+    Helper function to compute biex trafo
 
-def seriesBiexponential(p, value):
-    
+    Args:
+        p (dict): Parameter dictionary
+        value (float): Start value for Taylor series expansion
+    """    
     #initialise precision
     taylor_length = 16
     #Taylor series is around x1
@@ -261,41 +283,48 @@ def normalize_biExp(adata: AnnData,
                     max_value = 262144.000029
                     ):
     """
-    Biex transform as implemented in FlowJo 10. Adapted from FlowKit Python package.
-    This transform is applied exactly as
-    the FlowJo 10 is implemented, using lookup tables with only a limited set
+    Biex transform as implemented in FlowJo 10. Adapted from FlowKit 
+    Python package. This transform is applied exactly as the FlowJo 10 
+    is implemented, using lookup tables with only a limited set
     of parameter values. 
     
     Information on the input parameters from the FlowJo docs:
     Adjusting width:
-    The value for w will determine the amount of channels to be  compressed into
-    linear space around zero. The space of linear does not change, but rather the
-    number of channels or bins being compressed into the linear space.
-    Width should be set high enough that all of the data in the histogram is visible
-    on screen, but not so high that extra white space is seen to the left hand side
-    of your dimmest distribution. For most practical uses, once all events have been
-    shifted off the axis and there is no more axis ‘pile-up’, then the optimal width
-    basis value has been reached.
+    The value for w will determine the amount of channels to be 
+    compressed into linear space around zero. The space of linear does 
+    not change, but rather the number of channels or bins being 
+    compressed into the linear space. Width should be set high enough 
+    that all of the data in the histogram is visible on screen, but not 
+    so high that extra white space is seen to the left hand side of your 
+    dimmest distribution. For most practical uses, once all events have 
+    been shifted off the axis and there is no more axis 'pile-up', then 
+    the optimal width basis value has been reached.
     Negative:
-    Another component in the biexponential transform calculation is the negative
-    decades or negative space. This is the only other value you will probably ever
-    need to adjust. In cases where a high width basis may start compressing dim events
-    into the negative cluster, you may want to lower the width basis (less compression
-    around zero) and instead, increase the negative space by 0.5 – 1.0. Doing this
-    will expand the space around zero so the dim events are still visible, but also
-    expand the negative space to remove the cells from the axis and allow you to see
-    the full distribution.
+    Another component in the biexponential transform calculation is the 
+    negative decades or negative space. This is the only other value you 
+    will probably ever need to adjust. In cases where a high width basis 
+    may start compressing dim events into the negative cluster, you may 
+    want to lower the width basis (less compression around zero) and 
+    instead, increase the negative space by 0.5 - 1.0. Doing this will 
+    expand the space around zero so the dim events are still visible, 
+    but also expand the negative space to remove the cells from the axis 
+    and allow you to see the full distribution.
     Positive:
-    The presence of the positive decade adjustment is due to the algorithm used for
-    logicle transformation, but is not useful in 99.9% of the cases that require
-    adjusting the biexponential transform. It may be appropriate to adjust this value
-    only if you use data that displays data with a data range greater than 5 decades.
+    The presence of the positive decade adjustment is due to the 
+    algorithm used for logicle transformation, but is not useful in 
+    99.9% of the cases that require adjusting the biexponential 
+    transform. It may be appropriate to adjust this value only if you 
+    use data that displays data with a data range greater than 5 decades.
     
     :param adata: anndata object representing the FCS data
-    :param negative: Value for the FlowJo biex option 'negative' (float) or pd.Series
-    :param width: Value for the FlowJo biex option 'width' (float) or pd.Series
-    :param positive: Value for the FlowJo biex option 'positive' (float) or pd.Series
-    :param max_value: parameter for the top of the linear scale (default=262144) or pd.Series
+    :param negative: Value for the FlowJo biex option 'negative' (float) 
+        or pd.Series
+    :param width: Value for the FlowJo biex option 'width' (float) or 
+        pd.Series
+    :param positive: Value for the FlowJo biex option 'positive' (float) 
+        or pd.Series
+    :param max_value: parameter for the top of the linear scale 
+        (default=262144) or pd.Series
     
     """
     #check inputs
@@ -306,12 +335,11 @@ def normalize_biExp(adata: AnnData,
             len_param += len(N)/4
         else: #integer values do not have len attribute
             len_param += 0.25
-
-        
+  
     #transform every variable the same:
     if len_param == 1:
 
-        x, y = generate_biex_lut(neg = negative,
+        x, y = _generate_biex_lut(neg = negative,
                              width_basis = width, 
                              pos = positive, 
                              max_value = max_value)
@@ -336,7 +364,7 @@ def normalize_biExp(adata: AnnData,
             positive_tmp = positive[row_idx][0]
             max_value_tmp = max_value[row_idx][0]
             
-            x, y = generate_biex_lut(neg = negative_tmp,
+            x, y = _generate_biex_lut(neg = negative_tmp,
                                  width_basis = width_tmp, 
                                  pos = positive_tmp, 
                                  max_value = max_value_tmp)
@@ -356,7 +384,7 @@ def normalize_biExp(adata: AnnData,
             
     return adata
 
-def generate_biex_lut(channel_range=4096, 
+def _generate_biex_lut(channel_range=4096, 
                       pos=4.418540, 
                       neg=0.0, 
                       width_basis=-10, 
@@ -435,6 +463,16 @@ def generate_biex_lut(channel_range=4096,
 
 
 def _log_root(b, w):
+    """
+    Helper function
+
+    Args:
+        b (float): Upper bound
+        w (float): Step parameter
+
+    Returns:
+        float: Solution to interpolation
+    """    
     #Code adopted from FlowKit Python package
     x_lo = 0
     x_hi = b
