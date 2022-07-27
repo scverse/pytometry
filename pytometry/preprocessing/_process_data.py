@@ -1,12 +1,12 @@
 import math
 
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sb
 
 # import FlowCytometryTools as fct
 from anndata import AnnData
+from matplotlib import pyplot as plt
 from matplotlib import rcParams
 
 from ..tools import normalize_arcsinh
