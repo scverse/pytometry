@@ -1,5 +1,1 @@
-from ._normalization import (
-    normalize_arcsinh,
-    normalize_logicle,
-    normalize_biExp
-)
+from ._normalization import normalize_arcsinh, normalize_biExp, normalize_logicle
