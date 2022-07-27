@@ -2,14 +2,11 @@ import getpass
 import os.path
 from pathlib import Path
 
-import anndata as ann
 import FlowCytometryTools as fct
-import numpy as np
 import pandas as pd
 from anndata import AnnData
 
 from ..preprocessing import _process_data
-from . import fcswriter
 
 
 def __toanndata(filenamefcs, fcsfile, spillover_key="$SPILLOVER", save=False):
@@ -66,61 +63,6 @@ def __toanndata(filenamefcs, fcsfile, spillover_key="$SPILLOVER", save=False):
     return adata
 
 
-def __tofcs(filenameh5ad, anndatafile, save):
-    """Converts .h5ad file to .fcs file.
-
-    :param filenameh5ad: filename without extension
-    :param anndatafile: path to .h5ad file
-    :return: Metadata of the created .fcs file.
-    """
-    # String to avoid duplicate keywords
-    clear_dupl = [
-        "__header__",
-        "_channels_",
-        "_channel_names_",
-        "$BEGINANALYSIS",
-        "$ENDANALYSIS",
-        "$BEGINSTEXT",
-        "$ENDSTEXT",
-        "$BEGINDATA",
-        "$ENDDATA",
-        "$BYTEORD",
-        "$DATATYPE",
-        "$MODE",
-        "$NEXTDATA",
-        "$TOT",
-        "$PAR",
-        "$fcswrite version",
-    ]
-
-    adata = ann.read_h5ad(anndatafile)
-    dictionary = adata.uns["meta"]
-    ch_shortnames = dictionary["_channels_"][:, 0]
-
-    # Include long channel names in seperate Key
-    count = 1
-
-    for name in dictionary["_channel_names_"]:
-        dictionary["$P" + str(count) + "S"] = name
-        count = count + 1
-
-    for i in clear_dupl:
-        dictionary.pop(i, None)
-
-    if save:
-        fcswriter.write_fcs(
-            Path(filenameh5ad + "_converted" + ".fcs"),
-            ch_shortnames,
-            np.array(adata.var_names).tolist(),
-            adata.X,
-            dictionary,
-            "big",
-            False,
-        )
-
-    return fct.FCMeasurement("FCS-file", filenameh5ad + "_converted" + ".fcs")
-
-
 def readandconvert(datafile="", spillover_key="$SPILLOVER", save_flag=False):
     """Load files and converts them according to their extension.
 
@@ -157,8 +99,6 @@ def readandconvert(datafile="", spillover_key="$SPILLOVER", save_flag=False):
             elementlist.append(
                 __toanndata(filename, file_path, spillover_key, save_flag)
             )
-        elif file_extension in [".h5ad", ".H5AD"]:
-            elementlist.append(__tofcs(filename, file_path, save_flag))
         else:
             print("File " + file_name + " can not be converted!")
 
