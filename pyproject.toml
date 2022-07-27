@@ -10,6 +10,13 @@ dynamic = ["version"]
 description = "Pytometry is a Python package for flow and mass cytometry analysis."
 dependencies = [
     "nbproject",
+    "numpy",
+    "pandas",
+    "anndata",
+    "scipy",
+    "seaborn",
+    "matplotlib",
+    "FlowCytometryTools"
 ]
 
 [project.urls]
