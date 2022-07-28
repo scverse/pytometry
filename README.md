@@ -4,7 +4,7 @@
 
 # Pytometry: Flow & mass cytometry analytics
 
-This package is in private beta at this moment!
+This package is in private beta at this moment! We want to publish this ASAP!
 
 This package extends scanpy to for efficient and scalable handling of flow and mass cytometry data analysis. It provides
 
