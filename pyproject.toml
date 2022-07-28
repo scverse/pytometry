@@ -16,7 +16,7 @@ dependencies = [
     "scipy",
     "seaborn",
     "matplotlib",
-    "FlowCytometryTools"
+    "readfcs"
 ]
 
 [project.urls]
