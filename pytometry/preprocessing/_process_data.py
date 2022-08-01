@@ -16,37 +16,6 @@ from ..tools import normalize_arcsinh
 # import os.path
 
 
-def create_spillover_mat(fcsdata, key="$SPILLOVER"):
-    """Create spillover matrix from meta data of an .fcs file.
-
-    Args:
-        fcsdata (dict): Meta data from .fcs file.
-        key (str, optional): Spillover matrix as panda dataframe.
-            Defaults to '$SPILLOVER'.
-
-    Returns:
-        pd.DataFrame: Spillover matrix as pd.DataFrame
-    """
-    spillover = fcsdata.meta[key].split(",")
-    num_col = int(spillover[0])
-    channel_names = spillover[1 : (int(spillover[0]) + 1)]
-    channel_data = fcsdata.meta["_channels_"]
-
-    if "$PnS" in channel_data:
-        channel_renames = [
-            str(channel_data["$PnS"][channel_data["$PnN"] == name][0])
-            for name in channel_names
-        ]
-    else:
-        channel_renames = channel_names
-
-    spill_values = np.reshape(
-        [float(inp) for inp in spillover[(int(spillover[0]) + 1) :]], [num_col, num_col]
-    )
-    spill_df = pd.DataFrame(spill_values, columns=channel_renames)
-    return spill_df
-
-
 def create_comp_mat(spillmat, relevant_data=""):
     """Creates a compensation matrix from a spillover matrix.
 
