@@ -1,4 +1,5 @@
 import math
+import re
 
 import numpy as np
 import pandas as pd
@@ -84,16 +85,20 @@ def find_indexes(adata: AnnData, key_added="signal_type", data_type="facs"):
     index = adata.var.index
     index_array = []
 
-    if data_type == "facs":
+    if data_type.lower() == "facs":
         for item in index:
-            if item.endswith("-A") and not item.count("SC-"):
+            item = item.upper()
+            # find FSC and SSC channels first
+            if re.match("(F|S)SC", item) is not None:
+                index_array.append("other")
+            elif item.endswith("-A"):
                 index_array.append("area")
-            elif item.endswith("-H") and not item.count("SC-"):
+            elif item.endswith("-H"):
                 index_array.append("height")
             else:
                 index_array.append("other")
 
-    elif data_type in ["cytof", "cyTOF"]:
+    elif data_type.lower() == "cytof":
         for item in index:
             if item.endswith("Di") or item.endswith("Dd"):
                 index_array.append("element")
@@ -102,26 +107,36 @@ def find_indexes(adata: AnnData, key_added="signal_type", data_type="facs"):
     else:
         print(
             f"{data_type} not recognized. Must be either 'facs' or               "
-            " 'cytof'/'cyTOF'"
+            " 'cytof'"
         )
     adata.var["signal_type"] = pd.Categorical(index_array)
     return adata
 
 
 # rename compute bleedthr to compensate
-def compensate(adata: AnnData, key="signal_type"):
-    """Computes bleedthrough for data channels.
+def compensate(adata: AnnData, key="signal_type", comp_matrix=None):
+    """Computes compensation for data channels.
 
     Args:
         adata (AnnData): AnnData object
         key (str, optional): key where result vector is added
             to the adata.var. Defaults to 'signal_type'.
+        comp_matrix (None, optional): a custom compensation matrix
 
     Returns:
         AnnData: AnnData object
     """
     key_in = key
-    compens = adata.uns["comp_mat"]
+
+    # locate compensation matrix
+    if comp_matrix is not None:
+        compens = comp_matrix
+        # To Do: add checks that this input is correct
+    if adata.uns["meta"]["spill"] is not None:
+        compens = create_comp_mat(adata.uns["meta"]["spill"])
+    else:
+        raise ValueError(f"Did not find .uns['meta']['spill'] nor '{comp_matrix}'.")
+
     # save original data as layer
     if "original" not in adata.layers:
         adata.layers["original"] = adata.X
@@ -133,12 +148,15 @@ def compensate(adata: AnnData, key="signal_type"):
     # select non other indices
     indexes = np.invert(adata.var[key_in] == "other")
 
-    bleedthrough = np.dot(adata.X[:, indexes], compens)
-    adata.X[:, indexes] = bleedthrough
+    # To Do:
+    # the compensation matrix may have different index names than the adata.X matrix
+    # add a check and match for the compensation
+    X_comp = np.dot(adata.X[:, indexes], compens)
+    adata.X[:, indexes] = X_comp
     return adata
 
 
-def split_area(adata: AnnData, key="signal_type", option="area", data_type="facs"):
+def split_signal(adata: AnnData, key="signal_type", option="area", data_type="facs"):
     """Method to filter out height or area data.
 
     Args:
@@ -158,7 +176,7 @@ def split_area(adata: AnnData, key="signal_type", option="area", data_type="facs
     possible_options = ["area", "height", "other", "element"]
 
     if option_key not in possible_options:
-        print(f"{option_key} is not a valid category. Return all.")
+        print(f"'{option_key}' is not a valid category. Return all.")
         return adata
     # Check if indices for area and height have been computed
     if key_in not in adata.var_keys():
@@ -167,7 +185,7 @@ def split_area(adata: AnnData, key="signal_type", option="area", data_type="facs
     index = adata.var[key_in] == option_key
     # if none of the indices is true, abort
     if sum(index) < 1:
-        print(f"{option_key} is not in adata.var[{key_in}]. Return all.")
+        print(f"'{option_key}' is not in adata.var['{key_in}']. Return all.")
         return adata
 
     non_idx = np.flatnonzero(np.invert(index))

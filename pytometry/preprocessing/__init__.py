@@ -4,5 +4,5 @@ from ._process_data import (
     create_spillover_mat,
     find_indexes,
     plotdata,
-    split_area,
+    split_signal,
 )
