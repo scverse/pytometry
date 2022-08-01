@@ -37,11 +37,15 @@ def create_comp_mat(spillmat, relevant_data=""):
     return compens
 
 
-def find_indexes(adata: AnnData, key_added="signal_type", data_type="facs"):
+def find_indexes(
+    adata: AnnData, var_key=None, key_added="signal_type", data_type="facs"
+):
     """Find channels of interest for computing compensation.
 
     Args:
         adata (AnnData): anndata object
+        var_key (str, optional): key where to check if a feature is an area,
+             height etc. type of value. Use `var_names` if None.
         key_added (str, optional): key where result vector is added to the adata.var.
             Defaults to 'signal_type'.
         data_type (str, optional): either 'facs' or 'cytof'.
@@ -51,7 +55,13 @@ def find_indexes(adata: AnnData, key_added="signal_type", data_type="facs"):
         AnnData: anndata object with a categorical vector in
             adata.var[f'{key_added}']
     """
-    index = adata.var.index
+    if var_key is None:
+        index = adata.var.index
+    elif var_key in adata.var_keys():
+        index = adata.var[var_key]
+    else:
+        raise KeyError(f"Did not find '{var_key}' in `.var_keys()`.")
+
     index_array = []
 
     if data_type.lower() == "facs":
@@ -83,11 +93,13 @@ def find_indexes(adata: AnnData, key_added="signal_type", data_type="facs"):
 
 
 # rename compute bleedthr to compensate
-def compensate(adata: AnnData, key="signal_type", comp_matrix=None):
+def compensate(adata: AnnData, var_key=None, key="signal_type", comp_matrix=None):
     """Computes compensation for data channels.
 
     Args:
         adata (AnnData): AnnData object
+        var_key (str, optional): key where to check if a feature is an area,
+             height etc. type of value. Use `var_names` if None.
         key (str, optional): key where result vector is added
             to the adata.var. Defaults to 'signal_type'.
         comp_matrix (None, optional): a custom compensation matrix
@@ -104,7 +116,7 @@ def compensate(adata: AnnData, key="signal_type", comp_matrix=None):
     if adata.uns["meta"]["spill"] is not None:
         compens = create_comp_mat(adata.uns["meta"]["spill"])
     else:
-        raise ValueError(f"Did not find .uns['meta']['spill'] nor '{comp_matrix}'.")
+        raise KeyError(f"Did not find .uns['meta']['spill'] nor '{comp_matrix}'.")
 
     # save original data as layer
     if "original" not in adata.layers:
@@ -113,7 +125,7 @@ def compensate(adata: AnnData, key="signal_type", comp_matrix=None):
     # Ignore channels 'FSC-H', 'FSC-A', 'SSC-H', 'SSC-A',
     # 'FSC-Width', 'Time'
     if key_in not in adata.var_keys():
-        adata = find_indexes(adata, data_type="facs")
+        adata = find_indexes(adata, var_key=var_key, data_type="facs")
     # select non other indices
     indexes = np.invert(adata.var[key_in] == "other")
 
@@ -125,11 +137,15 @@ def compensate(adata: AnnData, key="signal_type", comp_matrix=None):
     return adata
 
 
-def split_signal(adata: AnnData, key="signal_type", option="area", data_type="facs"):
+def split_signal(
+    adata: AnnData, var_key=None, key="signal_type", option="area", data_type="facs"
+):
     """Method to filter out height or area data.
 
     Args:
         adata (AnnData): AnnData object containing data.
+        var_key (str, optional): key where to check if a feature is an area,
+             height etc. type of value. Use `var_names` if None.
         key (str, optional): key for adata.var where the variable type is stored.
             Defaults to 'signal_type'.
         option (str, optional):  for choosing 'area' or 'height' in case of FACS data
@@ -149,7 +165,7 @@ def split_signal(adata: AnnData, key="signal_type", option="area", data_type="fa
         return adata
     # Check if indices for area and height have been computed
     if key_in not in adata.var_keys():
-        adata = find_indexes(adata, data_type=data_type)
+        adata = find_indexes(adata, var_key=var_key, data_type=data_type)
 
     index = adata.var[key_in] == option_key
     # if none of the indices is true, abort

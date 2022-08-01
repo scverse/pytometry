@@ -22,7 +22,13 @@ def read_fcs(path: str):
     # move marker name to index. Then merging data becomes easier
     if "marker" in adata.var_keys():
         adata.var["channel"] = adata.var_names.values
-        adata.var_names = adata.var["marker"]
+        # check in "marker" column that all cells have a value
+        # otherwise, copy from "channel"
+        marker_val = adata.var["marker"].values
+        for idx, marker in enumerate(marker_val):
+            if marker in ["", " "]:
+                marker_val[idx] = adata.var["channel"][idx]
+        adata.var_names = marker_val
         del adata.var["marker"]
 
     return adata
