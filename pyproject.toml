@@ -13,6 +13,7 @@ dependencies = [
     "numpy",
     "pandas",
     "anndata",
+    "scanpy",
     "scipy",
     "seaborn",
     "matplotlib",
