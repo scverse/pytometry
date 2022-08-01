@@ -1,1 +1,1 @@
-from .fileconverter import readandconvert
+from ._readfcs import read_fcs

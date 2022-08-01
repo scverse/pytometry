@@ -13,10 +13,11 @@ dependencies = [
     "numpy",
     "pandas",
     "anndata",
+    "scanpy",
     "scipy",
     "seaborn",
     "matplotlib",
-    "FlowCytometryTools"
+    "readfcs"
 ]
 
 [project.urls]

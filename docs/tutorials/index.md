@@ -10,4 +10,5 @@ This makes it both easy for the user to understand the documentation, and for th
 :maxdepth: 1
 
 quickstart
+read_fcs
 ```
