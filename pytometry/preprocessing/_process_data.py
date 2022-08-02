@@ -143,7 +143,7 @@ def compensate(
     # Ignore channels 'FSC-H', 'FSC-A', 'SSC-H', 'SSC-A',
     # 'FSC-Width', 'Time'
     if key_in not in adata.var_keys():
-        adata = find_indexes(adata, var_key=var_key, data_type="facs")
+        find_indexes(adata, var_key=var_key, data_type="facs")
     # select non other indices
     indexes = np.invert(adata.var[key_in] == "other")
 
@@ -192,7 +192,7 @@ def split_signal(
         return adata
     # Check if indices for area and height have been computed
     if key_in not in adata.var_keys():
-        adata = find_indexes(adata, var_key=var_key, data_type=data_type)
+        find_indexes(adata, var_key=var_key, data_type=data_type)
 
     index = adata.var[key_in] == option_key
     # if none of the indices is true, abort
