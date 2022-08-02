@@ -48,7 +48,6 @@ jobs:
           nox -s lint
       - name: Build
         run: |
-          touch lamin_sphinx/_templates/footer.html
           nox -s build --python ${{ matrix.python-version }}
       - name: Codecov
         uses: codecov/codecov-action@v2
