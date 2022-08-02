@@ -226,7 +226,7 @@ def plotdata(
     normalize=True,
     cofactor=10,
     figsize=(15, 6),
-    option="",
+    option="area",
     save="",
     **kwargs,
 ):
@@ -244,10 +244,10 @@ def plotdata(
 
     # Check if indices for area and height have been computed
     if key_in not in adata_.var_keys():
-        adata_ = find_indexes(adata_)
+        find_indexes(adata_)
 
     if normalize:
-        adata_ = normalize_arcsinh(adata_, cofactor)
+        normalize_arcsinh(adata_, cofactor)
 
     if option_key not in ["area", "height", "other"]:
         print(f"Option {option_key} is not a valid category. Return all.")
