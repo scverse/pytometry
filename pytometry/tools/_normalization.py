@@ -3,7 +3,7 @@ from anndata import AnnData
 from scipy import interpolate
 
 
-def normalize_arcsinh(adata: AnnData, cofactor: float):
+def normalize_arcsinh(adata: AnnData, cofactor: float, copy: bool = False):
     """Inverse hyperbolic sine transformation.
 
     Args:
@@ -12,15 +12,19 @@ def normalize_arcsinh(adata: AnnData, cofactor: float):
                           factor before arcsinh transformation
                           recommended values for cyTOF data: 5
                           and for flow data: 150
+        copy (bool, optional): Return a copy instead of writing to adata.
+            Defaults to False.
 
     Returns:
-        AnnData: normalised adata object
+        Depending on `copy`, returns or updates `adata` in the following field
+            `adata.X` is then a normalised adata object
     """
+    adata = adata.copy() if copy else adata
     adata.X = np.arcsinh(adata.X / cofactor)
-    return adata
+    return adata if copy else None
 
 
-def normalize_logicle(adata: AnnData, t=262144, m=4.5, w=0.5, a=0):
+def normalize_logicle(adata: AnnData, t=262144, m=4.5, w=0.5, a=0, copy: bool = False):
     """Logicle transformation.
 
     Logicle transformation, implemented as defined in the
@@ -39,6 +43,7 @@ def normalize_logicle(adata: AnnData, t=262144, m=4.5, w=0.5, a=0):
     including operational code implementations.
     Cytometry A., 2012:81A(4):273-277.
 
+    Args:
     :param adata: anndata object
     :param t: parameter for the top of the linear scale
         (e.g. 262144)
@@ -47,6 +52,12 @@ def normalize_logicle(adata: AnnData, t=262144, m=4.5, w=0.5, a=0):
     :param w: parameter for the approximate number of decades
         in the linear region
     :param a: parameter for the additional number of negative decades
+    :param copy (bool, optional): Return a copy instead of writing to adata.
+            Defaults to False.
+
+    Returns:
+        Depending on `copy`, returns or updates `adata` in the following field
+            `adata.X` is then a normalised adata object
     """
     # initialise precision
     taylor_length = 16
@@ -92,13 +103,13 @@ def normalize_logicle(adata: AnnData, t=262144, m=4.5, w=0.5, a=0):
     p["taylor"][1] = 0  # exact result of Logicle condition
 
     # end original initialize method
-
+    adata = adata.copy() if copy else adata
     # apply scaling to each value
     for i in range(0, adata.n_vars):
         for j in range(0, adata.n_obs):
             adata.X[j, i] = _scale(adata.X[j, i], p)
 
-    return adata
+    return adata if copy else None
 
 
 def _scale(value, p):
@@ -270,6 +281,7 @@ def normalize_biExp(
     width=-10.0,
     positive=4.418540,
     max_value=262144.000029,
+    copy: bool = False,
 ):
     """Biexponential transformation.
 
@@ -306,6 +318,7 @@ def normalize_biExp(
     transform. It may be appropriate to adjust this value only if you
     use data that displays data with a data range greater than 5 decades.
 
+    Args:
     :param adata: anndata object representing the FCS data
     :param negative: Value for the FlowJo biex option 'negative' (float)
         or pd.Series
@@ -315,6 +328,12 @@ def normalize_biExp(
         or pd.Series
     :param max_value: parameter for the top of the linear scale
         (default=262144) or pd.Series
+    :param copy (bool, optional): Return a copy instead of writing to adata.
+            Defaults to False.
+
+    Returns:
+        Depending on `copy`, returns or updates `adata` in the following field
+            `adata.X` is then a normalised adata object
     """
     # check inputs
     inputs = [negative, width, positive, max_value]
@@ -324,7 +343,8 @@ def normalize_biExp(
             len_param += len(N) / 4
         else:  # integer values do not have len attribute
             len_param += 0.25
-
+    # set copy of adata if copy=True
+    adata = adata.copy() if copy else adata
     # transform every variable the same:
     if len_param == 1:
         x, y = _generate_biex_lut(
@@ -373,7 +393,7 @@ def normalize_biExp(
             " without normalising."
         )
 
-    return adata
+    return adata if copy else None
 
 
 def _generate_biex_lut(

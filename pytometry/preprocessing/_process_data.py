@@ -38,7 +38,11 @@ def create_comp_mat(spillmat, relevant_data=""):
 
 
 def find_indexes(
-    adata: AnnData, var_key=None, key_added="signal_type", data_type="facs"
+    adata: AnnData,
+    var_key=None,
+    key_added="signal_type",
+    data_type="facs",
+    copy: bool = False,
 ):
     """Find channels of interest for computing compensation.
 
@@ -50,11 +54,15 @@ def find_indexes(
             Defaults to 'signal_type'.
         data_type (str, optional): either 'facs' or 'cytof'.
             Defaults to 'facs'.
+        copy (bool, optional): Return a copy instead of writing to adata.
+            Defaults to False.
 
     Returns:
-        AnnData: anndata object with a categorical vector in
+        Depending on `copy`, returns or updates `adata` with the following updated field
             adata.var[f'{key_added}']
     """
+    adata = adata.copy() if copy else adata
+
     if var_key is None:
         index = adata.var.index
     elif var_key in adata.var_keys():
@@ -89,7 +97,7 @@ def find_indexes(
             " 'cytof'"
         )
     adata.var["signal_type"] = pd.Categorical(index_array)
-    return adata
+    return adata if copy else None
 
 
 # rename compute bleedthr to compensate
