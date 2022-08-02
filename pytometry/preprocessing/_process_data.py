@@ -93,7 +93,13 @@ def find_indexes(
 
 
 # rename compute bleedthr to compensate
-def compensate(adata: AnnData, var_key=None, key="signal_type", comp_matrix=None):
+def compensate(
+    adata: AnnData,
+    var_key=None,
+    key="signal_type",
+    comp_matrix=None,
+    copy: bool = False,
+):
     """Computes compensation for data channels.
 
     Args:
@@ -102,11 +108,15 @@ def compensate(adata: AnnData, var_key=None, key="signal_type", comp_matrix=None
              height etc. type of value. Use `var_names` if None.
         key (str, optional): key where result vector is added
             to the adata.var. Defaults to 'signal_type'.
-        comp_matrix (None, optional): a custom compensation matrix
+        comp_matrix (None, optional): a custom compensation matrix.
+        copy (bool, optional): Return a copy instead of writing to adata.
+            Defaults to False.
 
     Returns:
-        AnnData: AnnData object
+        Depending on `copy`, returns or updates `adata`
     """
+    adata = adata.copy() if copy else adata
+
     key_in = key
 
     # locate compensation matrix
@@ -134,7 +144,7 @@ def compensate(adata: AnnData, var_key=None, key="signal_type", comp_matrix=None
     # add a check and match for the compensation
     X_comp = np.dot(adata.X[:, indexes], compens)
     adata.X[:, indexes] = X_comp
-    return adata
+    return adata if copy else None
 
 
 def split_signal(
