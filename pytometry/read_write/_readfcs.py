@@ -16,8 +16,7 @@ def read_fcs(path: str):
     if isinstance(path, PosixPath):
         path = path.as_posix()
 
-    fcsfile = readfcs.FCSFile(path)
-    adata = fcsfile.to_anndata()
+    adata = readfcs.read(path)
 
     # move marker name to index. Then merging data becomes easier
     if "marker" in adata.var_keys():

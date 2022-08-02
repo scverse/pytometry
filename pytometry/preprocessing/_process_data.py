@@ -38,7 +38,11 @@ def create_comp_mat(spillmat, relevant_data=""):
 
 
 def find_indexes(
-    adata: AnnData, var_key=None, key_added="signal_type", data_type="facs"
+    adata: AnnData,
+    var_key=None,
+    key_added="signal_type",
+    data_type="facs",
+    copy: bool = False,
 ):
     """Find channels of interest for computing compensation.
 
@@ -50,11 +54,15 @@ def find_indexes(
             Defaults to 'signal_type'.
         data_type (str, optional): either 'facs' or 'cytof'.
             Defaults to 'facs'.
+        copy (bool, optional): Return a copy instead of writing to adata.
+            Defaults to False.
 
     Returns:
-        AnnData: anndata object with a categorical vector in
+        Depending on `copy`, returns or updates `adata` with the following updated field
             adata.var[f'{key_added}']
     """
+    adata = adata.copy() if copy else adata
+
     if var_key is None:
         index = adata.var.index
     elif var_key in adata.var_keys():
@@ -89,11 +97,18 @@ def find_indexes(
             " 'cytof'"
         )
     adata.var["signal_type"] = pd.Categorical(index_array)
-    return adata
+    return adata if copy else None
 
 
 # rename compute bleedthr to compensate
-def compensate(adata: AnnData, var_key=None, key="signal_type", comp_matrix=None):
+def compensate(
+    adata: AnnData,
+    var_key=None,
+    key="signal_type",
+    comp_matrix=None,
+    matrix_type="spillover",
+    copy: bool = False,
+):
     """Computes compensation for data channels.
 
     Args:
@@ -102,19 +117,39 @@ def compensate(adata: AnnData, var_key=None, key="signal_type", comp_matrix=None
              height etc. type of value. Use `var_names` if None.
         key (str, optional): key where result vector is added
             to the adata.var. Defaults to 'signal_type'.
-        comp_matrix (None, optional): a custom compensation matrix
+        comp_matrix (None, optional): a custom compensation matrix.
+            Please note that by default we use the spillover matrix directly
+            for numeric stability.
+        matrix_type (str, optional): whether to use a spillover matrix (default)
+            or a compensation matrix. Only considered for custom compensation matrices.
+            Usually, custom compensation matrices are the inverse of the spillover
+            matrix.
+            If you want to use a compensation matrix, not the spillover matrix,
+            set `matrix_type` to `compensation`.
+        copy (bool, optional): Return a copy instead of writing to adata.
+            Defaults to False.
 
     Returns:
-        AnnData: AnnData object
+        Depending on `copy`, returns or updates `adata`
     """
+    adata = adata.copy() if copy else adata
+
     key_in = key
 
     # locate compensation matrix
     if comp_matrix is not None:
-        compens = comp_matrix
+        if matrix_type == "spillover":
+            compens = comp_matrix
+        elif matrix_type == "compensation":
+            compens = create_comp_mat(comp_matrix)
+        else:
+            raise KeyError(
+                "Expected 'spillover' or 'compensation' as `matrix_type`, but got"
+                f" '{matrix_type}'."
+            )
         # To Do: add checks that this input is correct
     if adata.uns["meta"]["spill"] is not None:
-        compens = create_comp_mat(adata.uns["meta"]["spill"])
+        compens = adata.uns["meta"]["spill"]
     else:
         raise KeyError(f"Did not find .uns['meta']['spill'] nor '{comp_matrix}'.")
 
@@ -125,20 +160,34 @@ def compensate(adata: AnnData, var_key=None, key="signal_type", comp_matrix=None
     # Ignore channels 'FSC-H', 'FSC-A', 'SSC-H', 'SSC-A',
     # 'FSC-Width', 'Time'
     if key_in not in adata.var_keys():
-        adata = find_indexes(adata, var_key=var_key, data_type="facs")
+        find_indexes(adata, var_key=var_key, data_type="facs")
     # select non other indices
     indexes = np.invert(adata.var[key_in] == "other")
 
     # To Do:
     # the compensation matrix may have different index names than the adata.X matrix
     # add a check and match for the compensation
-    X_comp = np.dot(adata.X[:, indexes], compens)
+    X_comp = np.linalg.solve(compens, adata.X[:, indexes].T).T
     adata.X[:, indexes] = X_comp
-    return adata
+
+    # check for nan values
+    nan_val = np.isnan(adata.X[:, indexes]).sum()
+    if nan_val > 0:
+        raise Warning(
+            f"{nan_val} NaN values found after compensation. Please adjust"
+            " compensation matrix."
+        )
+
+    return adata if copy else None
 
 
 def split_signal(
-    adata: AnnData, var_key=None, key="signal_type", option="area", data_type="facs"
+    adata: AnnData,
+    var_key=None,
+    key="signal_type",
+    option="area",
+    data_type="facs",
+    copy: bool = False,
 ):
     """Method to filter out height or area data.
 
@@ -151,10 +200,14 @@ def split_signal(
         option (str, optional):  for choosing 'area' or 'height' in case of FACS data
             and 'element' for cyTOF data. Defaults to 'area'.
         data_type (str, optional): either 'facs' or 'cytof'/'cyTOF'. Defaults to 'facs'.
+        copy (bool, optional): Return a copy instead of writing to adata.
+            Defaults to False.
 
     Returns:
-        AnnData: AnnData object containing area or height data
+        Depending on `copy`, returns or updates `adata` with the following fields:
+            AnnData: AnnData object containing area or height data in `.var`
     """
+    adata = adata.copy() if copy else adata
     option_key = option
     key_in = key
 
@@ -162,33 +215,28 @@ def split_signal(
 
     if option_key not in possible_options:
         print(f"'{option_key}' is not a valid category. Return all.")
-        return adata
+        return adata if copy else None
     # Check if indices for area and height have been computed
     if key_in not in adata.var_keys():
-        adata = find_indexes(adata, var_key=var_key, data_type=data_type)
+        find_indexes(adata, var_key=var_key, data_type=data_type)
 
-    index = adata.var[key_in] == option_key
+    indx = adata.var[key_in] == option_key
     # if none of the indices is true, abort
-    if sum(index) < 1:
+    if sum(indx) < 1:
         print(f"'{option_key}' is not in adata.var['{key_in}']. Return all.")
-        return adata
+        return adata if copy else None
 
-    non_idx = np.flatnonzero(np.invert(index))
+    non_idx = np.flatnonzero(np.invert(indx))
 
     # merge non-idx entries in data matrix with obs
     non_cols = adata.var_names[non_idx].values
     for idx, colname in enumerate(non_cols):
         adata.obs[colname] = adata.X[:, non_idx[idx]].copy()
 
-    # create new anndata object (note: removes potential objects like obsm)
-    adataN = AnnData(
-        X=adata.X[:, np.flatnonzero(index)],
-        obs=adata.obs,
-        var=adata.var.iloc[np.flatnonzero(index)],
-        uns=adata.uns,
-    )
-    adataN.var_names = adata.var_names[index].values
-    return adataN
+    # subset the anndata object
+    adata._inplace_subset_var(indx)
+
+    return adata if copy else None
 
 
 # TODO: move function to plotting module
@@ -196,10 +244,10 @@ def split_signal(
 def plotdata(
     adata: AnnData,
     key="signal_type",
-    normalize=True,
+    normalize=False,
     cofactor=10,
     figsize=(15, 6),
-    option="",
+    option="area",
     save="",
     **kwargs,
 ):
@@ -217,10 +265,10 @@ def plotdata(
 
     # Check if indices for area and height have been computed
     if key_in not in adata_.var_keys():
-        adata_ = find_indexes(adata_)
+        find_indexes(adata_)
 
     if normalize:
-        adata_ = normalize_arcsinh(adata_, cofactor)
+        normalize_arcsinh(adata_, cofactor)
 
     if option_key not in ["area", "height", "other"]:
         print(f"Option {option_key} is not a valid category. Return all.")
