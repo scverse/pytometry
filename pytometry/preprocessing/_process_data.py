@@ -106,6 +106,7 @@ def compensate(
     var_key=None,
     key="signal_type",
     comp_matrix=None,
+    matrix_type="spillover",
     copy: bool = False,
 ):
     """Computes compensation for data channels.
@@ -117,6 +118,14 @@ def compensate(
         key (str, optional): key where result vector is added
             to the adata.var. Defaults to 'signal_type'.
         comp_matrix (None, optional): a custom compensation matrix.
+            Please note that by default we use the spillover matrix directly
+            for numeric stability.
+        matrix_type (str, optional): whether to use a spillover matrix (default)
+            or a compensation matrix. Only considered for custom compensation matrices.
+            Usually, custom compensation matrices are the inverse of the spillover
+            matrix.
+            If you want to use a compensation matrix, not the spillover matrix,
+            set `matrix_type` to `compensation`.
         copy (bool, optional): Return a copy instead of writing to adata.
             Defaults to False.
 
@@ -129,10 +138,18 @@ def compensate(
 
     # locate compensation matrix
     if comp_matrix is not None:
-        compens = comp_matrix
+        if matrix_type == "spillover":
+            compens = comp_matrix
+        elif matrix_type == "compensation":
+            compens = create_comp_mat(comp_matrix)
+        else:
+            raise KeyError(
+                "Expected 'spillover' or 'compensation' as `matrix_type`, but got"
+                f" '{matrix_type}'."
+            )
         # To Do: add checks that this input is correct
     if adata.uns["meta"]["spill"] is not None:
-        compens = create_comp_mat(adata.uns["meta"]["spill"])
+        compens = adata.uns["meta"]["spill"]
     else:
         raise KeyError(f"Did not find .uns['meta']['spill'] nor '{comp_matrix}'.")
 
@@ -150,8 +167,17 @@ def compensate(
     # To Do:
     # the compensation matrix may have different index names than the adata.X matrix
     # add a check and match for the compensation
-    X_comp = np.dot(adata.X[:, indexes], compens)
+    X_comp = np.linalg.solve(compens, adata.X[:, indexes].T).T
     adata.X[:, indexes] = X_comp
+
+    # check for nan values
+    nan_val = np.isnan(adata.X[:, indexes]).sum()
+    if nan_val > 0:
+        raise Warning(
+            f"{nan_val} NaN values found after compensation. Please adjust"
+            " compensation matrix."
+        )
+
     return adata if copy else None
 
 
@@ -218,7 +244,7 @@ def split_signal(
 def plotdata(
     adata: AnnData,
     key="signal_type",
-    normalize=True,
+    normalize=False,
     cofactor=10,
     figsize=(15, 6),
     option="area",
