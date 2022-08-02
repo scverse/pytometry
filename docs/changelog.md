@@ -3,6 +3,7 @@
 <!-- prettier-ignore -->
 Name | PR | Developer | Date | Patch
 --- | --- | --- | --- | ---
+✨ add inplace operations | [7](https://github.com/buettnerlab/pytometry/pull/7) | [mbuttner](https://github.com/mbuttner) | 2022-08-02 |
 🎨 integrate readfcs package | [6](https://github.com/buettnerlab/pytometry/pull/6) | [mbuttner](https://github.com/mbuttner) | 2022-08-01 |
 🚚 Migrate pytometry from legacy | [2](https://github.com/buettnerlab/pytometry/pull/2) | [mbuttner](https://github.com/mbuttner) | 2022-07-27 |
 :bug: add toml to fix CI | [3](https://github.com/buettnerlab/pytometry/pull/3) | [mbuttner](https://github.com/mbuttner) | 2022-07-26 |
