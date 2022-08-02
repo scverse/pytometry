@@ -32,3 +32,4 @@ html_logo = (
     "https://raw.githubusercontent.com/laminlabs/lamin-profile/main/assets/logo.svg"
 )
 html_favicon = "../lamin_sphinx/_static/img/favicon.ico"
+templates_path = ["_templates", "../lamin_sphinx/_templates"]
