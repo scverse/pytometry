@@ -14,4 +14,4 @@ This package extends scanpy to for efficient and scalable handling of flow and m
 
 Follow https://twitter.com/mbuttner to learn about a first public release.
 
-For beta users: Read the [docs](https://pytometry.netlify.app/pytometry/).
+For beta users: Read the [docs](https://pytometry.netlify.app).
