@@ -148,7 +148,12 @@ def compensate(
 
 
 def split_signal(
-    adata: AnnData, var_key=None, key="signal_type", option="area", data_type="facs"
+    adata: AnnData,
+    var_key=None,
+    key="signal_type",
+    option="area",
+    data_type="facs",
+    copy: bool = False,
 ):
     """Method to filter out height or area data.
 
@@ -161,10 +166,14 @@ def split_signal(
         option (str, optional):  for choosing 'area' or 'height' in case of FACS data
             and 'element' for cyTOF data. Defaults to 'area'.
         data_type (str, optional): either 'facs' or 'cytof'/'cyTOF'. Defaults to 'facs'.
+        copy (bool, optional): Return a copy instead of writing to adata.
+            Defaults to False.
 
     Returns:
-        AnnData: AnnData object containing area or height data
+        Depending on `copy`, returns or updates `adata` with the following fields:
+            AnnData: AnnData object containing area or height data in `.var`
     """
+    adata = adata.copy() if copy else adata
     option_key = option
     key_in = key
 
@@ -198,7 +207,7 @@ def split_signal(
         uns=adata.uns,
     )
     adataN.var_names = adata.var_names[index].values
-    return adataN
+    return adataN if copy else None
 
 
 # TODO: move function to plotting module
