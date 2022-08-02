@@ -189,33 +189,28 @@ def split_signal(
 
     if option_key not in possible_options:
         print(f"'{option_key}' is not a valid category. Return all.")
-        return adata
+        return adata if copy else None
     # Check if indices for area and height have been computed
     if key_in not in adata.var_keys():
         find_indexes(adata, var_key=var_key, data_type=data_type)
 
-    index = adata.var[key_in] == option_key
+    indx = adata.var[key_in] == option_key
     # if none of the indices is true, abort
-    if sum(index) < 1:
+    if sum(indx) < 1:
         print(f"'{option_key}' is not in adata.var['{key_in}']. Return all.")
-        return adata
+        return adata if copy else None
 
-    non_idx = np.flatnonzero(np.invert(index))
+    non_idx = np.flatnonzero(np.invert(indx))
 
     # merge non-idx entries in data matrix with obs
     non_cols = adata.var_names[non_idx].values
     for idx, colname in enumerate(non_cols):
         adata.obs[colname] = adata.X[:, non_idx[idx]].copy()
 
-    # create new anndata object (note: removes potential objects like obsm)
-    adataN = AnnData(
-        X=adata.X[:, np.flatnonzero(index)],
-        obs=adata.obs,
-        var=adata.var.iloc[np.flatnonzero(index)],
-        uns=adata.uns,
-    )
-    adataN.var_names = adata.var_names[index].values
-    return adataN if copy else None
+    # subset the anndata object
+    adata._inplace_subset_var(indx)
+
+    return adata if copy else None
 
 
 # TODO: move function to plotting module
