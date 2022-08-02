@@ -105,3 +105,6 @@ _build
 docs/pytometry.*
 lamin_sphinx
 docs/conf.py
+
+# data
+docs/tutorials/*.fcs

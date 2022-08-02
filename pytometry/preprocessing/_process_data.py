@@ -173,10 +173,8 @@ def compensate(
     # check for nan values
     nan_val = np.isnan(adata.X[:, indexes]).sum()
     if nan_val > 0:
-        raise Warning(
-            f"{nan_val} NaN values found after compensation. Please adjust"
-            " compensation matrix."
-        )
+        assert f"{nan_val} NaN values found after compensation. Please adjust "
+        "compensation matrix."
 
     return adata if copy else None
 
