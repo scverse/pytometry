@@ -1,13 +1,13 @@
 from typing import Optional
 
+import anndata as ad
 import numpy as np
-from anndata import AnnData
 from scipy import interpolate
 
 
 def normalize_arcsinh(
-    adata: AnnData, cofactor: float, copy: bool = False
-) -> Optional[AnnData]:
+    adata: ad.AnnData, cofactor: float, copy: bool = False
+) -> Optional[ad.AnnData]:
     """Inverse hyperbolic sine transformation.
 
     Args:
@@ -20,7 +20,7 @@ def normalize_arcsinh(
             Defaults to False.
 
     Returns:
-        Optional[AnnData]: Depending on `copy`, returns or updates `adata`
+        Optional[ad.AnnData]: Depending on `copy`, returns or updates `adata`
             in the following field `adata.X` is then a normalised
             adata object
     """
@@ -30,8 +30,8 @@ def normalize_arcsinh(
 
 
 def normalize_logicle(
-    adata: AnnData, t=262144, m=4.5, w=0.5, a=0, copy: bool = False
-) -> Optional[AnnData]:
+    adata: ad.AnnData, t=262144, m=4.5, w=0.5, a=0, copy: bool = False
+) -> Optional[ad.AnnData]:
     """Logicle transformation.
 
     Logicle transformation, implemented as defined in the
@@ -65,7 +65,7 @@ def normalize_logicle(
             Defaults to False.
 
     Returns:
-        Optional[AnnData]: Depending on `copy`, returns or updates `adata`
+        Optional[ad.AnnData]: Depending on `copy`, returns or updates `adata`
             in the following field `adata.X` is then a normalised
             adata object
     """
@@ -286,13 +286,13 @@ def _seriesBiexponential(p, value):
 
 
 def normalize_biExp(
-    adata: AnnData,
+    adata: ad.AnnData,
     negative=0.0,
     width=-10.0,
     positive=4.418540,
     max_value=262144.000029,
     copy: bool = False,
-) -> Optional[AnnData]:
+) -> Optional[ad.AnnData]:
     """Biexponential transformation.
 
     Biex transform as implemented in FlowJo 10. Adapted from FlowKit
@@ -317,7 +317,7 @@ def normalize_biExp(
             Defaults to False.
 
     Returns:
-        Optional[AnnData]: Depending on `copy`, returns or updates `adata` in the
+        Optional[ad.AnnData]: Depending on `copy`, returns or updates `adata` in the
             following field `adata.X` is then a normalised adata object
 
     Details:
