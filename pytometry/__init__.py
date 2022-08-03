@@ -11,9 +11,9 @@ This is the complete API reference:
    :toctree: .
 
    read_write.read_fcs
-   preprocess.split_signal
-   preprocess.compensate
-   preprocess.find_indexes
+   preprocessing.split_signal
+   preprocessing.compensate
+   preprocessing.find_indexes
    tools.normalize_arcsinh
    tools.normalize_logicle
    tools.normalize_biExp
