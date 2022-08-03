@@ -20,8 +20,9 @@ def normalize_arcsinh(
             Defaults to False.
 
     Returns:
-        Depending on `copy`, returns or updates `adata` in the following field
-            `adata.X` is then a normalised adata object
+        Optional[AnnData]: Depending on `copy`, returns or updates `adata`
+            in the following field `adata.X` is then a normalised
+            adata object
     """
     adata = adata.copy() if copy else adata
     adata.X = np.arcsinh(adata.X / cofactor)
@@ -43,11 +44,11 @@ def normalize_logicle(
 
     B(y, T, W, M, A) = ae^(by) - ce^(-dy) - f
 
-    The Logicle transformation was originally defined in the publication:
+    The Logicle transformation was originally defined in the publication of
 
-        Moore WA and Parks DR. Update for the logicle data scale
-        including operational code implementations.
-        Cytometry A., 2012:81A(4):273-277.
+    Moore WA and Parks DR. Update for the logicle data scale
+    including operational code implementations.
+    Cytometry A., 2012:81A(4):273-277.
 
     Args:
         adata (AnnData): AnnData object
@@ -65,8 +66,8 @@ def normalize_logicle(
 
     Returns:
         Optional[AnnData]: Depending on `copy`, returns or updates `adata`
-        in the following field
-            `adata.X` is then a normalised adata object
+            in the following field `adata.X` is then a normalised
+            adata object
     """
     # initialise precision
     taylor_length = 16
