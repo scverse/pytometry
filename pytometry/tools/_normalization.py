@@ -335,11 +335,11 @@ def normalize_biExp(
     :param max_value: parameter for the top of the linear scale
         (default=262144) or pd.Series
     :param copy (bool, optional): Return a copy instead of writing to adata.
-            Defaults to False.
+        Defaults to False.
 
     Returns:
         Depending on `copy`, returns or updates `adata` in the following field
-            `adata.X` is then a normalised adata object
+        `adata.X` is then a normalised adata object
     """
     # check inputs
     inputs = [negative, width, positive, max_value]
