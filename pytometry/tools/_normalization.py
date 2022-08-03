@@ -11,7 +11,7 @@ def normalize_arcsinh(
     """Inverse hyperbolic sine transformation.
 
     Args:
-        adata (AnnData): anndata object
+        adata (AnnData): AnnData object
         cofactor (float): all values are divided by this
                           factor before arcsinh transformation
                           recommended values for cyTOF data: 5
