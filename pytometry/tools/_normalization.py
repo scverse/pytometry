@@ -296,50 +296,52 @@ def normalize_biExp(
     is implemented, using lookup tables with only a limited set
     of parameter values.
 
-    Information on the input parameters from the FlowJo docs:
-    Adjusting width:
-    The value for w will determine the amount of channels to be
-    compressed into linear space around zero. The space of linear does
-    not change, but rather the number of channels or bins being
-    compressed into the linear space. Width should be set high enough
-    that all of the data in the histogram is visible on screen, but not
-    so high that extra white space is seen to the left hand side of your
-    dimmest distribution. For most practical uses, once all events have
-    been shifted off the axis and there is no more axis 'pile-up', then
-    the optimal width basis value has been reached.
-    Negative:
-    Another component in the biexponential transform calculation is the
-    negative decades or negative space. This is the only other value you
-    will probably ever need to adjust. In cases where a high width basis
-    may start compressing dim events into the negative cluster, you may
-    want to lower the width basis (less compression around zero) and
-    instead, increase the negative space by 0.5 - 1.0. Doing this will
-    expand the space around zero so the dim events are still visible,
-    but also expand the negative space to remove the cells from the axis
-    and allow you to see the full distribution.
-    Positive:
-    The presence of the positive decade adjustment is due to the
-    algorithm used for logicle transformation, but is not useful in
-    99.9% of the cases that require adjusting the biexponential
-    transform. It may be appropriate to adjust this value only if you
-    use data that displays data with a data range greater than 5 decades.
+    Information on the input parameters from the FlowJo docs can be found in the
+    details section.
 
     Args:
-    :param adata: anndata object representing the FCS data
-    :param negative: Value for the FlowJo biex option 'negative' (float)
-        or pd.Series
-    :param width: Value for the FlowJo biex option 'width' (float) or
-        pd.Series
-    :param positive: Value for the FlowJo biex option 'positive' (float)
-        or pd.Series
-    :param max_value: parameter for the top of the linear scale
-        (default=262144) or pd.Series
-    :param copy (bool, optional): Return a copy instead of writing to adata.
-        Defaults to False.
+        adata (AnnData): AnnData object representing the FCS data
+        negative (float, optional): Value for the FlowJo biex option 'negative' (float)
+            or pd.Series. Defaults to 0.0.
+        width (float, optional): Value for the FlowJo biex option 'width' (float) or
+            pd.Series. Defaults to -10.0.
+        positive (float, optional): Value for the FlowJo biex option 'positive' (float)
+            or pd.Series. Defaults to 4.418540.
+        max_value (float, optional): parameter for the top of the linear scale
+            or pd.Series. Defaults to 262144.000029.
+        copy (bool, optional): Return a copy instead of writing to adata.
+            Defaults to False.
 
     Returns:
-        Depending on `copy`, returns or updates `adata` in the following field
-        `adata.X` is then a normalised adata object
+        Optional[AnnData]: Depending on `copy`, returns or updates `adata` in the
+            following field `adata.X` is then a normalised adata object
+
+    Details:
+        Adjusting width: The value for `w` will determine the amount of channels to be
+            compressed into linear space around zero. The space of linear does
+            not change, but rather the number of channels or bins being
+            compressed into the linear space. Width should be set high enough
+            that all of the data in the histogram is visible on screen, but not
+            so high that extra white space is seen to the left hand side of your
+            dimmest distribution. For most practical uses, once all events have
+            been shifted off the axis and there is no more axis 'pile-up', then
+            the optimal width basis value has been reached.
+        Negative:
+            Another component in the biexponential transform calculation is the
+            negative decades or negative space. This is the only other value you
+            will probably ever need to adjust. In cases where a high width basis
+            may start compressing dim events into the negative cluster, you may
+            want to lower the width basis (less compression around zero) and
+            instead, increase the negative space by 0.5 - 1.0. Doing this will
+            expand the space around zero so the dim events are still visible,
+            but also expand the negative space to remove the cells from the axis
+            and allow you to see the full distribution.
+        Positive:
+            The presence of the positive decade adjustment is due to the
+            algorithm used for logicle transformation, but is not useful in
+            99.9% of the cases that require adjusting the biexponential
+            transform. It may be appropriate to adjust this value only if you
+            use data that displays data with a data range greater than 5 decades.
     """
     # check inputs
     inputs = [negative, width, positive, max_value]
