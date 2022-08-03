@@ -35,34 +35,37 @@ def normalize_logicle(
 
     Logicle transformation, implemented as defined in the
     GatingML 2.0 specification, adapted from FlowKit and Flowutils
-    Python packages:
+    Python packages.
 
     logicle(x, T, W, M, A) = root(B(y, T, W, M, A) - x)
 
-    where B is a modified bi-exponential function defined as:
+    where B is a modified bi-exponential function defined as
 
     B(y, T, W, M, A) = ae^(by) - ce^(-dy) - f
 
     The Logicle transformation was originally defined in the publication:
 
-    Moore WA and Parks DR. Update for the logicle data scale
-    including operational code implementations.
-    Cytometry A., 2012:81A(4):273-277.
+        Moore WA and Parks DR. Update for the logicle data scale
+        including operational code implementations.
+        Cytometry A., 2012:81A(4):273-277.
 
     Args:
-    :param adata: AnnData object
-    :param t: parameter for the top of the linear scale
-        (e.g. 262144)
-    :param m: parameter for the number of decades the true
-        logarithmic scale approaches at the high end of the scale
-    :param w: parameter for the approximate number of decades
-        in the linear region
-    :param a: parameter for the additional number of negative decades
-    :param copy (bool, optional): Return a copy instead of writing to adata.
+        adata (AnnData): AnnData object
+        t (int, optional): parameter for the top of the linear scale.
+            Defaults to 262144.
+        m (float, optional): parameter for the number of decades
+            the true logarithmic scale approaches at the high end of
+            the scale. Defaults to 4.5.
+        w (float, optional): parameter for the approximate number of
+            decades in the linear region. Defaults to 0.5.
+        a (float, optional): parameter for the additional number of
+            negative decades. Defaults to 0.
+        copy (bool, optional): Return a copy instead of writing to adata.
             Defaults to False.
 
     Returns:
-        Depending on `copy`, returns or updates `adata` in the following field
+        Optional[AnnData]: Depending on `copy`, returns or updates `adata`
+        in the following field
             `adata.X` is then a normalised adata object
     """
     # initialise precision
