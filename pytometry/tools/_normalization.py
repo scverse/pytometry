@@ -1,9 +1,13 @@
+from typing import Optional
+
 import numpy as np
 from anndata import AnnData
 from scipy import interpolate
 
 
-def normalize_arcsinh(adata: AnnData, cofactor: float, copy: bool = False):
+def normalize_arcsinh(
+    adata: AnnData, cofactor: float, copy: bool = False
+) -> Optional[AnnData]:
     """Inverse hyperbolic sine transformation.
 
     Args:
@@ -24,7 +28,9 @@ def normalize_arcsinh(adata: AnnData, cofactor: float, copy: bool = False):
     return adata if copy else None
 
 
-def normalize_logicle(adata: AnnData, t=262144, m=4.5, w=0.5, a=0, copy: bool = False):
+def normalize_logicle(
+    adata: AnnData, t=262144, m=4.5, w=0.5, a=0, copy: bool = False
+) -> Optional[AnnData]:
     """Logicle transformation.
 
     Logicle transformation, implemented as defined in the
@@ -44,7 +50,7 @@ def normalize_logicle(adata: AnnData, t=262144, m=4.5, w=0.5, a=0, copy: bool = 
     Cytometry A., 2012:81A(4):273-277.
 
     Args:
-    :param adata: anndata object
+    :param adata: AnnData object
     :param t: parameter for the top of the linear scale
         (e.g. 262144)
     :param m: parameter for the number of decades the true
@@ -282,7 +288,7 @@ def normalize_biExp(
     positive=4.418540,
     max_value=262144.000029,
     copy: bool = False,
-):
+) -> Optional[AnnData]:
     """Biexponential transformation.
 
     Biex transform as implemented in FlowJo 10. Adapted from FlowKit

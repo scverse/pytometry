@@ -1,11 +1,11 @@
 from pathlib import PosixPath
 
-import anndata as ad
 import readfcs
+from anndata import AnnData
 
 
-def read_fcs(path: str) -> ad.AnnData:
-    """Read FCS file and convert into anndata format.
+def read_fcs(path: str) -> AnnData:
+    """Read FCS file and convert into AnnData format.
 
     Args:
         path (str): path or Path

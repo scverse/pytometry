@@ -1,11 +1,9 @@
-import math
 import re
+from typing import Optional
 
 import numpy as np
 import pandas as pd
 import seaborn as sb
-
-# import FlowCytometryTools as fct
 from anndata import AnnData
 from matplotlib import pyplot as plt
 from matplotlib import rcParams
@@ -16,7 +14,7 @@ from ..tools import normalize_arcsinh
 # import os.path
 
 
-def create_comp_mat(spillmat, relevant_data=""):
+def create_comp_mat(spillmat, relevant_data="") -> pd.DataFrame:
     """Creates a compensation matrix from a spillover matrix.
 
     Args:
@@ -25,7 +23,7 @@ def create_comp_mat(spillmat, relevant_data=""):
             Defaults to ''.
 
     Returns:
-        pd.DataFrame: Compensation matrix as pandas dataframe.
+        pd.DataFrame of the compensation matrix.
     """
     if relevant_data == "":
         comp_mat = np.linalg.inv(spillmat)
@@ -43,11 +41,11 @@ def find_indexes(
     key_added="signal_type",
     data_type="facs",
     copy: bool = False,
-):
+) -> Optional[AnnData]:
     """Find channels of interest for computing compensation.
 
     Args:
-        adata (AnnData): anndata object
+        adata (AnnData): AnnData object
         var_key (str, optional): key where to check if a feature is an area,
              height etc. type of value. Use `var_names` if None.
         key_added (str, optional): key where result vector is added to the adata.var.
@@ -108,7 +106,7 @@ def compensate(
     comp_matrix=None,
     matrix_type="spillover",
     copy: bool = False,
-):
+) -> Optional[AnnData]:
     """Computes compensation for data channels.
 
     Args:
@@ -186,7 +184,7 @@ def split_signal(
     option="area",
     data_type="facs",
     copy: bool = False,
-):
+) -> Optional[AnnData]:
     """Method to filter out height or area data.
 
     Args:
@@ -290,7 +288,7 @@ def plotdata(
     number = len(names)
 
     columns = 3
-    rows = math.ceil(number / columns)
+    rows = np.ceil(number / columns)
 
     fig = plt.figure()
     fig.subplots_adjust(hspace=0.4, wspace=0.6)
