@@ -14,7 +14,7 @@ from ..tools import normalize_arcsinh
 # import os.path
 
 
-def create_comp_mat(spillmat, relevant_data="") -> pd.DataFrame:
+def create_comp_mat(spillmat: pd.DataFrame, relevant_data: str = "") -> pd.DataFrame:
     """Creates a compensation matrix from a spillover matrix.
 
     Args:
