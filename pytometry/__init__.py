@@ -7,8 +7,10 @@ Import the package::
 This is the complete API reference:
 
 .. autosummary::
+   :recursive:
    :toctree: .
 
+   read_write.read_fcs
 
 """
 
