@@ -9,8 +9,8 @@ This is the complete API reference:
 .. autosummary::
    :toctree: .
 
-   io.read_fcs
-   pp.compensate
+   pytometry.read_write.read_fcs
+   pytometry.preprocessing.compensate
 
 """
 

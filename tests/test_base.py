@@ -1,15 +1,14 @@
 import anndata
 import readfcs
 
-# from pytometry.read_write import read_fcs
-import pytometry as pm
+from pytometry.read_write import read_fcs
 
 
 def test_read_fcs():
     from urllib.request import urlretrieve
 
     path_data, _ = urlretrieve(readfcs.datasets.example(), "example.fcs")
-    adata = pm.io.read_fcs(path_data)
+    adata = read_fcs(path_data)
     assert isinstance(adata, anndata._core.anndata.AnnData)
 
 
