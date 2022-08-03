@@ -110,3 +110,4 @@ docs/conf.py
 
 # data
 docs/tutorials/*.fcs
+docs/tutorials/*.h5ad
