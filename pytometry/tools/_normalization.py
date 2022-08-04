@@ -29,13 +29,18 @@ def normalize_arcsinh(
 
 
 def normalize_logicle(
-    adata: AnnData, t=262144, m=4.5, w=0.5, a=0, copy: bool = False
+    adata,
+    t=262144,
+    m=4.5,
+    w=0.5,
+    a=0,
+    copy: bool = False,
 ) -> Optional[AnnData]:
     """Logicle transformation.
 
     Args:
         adata (AnnData): AnnData object
-        t (int, optional): parameter for the top of the linear scale.
+        t (float, optional): parameter for the top of the linear scale.
             Defaults to 262144.
         m (float, optional): parameter for the number of decades
             the true logarithmic scale approaches at the high end of
@@ -123,7 +128,7 @@ def normalize_logicle(
     return adata if copy else None
 
 
-def _scale(value, p):
+def _scale(value, p) -> float:
     """Scale helper function.
 
     Args:
