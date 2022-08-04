@@ -107,7 +107,6 @@ _build
 docs/pytometry.*
 lamin_sphinx
 docs/conf.py
-docs/logo.svg
 
 # data
 docs/tutorials/*.fcs
