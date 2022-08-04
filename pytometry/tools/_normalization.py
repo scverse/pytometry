@@ -1,3 +1,5 @@
+# from typing import Optional
+
 import numpy as np
 from anndata import AnnData
 from scipy import interpolate
@@ -7,57 +9,69 @@ def normalize_arcsinh(adata: AnnData, cofactor: float, copy: bool = False):
     """Inverse hyperbolic sine transformation.
 
     Args:
-        adata (AnnData): anndata object
+        adata : AnnData object
         cofactor (float): all values are divided by this
-                          factor before arcsinh transformation
-                          recommended values for cyTOF data: 5
-                          and for flow data: 150
+           factor before arcsinh transformation recommended value for
+           cyTOF data is 5 and for flow data 150.
         copy (bool, optional): Return a copy instead of writing to adata.
             Defaults to False.
 
     Returns:
-        Depending on `copy`, returns or updates `adata` in the following field
-            `adata.X` is then a normalised adata object
+        Depending on `copy`, returns or updates `adata`
+        in the following field `adata.X` is then a normalised
+        adata object
     """
     adata = adata.copy() if copy else adata
     adata.X = np.arcsinh(adata.X / cofactor)
     return adata if copy else None
 
 
-def normalize_logicle(adata: AnnData, t=262144, m=4.5, w=0.5, a=0, copy: bool = False):
+def normalize_logicle(
+    adata,
+    t=262144,
+    m=4.5,
+    w=0.5,
+    a=0,
+    copy: bool = False,
+):
     """Logicle transformation.
 
-    Logicle transformation, implemented as defined in the
-    GatingML 2.0 specification, adapted from FlowKit and Flowutils
-    Python packages:
-
-    logicle(x, T, W, M, A) = root(B(y, T, W, M, A) - x)
-
-    where B is a modified bi-exponential function defined as:
-
-    B(y, T, W, M, A) = ae^(by) - ce^(-dy) - f
-
-    The Logicle transformation was originally defined in the publication:
-
-    Moore WA and Parks DR. Update for the logicle data scale
-    including operational code implementations.
-    Cytometry A., 2012:81A(4):273-277.
-
     Args:
-    :param adata: anndata object
-    :param t: parameter for the top of the linear scale
-        (e.g. 262144)
-    :param m: parameter for the number of decades the true
-        logarithmic scale approaches at the high end of the scale
-    :param w: parameter for the approximate number of decades
-        in the linear region
-    :param a: parameter for the additional number of negative decades
-    :param copy (bool, optional): Return a copy instead of writing to adata.
+        adata (AnnData): AnnData object
+        t (float, optional): parameter for the top of the linear scale.
+            Defaults to 262144.
+        m (float, optional): parameter for the number of decades
+            the true logarithmic scale approaches at the high end of
+            the scale. Defaults to 4.5.
+        w (float, optional): parameter for the approximate number of
+            decades in the linear region. Defaults to 0.5.
+        a (float, optional): parameter for the additional number of
+            negative decades. Defaults to 0.
+        copy (bool, optional): Return a copy instead of writing to adata.
             Defaults to False.
 
     Returns:
-        Depending on `copy`, returns or updates `adata` in the following field
-            `adata.X` is then a normalised adata object
+        Depending on `copy`, returns or updates `adata`
+        in the following field `adata.X` is then a normalised
+        adata object
+
+    Details:
+        Logicle transformation, implemented as defined in the
+        GatingML 2.0 specification, adapted from FlowKit and Flowutils
+        Python packages.
+
+        logicle(x, T, W, M, A) = root(B(y, T, W, M, A) - x)
+
+        where B is a modified bi-exponential function defined as
+
+        B(y, T, W, M, A) = ae^(by) - ce^(-dy) - f
+
+        The Logicle transformation was originally defined in the
+        publication of
+
+        Moore WA and Parks DR. Update for the logicle data scale
+        including operational code implementations.
+        Cytometry A., 2012:81A(4):273-277.
     """
     # initialise precision
     taylor_length = 16
@@ -112,7 +126,7 @@ def normalize_logicle(adata: AnnData, t=262144, m=4.5, w=0.5, a=0, copy: bool = 
     return adata if copy else None
 
 
-def _scale(value, p):
+def _scale(value, p) -> float:
     """Scale helper function.
 
     Args:
@@ -180,7 +194,7 @@ def _scale(value, p):
     return -1
 
 
-def _solve(b, w):
+def _solve(b, w) -> float:
     """Helper function for biexponential transformation.
 
     Args:
@@ -255,7 +269,7 @@ def _solve(b, w):
     return -1
 
 
-def _seriesBiexponential(p, value):
+def _seriesBiexponential(p, value) -> float:
     """Helper function to compute biex trafo.
 
     Args:
@@ -276,7 +290,7 @@ def _seriesBiexponential(p, value):
 
 
 def normalize_biExp(
-    adata: AnnData,
+    adata,
     negative=0.0,
     width=-10.0,
     positive=4.418540,
@@ -290,50 +304,52 @@ def normalize_biExp(
     is implemented, using lookup tables with only a limited set
     of parameter values.
 
-    Information on the input parameters from the FlowJo docs:
-    Adjusting width:
-    The value for w will determine the amount of channels to be
-    compressed into linear space around zero. The space of linear does
-    not change, but rather the number of channels or bins being
-    compressed into the linear space. Width should be set high enough
-    that all of the data in the histogram is visible on screen, but not
-    so high that extra white space is seen to the left hand side of your
-    dimmest distribution. For most practical uses, once all events have
-    been shifted off the axis and there is no more axis 'pile-up', then
-    the optimal width basis value has been reached.
-    Negative:
-    Another component in the biexponential transform calculation is the
-    negative decades or negative space. This is the only other value you
-    will probably ever need to adjust. In cases where a high width basis
-    may start compressing dim events into the negative cluster, you may
-    want to lower the width basis (less compression around zero) and
-    instead, increase the negative space by 0.5 - 1.0. Doing this will
-    expand the space around zero so the dim events are still visible,
-    but also expand the negative space to remove the cells from the axis
-    and allow you to see the full distribution.
-    Positive:
-    The presence of the positive decade adjustment is due to the
-    algorithm used for logicle transformation, but is not useful in
-    99.9% of the cases that require adjusting the biexponential
-    transform. It may be appropriate to adjust this value only if you
-    use data that displays data with a data range greater than 5 decades.
+    Information on the input parameters from the FlowJo docs can be found in the
+    details section.
 
     Args:
-    :param adata: anndata object representing the FCS data
-    :param negative: Value for the FlowJo biex option 'negative' (float)
-        or pd.Series
-    :param width: Value for the FlowJo biex option 'width' (float) or
-        pd.Series
-    :param positive: Value for the FlowJo biex option 'positive' (float)
-        or pd.Series
-    :param max_value: parameter for the top of the linear scale
-        (default=262144) or pd.Series
-    :param copy (bool, optional): Return a copy instead of writing to adata.
+        adata: AnnData object representing the FCS data
+        negative (float, optional): Value for the FlowJo biex option 'negative' (float)
+            or pd.Series. Defaults to 0.0.
+        width (float, optional): Value for the FlowJo biex option 'width' (float) or
+            pd.Series. Defaults to -10.0.
+        positive (float, optional): Value for the FlowJo biex option 'positive' (float)
+            or pd.Series. Defaults to 4.418540.
+        max_value (float, optional): parameter for the top of the linear scale
+            or pd.Series. Defaults to 262144.000029.
+        copy (bool, optional): Return a copy instead of writing to adata.
             Defaults to False.
 
     Returns:
-        Depending on `copy`, returns or updates `adata` in the following field
-            `adata.X` is then a normalised adata object
+        Depending on `copy`, returns or updates `adata` in the
+        following field `adata.X` is then a normalised adata object
+
+    Details:
+        Adjusting width: The value for `w` will determine the amount of channels to be
+            compressed into linear space around zero. The space of linear does
+            not change, but rather the number of channels or bins being
+            compressed into the linear space. Width should be set high enough
+            that all of the data in the histogram is visible on screen, but not
+            so high that extra white space is seen to the left hand side of your
+            dimmest distribution. For most practical uses, once all events have
+            been shifted off the axis and there is no more axis 'pile-up', then
+            the optimal width basis value has been reached.
+        Negative:
+            Another component in the biexponential transform calculation is the
+            negative decades or negative space. This is the only other value you
+            will probably ever need to adjust. In cases where a high width basis
+            may start compressing dim events into the negative cluster, you may
+            want to lower the width basis (less compression around zero) and
+            instead, increase the negative space by 0.5 - 1.0. Doing this will
+            expand the space around zero so the dim events are still visible,
+            but also expand the negative space to remove the cells from the axis
+            and allow you to see the full distribution.
+        Positive:
+            The presence of the positive decade adjustment is due to the
+            algorithm used for logicle transformation, but is not useful in
+            99.9% of the cases that require adjusting the biexponential
+            transform. It may be appropriate to adjust this value only if you
+            use data that displays data with a data range greater than 5 decades.
     """
     # check inputs
     inputs = [negative, width, positive, max_value]
@@ -475,7 +491,7 @@ def _generate_biex_lut(
     return positive, values
 
 
-def _log_root(b, w):
+def _log_root(b, w) -> float:
     """Helper function.
 
     Args:

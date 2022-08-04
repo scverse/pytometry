@@ -1,5 +1,6 @@
+[![Stars](https://img.shields.io/github/stars/buettnerlab/pytometry?logo=GitHub&color=yellow)](https://github.com/buettnerlab/pytometry/stargazers)
 <a href="https://gitmoji.dev">
-  <img src="https://img.shields.io/badge/gitmoji-%20😜%20😍-FFDD67.svg?style=flat-square" alt="Gitmoji">
+<img src="https://img.shields.io/badge/gitmoji-%20😜%20😍-FFDD67.svg?style=flat-square" alt="Gitmoji">
 </a>
 
 # Pytometry: Flow & mass cytometry analytics
