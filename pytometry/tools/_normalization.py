@@ -1,26 +1,25 @@
 from typing import Optional
 
-import anndata as ad
 import numpy as np
+from anndata import AnnData
 from scipy import interpolate
 
 
 def normalize_arcsinh(
-    adata: ad.AnnData, cofactor: float, copy: bool = False
-) -> Optional[ad.AnnData]:
+    adata: AnnData, cofactor: float, copy: bool = False
+) -> Optional[AnnData]:
     """Inverse hyperbolic sine transformation.
 
     Args:
         adata (AnnData): AnnData object
         cofactor (float): all values are divided by this
-                          factor before arcsinh transformation
-                          recommended values for cyTOF data: 5
-                          and for flow data: 150
+           factor before arcsinh transformation recommended value for
+           cyTOF data is 5 and for flow data 150.
         copy (bool, optional): Return a copy instead of writing to adata.
             Defaults to False.
 
     Returns:
-        Optional[ad.AnnData]: Depending on `copy`, returns or updates `adata`
+        Optional[AnnData]: Depending on `copy`, returns or updates `adata`
             in the following field `adata.X` is then a normalised
             adata object
     """
@@ -30,25 +29,9 @@ def normalize_arcsinh(
 
 
 def normalize_logicle(
-    adata: ad.AnnData, t=262144, m=4.5, w=0.5, a=0, copy: bool = False
-) -> Optional[ad.AnnData]:
+    adata: AnnData, t=262144, m=4.5, w=0.5, a=0, copy: bool = False
+) -> Optional[AnnData]:
     """Logicle transformation.
-
-    Logicle transformation, implemented as defined in the
-    GatingML 2.0 specification, adapted from FlowKit and Flowutils
-    Python packages.
-
-    logicle(x, T, W, M, A) = root(B(y, T, W, M, A) - x)
-
-    where B is a modified bi-exponential function defined as
-
-    B(y, T, W, M, A) = ae^(by) - ce^(-dy) - f
-
-    The Logicle transformation was originally defined in the publication of
-
-    Moore WA and Parks DR. Update for the logicle data scale
-    including operational code implementations.
-    Cytometry A., 2012:81A(4):273-277.
 
     Args:
         adata (AnnData): AnnData object
@@ -65,9 +48,27 @@ def normalize_logicle(
             Defaults to False.
 
     Returns:
-        Optional[ad.AnnData]: Depending on `copy`, returns or updates `adata`
+        Optional[AnnData]: Depending on `copy`, returns or updates `adata`
             in the following field `adata.X` is then a normalised
             adata object
+
+    Details:
+        Logicle transformation, implemented as defined in the
+        GatingML 2.0 specification, adapted from FlowKit and Flowutils
+        Python packages.
+
+        logicle(x, T, W, M, A) = root(B(y, T, W, M, A) - x)
+
+        where B is a modified bi-exponential function defined as
+
+        B(y, T, W, M, A) = ae^(by) - ce^(-dy) - f
+
+        The Logicle transformation was originally defined in the
+        publication of
+
+        Moore WA and Parks DR. Update for the logicle data scale
+        including operational code implementations.
+        Cytometry A., 2012:81A(4):273-277.
     """
     # initialise precision
     taylor_length = 16
@@ -190,7 +191,7 @@ def _scale(value, p):
     return -1
 
 
-def _solve(b, w):
+def _solve(b, w) -> float:
     """Helper function for biexponential transformation.
 
     Args:
@@ -265,7 +266,7 @@ def _solve(b, w):
     return -1
 
 
-def _seriesBiexponential(p, value):
+def _seriesBiexponential(p, value) -> float:
     """Helper function to compute biex trafo.
 
     Args:
@@ -286,13 +287,13 @@ def _seriesBiexponential(p, value):
 
 
 def normalize_biExp(
-    adata: ad.AnnData,
+    adata: AnnData,
     negative=0.0,
     width=-10.0,
     positive=4.418540,
     max_value=262144.000029,
     copy: bool = False,
-) -> Optional[ad.AnnData]:
+) -> Optional[AnnData]:
     """Biexponential transformation.
 
     Biex transform as implemented in FlowJo 10. Adapted from FlowKit
@@ -317,7 +318,7 @@ def normalize_biExp(
             Defaults to False.
 
     Returns:
-        Optional[ad.AnnData]: Depending on `copy`, returns or updates `adata` in the
+        Optional[AnnData]: Depending on `copy`, returns or updates `adata` in the
             following field `adata.X` is then a normalised adata object
 
     Details:
@@ -487,7 +488,7 @@ def _generate_biex_lut(
     return positive, values
 
 
-def _log_root(b, w):
+def _log_root(b, w) -> float:
     """Helper function.
 
     Args:
