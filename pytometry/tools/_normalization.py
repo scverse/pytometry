@@ -35,7 +35,7 @@ def normalize_logicle(
     w=0.5,
     a=0,
     copy: bool = False,
-) -> Optional[AnnData]:
+):
     """Logicle transformation.
 
     Args:
