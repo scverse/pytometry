@@ -14,6 +14,9 @@ This is the complete API reference:
    preprocessing.split_signal
    preprocessing.compensate
    preprocessing.find_indexes
+   tools.normalize_arcsinh
+   tools.normalize_logicle
+   tools.normalize_biExp
 
 """
 
