@@ -51,9 +51,9 @@ def normalize_logicle(
             Defaults to False.
 
     Returns:
-        Optional[AnnData]: Depending on `copy`, returns or updates `adata`
-            in the following field `adata.X` is then a normalised
-            adata object
+        Depending on `copy`, returns or updates `adata`
+        in the following field `adata.X` is then a normalised
+        adata object
 
     Details:
         Logicle transformation, implemented as defined in the
