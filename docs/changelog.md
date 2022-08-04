@@ -3,6 +3,7 @@
 <!-- prettier-ignore -->
 Name | PR | Developer | Date | Patch
 --- | --- | --- | --- | ---
+:pencil2: fix logo path | [12](https://github.com/buettnerlab/pytometry/pull/12) | [mbuttner](https://github.com/mbuttner) | 2022-08-04 |
 :memo: update docs | [11](https://github.com/buettnerlab/pytometry/pull/11) | [mbuttner](https://github.com/mbuttner) | 2022-08-04 |
 📝 Fix footer | [10](https://github.com/buettnerlab/pytometry/pull/10) | [falexwolf](https://github.com/falexwolf) | 2022-08-02 |
 👷 Prettify docs | [9](https://github.com/buettnerlab/pytometry/pull/9) | [falexwolf](https://github.com/falexwolf) | 2022-08-02 |
