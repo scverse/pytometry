@@ -9,7 +9,7 @@ def normalize_arcsinh(adata, cofactor: float, copy: bool = False):
     """Inverse hyperbolic sine transformation.
 
     Args:
-        adata (AnnData): AnnData object
+        adata : AnnData object
         cofactor (float): all values are divided by this
            factor before arcsinh transformation recommended value for
            cyTOF data is 5 and for flow data 150.
@@ -17,9 +17,9 @@ def normalize_arcsinh(adata, cofactor: float, copy: bool = False):
             Defaults to False.
 
     Returns:
-        Optional[AnnData]: Depending on `copy`, returns or updates `adata`
-            in the following field `adata.X` is then a normalised
-            adata object
+        Depending on `copy`, returns or updates `adata`
+        in the following field `adata.X` is then a normalised
+        adata object
     """
     adata = adata.copy() if copy else adata
     adata.X = np.arcsinh(adata.X / cofactor)
