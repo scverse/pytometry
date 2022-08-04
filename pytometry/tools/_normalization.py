@@ -321,8 +321,8 @@ def normalize_biExp(
             Defaults to False.
 
     Returns:
-        Optional[AnnData]: Depending on `copy`, returns or updates `adata` in the
-            following field `adata.X` is then a normalised adata object
+        Depending on `copy`, returns or updates `adata` in the
+        following field `adata.X` is then a normalised adata object
 
     Details:
         Adjusting width: The value for `w` will determine the amount of channels to be
