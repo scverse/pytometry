@@ -1,11 +1,11 @@
-from typing import Optional
+# from typing import Optional
 
 import numpy as np
 from anndata import AnnData
 from scipy import interpolate
 
 
-def normalize_arcsinh(adata, cofactor: float, copy: bool = False):
+def normalize_arcsinh(adata: AnnData, cofactor: float, copy: bool = False):
     """Inverse hyperbolic sine transformation.
 
     Args:
@@ -290,13 +290,13 @@ def _seriesBiexponential(p, value) -> float:
 
 
 def normalize_biExp(
-    adata: AnnData,
+    adata,
     negative=0.0,
     width=-10.0,
     positive=4.418540,
     max_value=262144.000029,
     copy: bool = False,
-) -> Optional[AnnData]:
+):
     """Biexponential transformation.
 
     Biex transform as implemented in FlowJo 10. Adapted from FlowKit
@@ -308,7 +308,7 @@ def normalize_biExp(
     details section.
 
     Args:
-        adata (AnnData): AnnData object representing the FCS data
+        adata: AnnData object representing the FCS data
         negative (float, optional): Value for the FlowJo biex option 'negative' (float)
             or pd.Series. Defaults to 0.0.
         width (float, optional): Value for the FlowJo biex option 'width' (float) or
