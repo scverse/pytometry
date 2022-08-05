@@ -17,7 +17,7 @@ html_context["github_repo"] = "pytometry"  # noqa
 # We're actually using this for the link behind the brand of the page!
 html_theme_options["logo"] = {"link": "pytometry"}  # noqa
 
-ogp_site_url = "https://lamin.ai/docs/pytometry"
+ogp_site_url = "https://pytometry.netlify.app"
 
 author = "pytometry developers"
 copyright = f"{datetime.now():%Y}, {author}"
@@ -31,5 +31,7 @@ html_context = {
 html_logo = (
     "https://raw.githubusercontent.com/buettnerlab/pytometry/main/docs/_static/logo.svg"
 )
-html_favicon = "../lamin_sphinx/_static/img/favicon.ico"
+html_favicon = (
+    "https://raw.githubusercontent.com/buettnerlab/pytometry/main/docs/_static/logo.ico"
+)
 templates_path = ["_templates", "../lamin_sphinx/_templates"]
