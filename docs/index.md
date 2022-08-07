@@ -9,7 +9,6 @@
 
 tutorials/index
 api
-guides/index
 notes/index
 examples/index
 changelog
