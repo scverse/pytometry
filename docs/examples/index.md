@@ -9,4 +9,5 @@ The notebooks do **not** get executed in CI for testing because they involve lar
 :glob:
 :reversed:
 
+*
 ```

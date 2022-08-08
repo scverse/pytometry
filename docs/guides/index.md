@@ -5,5 +5,5 @@ These are guides on specific problems. The notebooks are executed in CI for test
 ```{toctree}
 :maxdepth: 1
 
-
+curate-data
 ```

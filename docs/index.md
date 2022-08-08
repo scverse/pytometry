@@ -9,8 +9,8 @@
 
 tutorials/index
 api
+examples/index
 guides/index
 notes/index
-examples/index
 changelog
 ```
