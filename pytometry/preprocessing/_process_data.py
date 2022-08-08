@@ -101,7 +101,6 @@ def find_indexes(
 # rename compute bleedthr to compensate
 def compensate(
     adata: AnnData,
-    key: str = "signal_type",
     comp_matrix: pd.DataFrame = None,
     matrix_type: str = "spillover",
     inplace: bool = True,
@@ -158,13 +157,14 @@ def compensate(
     ref_col = adata.var.index
     idx_in = np.intersect1d(compens.columns, ref_col)
     if idx_in is None:
-        # try the adata.var['channels'] as reference
+        # try the adata.var['channel'] as reference
         ref_col = adata.var["channel"]
-    else:
-        raise ValueError(
-            "Could not match the column names of the compensation matrix"
-            'with neither `adata.var.index` nor `adata.var["channel"].'
-        )
+        idx_in = np.intersect1d(compens.columns, ref_col)
+        if idx_in is None:
+            raise ValueError(
+                "Could not match the column names of the compensation matrix"
+                'with neither `adata.var.index` nor `adata.var["channel"].'
+            )
     # match columns of spill mat such that they exactly correspond to adata.var.index
     ref_names = ref_col[np.in1d(ref_col, idx_in)]
     query_names = compens[np.in1d(compens.columns, idx_in)]
