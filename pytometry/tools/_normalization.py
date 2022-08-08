@@ -5,7 +5,7 @@ from anndata import AnnData
 from scipy import interpolate
 
 
-def normalize_arcsinh(adata: AnnData, cofactor: float, copy: bool = False):
+def normalize_arcsinh(adata: AnnData, cofactor: float, inplace: bool = True):
     """Inverse hyperbolic sine transformation.
 
     Args:
@@ -13,17 +13,17 @@ def normalize_arcsinh(adata: AnnData, cofactor: float, copy: bool = False):
         cofactor (float): all values are divided by this
            factor before arcsinh transformation recommended value for
            cyTOF data is 5 and for flow data 150.
-        copy (bool, optional): Return a copy instead of writing to adata.
-            Defaults to False.
+        inplace (bool, optional): Return a copy instead of writing to adata.
+            Defaults to True.
 
     Returns:
-        Depending on `copy`, returns or updates `adata`
+        Depending on `inplace`, returns or updates `adata`
         in the following field `adata.X` is then a normalised
         adata object
     """
-    adata = adata.copy() if copy else adata
+    adata = adata if inplace else adata.copy()
     adata.X = np.arcsinh(adata.X / cofactor)
-    return adata if copy else None
+    return adata if inplace else None
 
 
 def normalize_logicle(
@@ -32,7 +32,7 @@ def normalize_logicle(
     m=4.5,
     w=0.5,
     a=0,
-    copy: bool = False,
+    inplace: bool = True,
 ):
     """Logicle transformation.
 
@@ -47,11 +47,11 @@ def normalize_logicle(
             decades in the linear region. Defaults to 0.5.
         a (float, optional): parameter for the additional number of
             negative decades. Defaults to 0.
-        copy (bool, optional): Return a copy instead of writing to adata.
-            Defaults to False.
+        copy (bool, optional): Return a inplace instead of writing to adata.
+            Defaults to True.
 
     Returns:
-        Depending on `copy`, returns or updates `adata`
+        Depending on `inplace`, returns or updates `adata`
         in the following field `adata.X` is then a normalised
         adata object
 
@@ -117,13 +117,13 @@ def normalize_logicle(
     p["taylor"][1] = 0  # exact result of Logicle condition
 
     # end original initialize method
-    adata = adata.copy() if copy else adata
+    adata = adata if inplace else adata.copy()
     # apply scaling to each value
     for i in range(0, adata.n_vars):
         for j in range(0, adata.n_obs):
             adata.X[j, i] = _scale(adata.X[j, i], p)
 
-    return adata if copy else None
+    return None if inplace else adata
 
 
 def _scale(value, p) -> float:
@@ -295,7 +295,7 @@ def normalize_biExp(
     width=-10.0,
     positive=4.418540,
     max_value=262144.000029,
-    copy: bool = False,
+    inplace: bool = True,
 ):
     """Biexponential transformation.
 
@@ -317,11 +317,11 @@ def normalize_biExp(
             or pd.Series. Defaults to 4.418540.
         max_value (float, optional): parameter for the top of the linear scale
             or pd.Series. Defaults to 262144.000029.
-        copy (bool, optional): Return a copy instead of writing to adata.
-            Defaults to False.
+        inplace (bool, optional): Return a copy instead of writing to adata.
+            Defaults to True.
 
     Returns:
-        Depending on `copy`, returns or updates `adata` in the
+        Depending on `inplace`, returns or updates `adata` in the
         following field `adata.X` is then a normalised adata object
 
     Details:
@@ -359,8 +359,8 @@ def normalize_biExp(
             len_param += len(N) / 4
         else:  # integer values do not have len attribute
             len_param += 0.25
-    # set copy of adata if copy=True
-    adata = adata.copy() if copy else adata
+    # set copy of adata if inplace=False
+    adata = adata if inplace else adata.copy()
     # transform every variable the same:
     if len_param == 1:
         x, y = _generate_biex_lut(
@@ -409,7 +409,7 @@ def normalize_biExp(
             " without normalising."
         )
 
-    return adata if copy else None
+    return None if inplace else adata
 
 
 def _generate_biex_lut(

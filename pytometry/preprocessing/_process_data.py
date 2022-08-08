@@ -40,7 +40,7 @@ def find_indexes(
     var_key=None,
     key_added="signal_type",
     data_type="facs",
-    copy: bool = False,
+    inplace: bool = True,
 ) -> Optional[AnnData]:
     """Find channels of interest for computing compensation.
 
@@ -52,14 +52,15 @@ def find_indexes(
             Defaults to 'signal_type'.
         data_type (str, optional): either 'facs' or 'cytof'.
             Defaults to 'facs'.
-        copy (bool, optional): Return a copy instead of writing to adata.
-            Defaults to False.
+        inplace (bool, optional): Return a copy instead of writing to adata.
+            Defaults to True.
 
     Returns:
-        Depending on `copy`, returns or updates `adata` with the following updated field
+        Depending on `inplace`, returns or updates `adata` with the following
+        updated field
             adata.var[f'{key_added}']
     """
-    adata = adata.copy() if copy else adata
+    adata = adata if inplace else adata.copy()
 
     if var_key is None:
         index = adata.var.index
@@ -95,7 +96,7 @@ def find_indexes(
             " 'cytof'"
         )
     adata.var["signal_type"] = pd.Categorical(index_array)
-    return adata if copy else None
+    return None if inplace else adata
 
 
 # rename compute bleedthr to compensate
@@ -105,7 +106,7 @@ def compensate(
     key="signal_type",
     comp_matrix=None,
     matrix_type="spillover",
-    copy: bool = False,
+    inplace: bool = True,
 ) -> Optional[AnnData]:
     """Computes compensation for data channels.
 
@@ -124,13 +125,13 @@ def compensate(
             matrix.
             If you want to use a compensation matrix, not the spillover matrix,
             set `matrix_type` to `compensation`.
-        copy (bool, optional): Return a copy instead of writing to adata.
-            Defaults to False.
+        inplace (bool, optional): Return a copy instead of writing to adata.
+            Defaults to True.
 
     Returns:
-        Depending on `copy`, returns or updates `adata`
+        Depending on `inplace`, returns or updates `adata`
     """
-    adata = adata.copy() if copy else adata
+    adata = adata if inplace else adata.copy()
 
     key_in = key
 
@@ -174,7 +175,7 @@ def compensate(
         assert f"{nan_val} NaN values found after compensation. Please adjust "
         "compensation matrix."
 
-    return adata if copy else None
+    return None if inplace else adata
 
 
 def split_signal(
@@ -183,7 +184,7 @@ def split_signal(
     key="signal_type",
     option="area",
     data_type="facs",
-    copy: bool = False,
+    inplace: bool = True,
 ) -> Optional[AnnData]:
     """Method to filter out height or area data.
 
@@ -196,14 +197,15 @@ def split_signal(
         option (str, optional):  for choosing 'area' or 'height' in case of FACS data
             and 'element' for cyTOF data. Defaults to 'area'.
         data_type (str, optional): either 'facs' or 'cytof'/'cyTOF'. Defaults to 'facs'.
-        copy (bool, optional): Return a copy instead of writing to adata.
-            Defaults to False.
+        inplace (bool, optional): Return a copy instead of writing to adata.
+            Defaults to True.
 
     Returns:
-        Depending on `copy`, returns or updates `adata` with the following fields:
+        Depending on `inplace`, returns or updates `adata` with the following fields:
             AnnData: AnnData object containing area or height data in `.var`
     """
-    adata = adata.copy() if copy else adata
+    adata = adata if inplace else adata.copy()
+
     option_key = option
     key_in = key
 
@@ -211,7 +213,7 @@ def split_signal(
 
     if option_key not in possible_options:
         print(f"'{option_key}' is not a valid category. Return all.")
-        return adata if copy else None
+        return None if inplace else adata
     # Check if indices for area and height have been computed
     if key_in not in adata.var_keys():
         find_indexes(adata, var_key=var_key, data_type=data_type)
@@ -220,7 +222,7 @@ def split_signal(
     # if none of the indices is true, abort
     if sum(indx) < 1:
         print(f"'{option_key}' is not in adata.var['{key_in}']. Return all.")
-        return adata if copy else None
+        return None if inplace else adata
 
     non_idx = np.flatnonzero(np.invert(indx))
 
@@ -232,7 +234,7 @@ def split_signal(
     # subset the anndata object
     adata._inplace_subset_var(indx)
 
-    return adata if copy else None
+    return None if inplace else adata
 
 
 # TODO: move function to plotting module
