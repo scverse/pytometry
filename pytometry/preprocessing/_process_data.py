@@ -57,8 +57,7 @@ def find_indexes(
 
     Returns:
         Depending on `inplace`, returns or updates `adata` with the following
-        updated field
-            adata.var[f'{key_added}']
+        updated field adata.var[f'{key_added}']
     """
     adata = adata if inplace else adata.copy()
 
