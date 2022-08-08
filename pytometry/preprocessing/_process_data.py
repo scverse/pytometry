@@ -37,7 +37,7 @@ def create_comp_mat(spillmat: pd.DataFrame, relevant_data: str = "") -> pd.DataF
 
 def find_indexes(
     adata: AnnData,
-    var_key=None,
+    var_key: str = None,
     key_added="signal_type",
     data_type="facs",
     inplace: bool = True,
@@ -94,7 +94,7 @@ def find_indexes(
             f"{data_type} not recognized. Must be either 'facs' or               "
             " 'cytof'"
         )
-    adata.var["signal_type"] = pd.Categorical(index_array)
+    adata.var[key_added] = pd.Categorical(index_array)
     return None if inplace else adata
 
 
@@ -241,6 +241,8 @@ def split_signal(
     # merge non-idx entries in data matrix with obs
     non_cols = adata.var_names[non_idx].values
     for idx, colname in enumerate(non_cols):
+        if colname == "":
+            colname = adata.var["channel"][non_idx[idx]]
         adata.obs[colname] = adata.X[:, non_idx[idx]].copy()
 
     # subset the anndata object
