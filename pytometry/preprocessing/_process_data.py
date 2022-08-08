@@ -167,7 +167,7 @@ def compensate(
             )
     # match columns of spill mat such that they exactly correspond to adata.var.index
     ref_names = ref_col[np.in1d(ref_col, idx_in)]
-    query_names = compens[np.in1d(compens.columns, idx_in)]
+    query_names = compens.columns[np.in1d(compens.columns, idx_in)]
     idx_sort = [np.where(query_names == x)[0][0] for x in ref_names]
     query_idx = np.in1d(compens.columns, query_names)
     ref_idx = np.in1d(ref_col, ref_names)
