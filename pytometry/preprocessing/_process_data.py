@@ -3,12 +3,7 @@ from typing import Optional
 
 import numpy as np
 import pandas as pd
-import seaborn as sb
 from anndata import AnnData
-from matplotlib import pyplot as plt
-from matplotlib import rcParams
-
-from ..tools import normalize_arcsinh
 
 # import getpass
 # import os.path
@@ -249,78 +244,3 @@ def split_signal(
     adata._inplace_subset_var(indx)
 
     return None if inplace else adata
-
-
-# TODO: move function to plotting module
-# Plot data. Choose between Area, Height both(default)
-def plotdata(
-    adata: AnnData,
-    key="signal_type",
-    normalize=False,
-    cofactor=10,
-    figsize=(15, 6),
-    option="area",
-    save="",
-    **kwargs,
-):
-    """Creating histogram plot from Anndata object.
-
-    :param adata: AnnData object containing data.
-    :param cofactor: float value to normalize with in arcsinh-transform
-    :param option: Switch to choose directly between area and height data.
-    :param save: Filename to save the shown figure
-    :param kwargs: Passed to :func:`matplotlib.pyplot.savefig`
-    """
-    option_key = option
-    key_in = key
-    adata_ = adata.copy()
-
-    # Check if indices for area and height have been computed
-    if key_in not in adata_.var_keys():
-        find_indexes(adata_)
-
-    if normalize:
-        normalize_arcsinh(adata_, cofactor)
-
-    if option_key not in ["area", "height", "other"]:
-        print(f"Option {option_key} is not a valid category. Return all.")
-        datax = adata_.X
-        var_names = adata_.var_names.values
-    else:
-        index = adata_.var[key_in] == option_key
-        datax = adata_.X[:, index]
-        var_names = adata_.var_names[index].values
-
-    if len(var_names) == 0:
-        print(
-            f"Option {option_key} led to the selection of 0 variables.              "
-            " Nothing to plot."
-        )
-        return
-
-    rcParams["figure.figsize"] = figsize
-
-    names = var_names
-    number = len(names)
-
-    columns = 3
-    rows = np.ceil(number / columns)
-
-    fig = plt.figure()
-    fig.subplots_adjust(hspace=0.4, wspace=0.6)
-
-    for idx in range(number):
-        ax = fig.add_subplot(rows, columns, idx + 1)
-        sb.distplot(
-            datax[:, names == names[idx]],
-            kde=False,
-            norm_hist=False,
-            bins=400,
-            ax=ax,
-            axlabel=names[idx],
-        )
-    if save != "":
-        plt.savefig(save, bbox_inches="tight", **kwargs)
-    plt.show()
-
-    return
