@@ -3,6 +3,7 @@
 <!-- prettier-ignore -->
 Name | PR | Developer | Date | Patch
 --- | --- | --- | --- | ---
+🎨 replace copy by inplace | [16](https://github.com/buettnerlab/pytometry/pull/16) | [mbuttner](https://github.com/mbuttner) | 2022-08-08 |
 🎨 Simplify read function and datasets calls | [15](https://github.com/buettnerlab/pytometry/pull/15) | [sunnyosun](https://github.com/sunnyosun) | 2022-08-08 |
 :lipstick: add icons | [13](https://github.com/buettnerlab/pytometry/pull/13) | [mbuttner](https://github.com/mbuttner) | 2022-08-05 |
 👷 Style docs correctly | [20](https://github.com/buettnerlab/pytometry/pull/20) | [falexwolf](https://github.com/falexwolf) | 2022-08-11 |
