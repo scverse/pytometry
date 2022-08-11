@@ -35,3 +35,7 @@ html_favicon = (
     "https://raw.githubusercontent.com/buettnerlab/pytometry/main/docs/_static/logo.ico"
 )
 templates_path = ["_templates", "../lamin_sphinx/_templates"]
+html_static_path = ["_static", "../lamin_sphinx/_static"]
+ogp_image = (
+    "https://raw.githubusercontent.com/buettnerlab/pytometry/main/docs/_static/logo.svg"
+)
