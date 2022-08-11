@@ -3,6 +3,7 @@
 <!-- prettier-ignore -->
 Name | PR | Developer | Date | Patch
 --- | --- | --- | --- | ---
+:sparkles: match columns in compensate | [17](https://github.com/buettnerlab/pytometry/pull/17) | [mbuttner](https://github.com/mbuttner) | 2022-08-08 |
 🎨 replace copy by inplace | [16](https://github.com/buettnerlab/pytometry/pull/16) | [mbuttner](https://github.com/mbuttner) | 2022-08-08 |
 🎨 Simplify read function and datasets calls | [15](https://github.com/buettnerlab/pytometry/pull/15) | [sunnyosun](https://github.com/sunnyosun) | 2022-08-08 |
 :lipstick: add icons | [13](https://github.com/buettnerlab/pytometry/pull/13) | [mbuttner](https://github.com/mbuttner) | 2022-08-05 |
