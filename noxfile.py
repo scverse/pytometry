@@ -24,6 +24,5 @@ def build(session):
     )
     session.run("coverage", "xml")
     prefix = "." if Path("./lndocs").exists() else ".."
-    Path("{prefix}/lndocs/lamin_sphinx/_templates/footer.html").unlink()
     session.install(f"{prefix}/lndocs")
     session.run("lndocs")
