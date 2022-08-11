@@ -3,6 +3,7 @@
 <!-- prettier-ignore -->
 Name | PR | Developer | Date | Patch
 --- | --- | --- | --- | ---
+:lipstick: add icons | [13](https://github.com/buettnerlab/pytometry/pull/13) | [mbuttner](https://github.com/mbuttner) | 2022-08-05 |
 👷 Style docs correctly | [20](https://github.com/buettnerlab/pytometry/pull/20) | [falexwolf](https://github.com/falexwolf) | 2022-08-11 |
 :pencil2: fix logo path | [12](https://github.com/buettnerlab/pytometry/pull/12) | [mbuttner](https://github.com/mbuttner) | 2022-08-04 |
 :memo: update docs | [11](https://github.com/buettnerlab/pytometry/pull/11) | [mbuttner](https://github.com/mbuttner) | 2022-08-04 |
