@@ -3,6 +3,7 @@
 <!-- prettier-ignore -->
 Name | PR | Developer | Date | Patch
 --- | --- | --- | --- | ---
+✨ add plotting module | [19](https://github.com/buettnerlab/pytometry/pull/19) | [mbuttner](https://github.com/mbuttner) | 2022-08-09 |
 :art: improved split_signal | [18](https://github.com/buettnerlab/pytometry/pull/18) | [mbuttner](https://github.com/mbuttner) | 2022-08-08 |
 :sparkles: match columns in compensate | [17](https://github.com/buettnerlab/pytometry/pull/17) | [mbuttner](https://github.com/mbuttner) | 2022-08-08 |
 🎨 replace copy by inplace | [16](https://github.com/buettnerlab/pytometry/pull/16) | [mbuttner](https://github.com/mbuttner) | 2022-08-08 |
