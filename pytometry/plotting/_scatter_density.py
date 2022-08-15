@@ -41,6 +41,7 @@ def scatter_density(
             Alternatively, an iterable of colors can be passed and will be converted
             to a colormap. For a single-color, transparency-based colormap, see
             :func:`alpha_colormap`.
+            Defaults to 'jet'.
         vmin, vmax (float), optional:
             For scalar aggregates, the data range that the colormap covers.
             If vmin or vmax is None (default), the colormap autoscales to the
