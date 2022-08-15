@@ -49,7 +49,7 @@ def plotdata(
                 " normalization."
             )
 
-    if option_key not in ["area", "height", "other"]:
+    if option_key.lower() not in ["area", "height", "other"]:
         print(f"Option {option_key} is not a valid category. Return all.")
         datax = adata_.X
         var_names = adata_.var_names.values
@@ -74,7 +74,7 @@ def plotdata(
     rows = np.ceil(number / columns)
 
     fig = plt.figure()
-    fig.subplots_adjust(hspace=0.4, wspace=0.6)
+    fig.subplots_adjust(hspace=0.8, wspace=0.6)
 
     for idx in range(number):
         ax = fig.add_subplot(rows, columns, idx + 1)
