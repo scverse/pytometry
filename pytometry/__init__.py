@@ -26,5 +26,3 @@ from . import plotting as pl
 from . import preprocessing as pp
 from . import read_write as io
 from . import tools as tl
-
-# from ._core import ExampleClass, example_function  # noqa
