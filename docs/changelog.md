@@ -3,6 +3,7 @@
 <!-- prettier-ignore -->
 Name | PR | Developer | Date | Patch
 --- | --- | --- | --- | ---
+✅ add tests | [21](https://github.com/buettnerlab/pytometry/pull/21) | [mbuttner](https://github.com/mbuttner) | 2022-08-15 |
 👷 Style docs correctly | [20](https://github.com/buettnerlab/pytometry/pull/20) | [falexwolf](https://github.com/falexwolf) | 2022-08-11 |
 ✨ add plotting module | [19](https://github.com/buettnerlab/pytometry/pull/19) | [mbuttner](https://github.com/mbuttner) | 2022-08-09 |
 🎨 improved split_signal | [18](https://github.com/buettnerlab/pytometry/pull/18) | [mbuttner](https://github.com/mbuttner) | 2022-08-08 |
