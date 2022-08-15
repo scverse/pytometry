@@ -135,7 +135,7 @@ def compensate(
                 f" '{matrix_type}'."
             )
         # To Do: add checks that this input is correct
-    if adata.uns["meta"]["spill"] is not None:
+    elif adata.uns["meta"]["spill"] is not None:
         compens = adata.uns["meta"]["spill"]
     else:
         raise KeyError(f"Did not find .uns['meta']['spill'] nor '{comp_matrix}'.")
