@@ -41,7 +41,7 @@ def test_create_comp_mat():
     n_rows = 5
     spillmat = _dummy_spillover(n_rows=n_rows)
     comp_mat = create_comp_mat(spillmat)
-    assert numpy.sum(comp_mat) == n_rows * 0.5
+    assert numpy.sum(comp_mat.values) == n_rows * 0.5
 
 
 # test custom dummy compensation
