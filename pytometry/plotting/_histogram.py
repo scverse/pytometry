@@ -71,7 +71,7 @@ def plotdata(
     number = len(names)
 
     columns = 3
-    rows = np.ceil(number / columns)
+    rows = int(np.ceil(number / columns))
 
     fig = plt.figure()
     fig.subplots_adjust(hspace=0.8, wspace=0.6)
