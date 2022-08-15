@@ -20,11 +20,11 @@ def create_comp_mat(spillmat: pd.DataFrame, relevant_data: str = "") -> pd.DataF
     Returns:
         pd.DataFrame of the compensation matrix.
     """
+    comp_mat = np.linalg.inv(spillmat)
+
     if relevant_data == "":
-        comp_mat = np.linalg.inv(spillmat)
         compens = pd.DataFrame(comp_mat, columns=list(spillmat.columns))
     else:
-        comp_mat = np.linalg.inv(spillmat)
         compens = pd.DataFrame(comp_mat, columns=relevant_data)
 
     return compens
@@ -135,7 +135,7 @@ def compensate(
                 f" '{matrix_type}'."
             )
         # To Do: add checks that this input is correct
-    if adata.uns["meta"]["spill"] is not None:
+    elif adata.uns["meta"]["spill"] is not None:
         compens = adata.uns["meta"]["spill"]
     else:
         raise KeyError(f"Did not find .uns['meta']['spill'] nor '{comp_matrix}'.")
@@ -244,3 +244,20 @@ def split_signal(
     adata._inplace_subset_var(indx)
 
     return None if inplace else adata
+
+
+# create test compensation matrix
+def _dummy_spillover(n_rows=10, row_names=None) -> pd.DataFrame:
+    """Create dummy spillover matrix for testing.
+
+    Args:
+        n_rows (int, optional): Number of rows and columns_. Defaults to 10.
+        row_names (index or array-like, optional): Index to use for the resulting
+            dataframe. Also used as column names. Defaults to None.
+
+    Returns:
+        pd.DataFrame: A dummy spillover matrix with 2's on the diagonal
+    """
+    tmp_mat = np.diag(np.ones(n_rows) * 2)
+    dummy_spill = pd.DataFrame(data=tmp_mat, index=row_names, columns=row_names)
+    return dummy_spill

@@ -23,7 +23,7 @@ def normalize_arcsinh(adata: AnnData, cofactor: float, inplace: bool = True):
     """
     adata = adata if inplace else adata.copy()
     adata.X = np.arcsinh(adata.X / cofactor)
-    return adata if inplace else None
+    return None if inplace else adata
 
 
 def normalize_logicle(
