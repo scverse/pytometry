@@ -3,6 +3,7 @@
 <!-- prettier-ignore -->
 Name | PR | Developer | Date | Patch
 --- | --- | --- | --- | ---
+🚑 fix compensation formula | [26](https://github.com/buettnerlab/pytometry/pull/26) | [mbuttner](https://github.com/mbuttner) | 2022-08-16 |
 ✨ Add `density_scatter` plotting function | [22](https://github.com/buettnerlab/pytometry/pull/22) | [KarolaM](https://github.com/KarolaM) | 2022-08-16 |
 👷 Install `lndocs` from PyPI | [25](https://github.com/buettnerlab/pytometry/pull/25) | [falexwolf](https://github.com/falexwolf) | 2022-08-16 |
 :lipstick: update readme and examples | [24](https://github.com/buettnerlab/pytometry/pull/24) | [mbuttner](https://github.com/mbuttner) | 2022-08-16 |
