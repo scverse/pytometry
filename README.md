@@ -25,7 +25,9 @@ You can install `pytometry` via [pip](https://pip.pypa.io/) from [PyPI](PyPI):
 ```
 pip install pytometry
 ```
+
 or from GitHub:
+
 ```
 pip install git+https://github.com/buettnerlab/pytometry.git
 ```
