@@ -20,7 +20,7 @@ For beta users: Read the [docs](https://pytometry.netlify.app).
 
 ## Installation
 
-You can install `pytometry` via [pip](https://pip.pypa.io/) from [PyPI](PyPI):
+You can install `pytometry` via [pip](https://pip.pypa.io/) from [PyPI](https://pypi.org/):
 
 ```
 pip install pytometry
