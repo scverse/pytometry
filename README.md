@@ -18,6 +18,8 @@ Follow https://twitter.com/marenbuettner to learn about a first public release.
 
 For beta users: Read the [docs](https://pytometry.netlify.app).
 
+## Installation
+
 You can install `pytometry` via [pip](https://pip.pypa.io/) from [PyPI](PyPI):
 
 ```
