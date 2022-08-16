@@ -27,6 +27,7 @@ Home = "https://github.com/buettnerlab/pytometry"
 dev = [
     "pre-commit",
     "nox",
+    "lndocs",
 ]
 test = [
     "pytest>=6.0",
