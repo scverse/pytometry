@@ -1,6 +1,6 @@
 from scipy.stats import entropy
 from scipy.special import softmax
-import multiprocessing as mp
+# import multiprocessing as mp
 import numpy as np
 from scipy.sparse import csr_matrix, vstack, hstack
 from scanpy.tools._umap import umap as embed_umap
@@ -231,13 +231,11 @@ def _calc_next_T(I, W):
     global HELPER_VAR
     HELPER_VAR = {'W': W, 'num_lm_s_prev': num_lm_s_prev}
 
-    p = mp.Pool(mp.cpu_count())
-    I_with_W = p.map(_helper_method_T_next_mul_W, [it for it in I_t])
-    I_with_W = hstack(I_with_W)
+    I_with_W = map(_helper_method_T_next_mul_W, [it for it in I_t])
+    I_with_W = hstack(list(I_with_W))
     I = I_with_W.T * I
-    T_next = p.map(_helper_method_T_next_row_div, enumerate(I))
-    p.terminate()
-    p.join()
+    T_next = map(_helper_method_T_next_row_div, enumerate(I))
+
 
     T_next = vstack(T_next)
     return T_next.tocsr()
@@ -264,10 +262,7 @@ def _calc_AoI(scale, min_lm=100):
     # save temp static variables in global for outsourced multiprocessing method
     global HELPER_VAR
     HELPER_VAR = {'lm': scale.lm_ind, 'min_lm': min_lm, 'T': scale.T}
-    p = mp.Pool(mp.cpu_count())
-    I = p.map(_helper_method_AoI, [s for s in init_states])
-    p.terminate()
-    p.join()
+    I = map(_helper_method_AoI, [s for s in init_states])
     I = vstack(I)
     return I
 
@@ -320,10 +315,7 @@ def _get_landmarks(T, settings):
                   'beta_thresh': settings['beta_thresh'],
                   'n_events': n_events}
     init_states = csr_matrix((np.ones(n_events), (range(n_events), range(n_events))))
-    p = mp.Pool(mp.cpu_count())
-    hit_list = p.map(_helper_method_get_landmarks, [state for state in init_states])
-    p.terminate()
-    p.join()
+    hit_list = map(_helper_method_get_landmarks, [state for state in init_states])
     # evaluate results
     for state_hits in hit_list:  # for every states hit_list
         for h in state_hits:  # for every hit in some states hit_list
@@ -360,10 +352,8 @@ def _calc_first_T(distances_nn, dim):
        Transition matrix
     -------
     '''
-    p = mp.Pool(mp.cpu_count())
-    probs = p.map(_helper_method_calc_T, [dist.data for dist in distances_nn])
-    p.terminate()
-    p.join()
+    probs = map(_helper_method_calc_T, [dist.data for dist in distances_nn])
+
     data = []
     for pr in probs:
         data.extend(pr)
