@@ -20,7 +20,7 @@ class _Scale:
         self.parent_scale = parent_scale
 
 
-def humap(adata, channel_idx=None, beta=100, beta_thresh=1.5, teta=50, n_scales=1):
+def humap(adata, channel_idx=None, beta=100, beta_thresh=1.5, teta=50, n_scales=1, copy=False):
     if channel_idx is None:
         channel_idx = range(len(adata.var_names))
     elif len(channel_idx) == 0:
@@ -58,7 +58,6 @@ def humap(adata, channel_idx=None, beta=100, beta_thresh=1.5, teta=50, n_scales=
     # sc.tl.umap uses data matrix X or X_pca just to identify the number of connected components
     # during initialization of umap embedding
     tmpdata.obsm['X_pca'] = s_root.X # Set X_pca to X to supress warning and prevent calculation of PCA.
-    embed_umap(tmpdata)
 
     embed_umap(tmpdata)
     s_root.X_humap = tmpdata.obsm['X_umap']
@@ -88,7 +87,7 @@ def humap(adata, channel_idx=None, beta=100, beta_thresh=1.5, teta=50, n_scales=
 
     adata.uns['humap_settings'] = settings
     adata.uns['humap_scales'] = scale_list
-    return adata
+    return adata if copy else None
 
 
 ## Helper functions
