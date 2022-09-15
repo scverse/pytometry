@@ -155,12 +155,12 @@ def humap(
         if verbose: print('P')
         s_curr.P = _calc_P(s_curr.T)
         if verbose: print('X_humap')
-        tmpdata = AnnData(X=s_root.X)
+        tmpdata = AnnData(X=s_curr.X)
         tmpdata.uns['neighbors'] = {'params': {'method': 'umap'},
                                     'connectivities_key': 'connectivities'
                                     }
-        tmpdata.obsp['connectivities'] = s_root.P
-        tmpdata.obsm['X_pca'] = s_root.X
+        tmpdata.obsp['connectivities'] = s_curr.P
+        tmpdata.obsm['X_pca'] = s_curr.X
         embed_umap(tmpdata, **kwargs)
         s_curr.X_humap = tmpdata.obsm['X_umap']
         scale_list.append(s_curr)
