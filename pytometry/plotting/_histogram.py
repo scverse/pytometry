@@ -27,6 +27,10 @@ def plotdata(
     :param option: Switch to choose directly between area and height data.
     :param save: Filename to save the shown figure
     :param kwargs: Passed to :func:`matplotlib.pyplot.savefig`
+
+    Returns:
+        histogram plots
+
     """
     option_key = option
     key_in = key
