@@ -34,4 +34,4 @@ pip install git+https://github.com/buettnerlab/pytometry.git
 
 ## Citation
 
-Pytometry is currently a pre-print on [https://www.biorxiv.org/content/10.1101/2022.10.10.511546v1](bioRxiv).
+Pytometry is currently a pre-print on [bioRxiv](https://www.biorxiv.org/content/10.1101/2022.10.10.511546v1).
