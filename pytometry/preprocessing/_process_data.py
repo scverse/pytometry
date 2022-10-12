@@ -171,9 +171,8 @@ def compensate(
     compens = compens.iloc[query_idx, query_idx]
     # sort compensation matrix by adata.var_names
     compens = compens.iloc[idx_sort, idx_sort]
-    X_comp = np.linalg.solve(compens, adata.X[:, ref_idx].T).T
+    X_comp = np.linalg.solve(compens.T, adata.X[:, ref_idx].T).T
     adata.X[:, ref_idx] = X_comp
-
     # check for nan values
     nan_val = np.isnan(adata.X[:, ref_idx]).sum()
     if nan_val > 0:
