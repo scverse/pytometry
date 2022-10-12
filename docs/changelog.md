@@ -3,6 +3,7 @@
 <!-- prettier-ignore -->
 Name | PR | Developer | Date | Patch
 --- | --- | --- | --- | ---
+:memo: clean up docs | [31](https://github.com/buettnerlab/pytometry/pull/31) | [mbuttner](https://github.com/mbuttner) | 2022-10-12 |
 📝 update readme links | [30](https://github.com/buettnerlab/pytometry/pull/30) | [mbuttner](https://github.com/mbuttner) | 2022-10-12 |
 ✏️ Update README.md | [29](https://github.com/buettnerlab/pytometry/pull/29) | [mbuttner](https://github.com/mbuttner) | 2022-10-12 |
 🚑 fix compensation formula | [26](https://github.com/buettnerlab/pytometry/pull/26) | [mbuttner](https://github.com/mbuttner) | 2022-08-16 |
