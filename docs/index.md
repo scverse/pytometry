@@ -1,6 +1,6 @@
 ```{include} ../README.md
 :start-line: 0
-:end-line: 38
+:end-line: 42
 ```
 
 ```{toctree}
@@ -10,7 +10,5 @@
 tutorials/index
 api
 examples/index
-guides/index
-notes/index
 changelog
 ```

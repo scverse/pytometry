@@ -14,7 +14,7 @@ This package provides efficient and scalable handling of flow and mass cytometry
 - access to the entire [scanpy](https://scanpy.readthedocs.io/en/stable/) workflow functionality
 - GPU support through [rapids](https://github.com/clara-parabricks/rapids-single-cell-examples)
 
-Follow [https://twitter.com/marenbuettner](https://twitter.com/marenbuettner) to learn about a first public release.
+Follow [https://twitter.com/marenbuettner](https://twitter.com/marenbuettner) for updates.
 
 For the code enthusiasts: Find our code base on [Github](https://github.com/buettnerlab/pytometry).
 
@@ -31,6 +31,10 @@ or from GitHub:
 ```
 pip install git+https://github.com/buettnerlab/pytometry.git
 ```
+
+## Updates
+
+- October 12th 2022: First public release announcement on [Twitter](https://twitter.com/marenbuettner/status/1580160765201244161?s=20&t=mTBLcUaqKs9eMzEpOWnG0g)
 
 ## Citation
 

@@ -41,7 +41,6 @@ preview = true
 [tool.pytest.ini_options]
 testpaths = [
     "tests",
-    "docs/guides",
     "docs/tutorials",
 ]
 
