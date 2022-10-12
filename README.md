@@ -16,7 +16,7 @@ This package provides efficient and scalable handling of flow and mass cytometry
 
 Follow [https://twitter.com/marenbuettner](https://twitter.com/marenbuettner) to learn about a first public release.
 
-For beta users: Here is the [Github source](https://github.com/buettnerlab/pytometry).
+For the code enthusiasts: Find our code base on [Github](https://github.com/buettnerlab/pytometry).
 
 ## Installation
 
