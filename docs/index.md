@@ -1,6 +1,6 @@
 ```{include} ../README.md
 :start-line: 0
-:end-line: 35
+:end-line: 38
 ```
 
 ```{toctree}
