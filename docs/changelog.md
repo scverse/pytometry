@@ -3,6 +3,7 @@
 <!-- prettier-ignore -->
 Name | PR | Developer | Date | Patch
 --- | --- | --- | --- | ---
+📝 update readme links | [30](https://github.com/buettnerlab/pytometry/pull/30) | [mbuttner](https://github.com/mbuttner) | 2022-10-12 |
 ✏️ Update README.md | [29](https://github.com/buettnerlab/pytometry/pull/29) | [mbuttner](https://github.com/mbuttner) | 2022-10-12 |
 🚑 fix compensation formula | [26](https://github.com/buettnerlab/pytometry/pull/26) | [mbuttner](https://github.com/mbuttner) | 2022-08-16 |
 ✨ Add `density_scatter` plotting function | [22](https://github.com/buettnerlab/pytometry/pull/22) | [KarolaM](https://github.com/KarolaM) | 2022-08-16 |
