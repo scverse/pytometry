@@ -10,7 +10,5 @@
 tutorials/index
 api
 examples/index
-guides/index
-notes/index
 changelog
 ```
