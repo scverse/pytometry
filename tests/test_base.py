@@ -11,7 +11,14 @@ from pytometry.tools import normalize_arcsinh, normalize_biExp, normalize_logicl
 # test read function
 def test_read_fcs():
     path_data = readfcs.datasets.example()
-    adata = read_fcs(path_data)
+    adata = read_fcs(path_data, reindex=True)
+    assert isinstance(adata, anndata._core.anndata.AnnData)
+
+
+# test reindex false
+def test_read_fcs2():
+    path_data = readfcs.datasets.example()
+    adata = read_fcs(path_data, reindex=False)
     assert isinstance(adata, anndata._core.anndata.AnnData)
 
 
