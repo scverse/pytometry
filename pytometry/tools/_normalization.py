@@ -1,9 +1,8 @@
-# from typing import Optional
-
 import numpy as np
+import pandas as pd
 from anndata import AnnData
 from scipy import interpolate
-
+from typing import Union
 
 def normalize_arcsinh(adata: AnnData, cofactor: float, inplace: bool = True):
     """Inverse hyperbolic sine transformation.
@@ -27,11 +26,11 @@ def normalize_arcsinh(adata: AnnData, cofactor: float, inplace: bool = True):
 
 
 def normalize_logicle(
-    adata,
-    t=262144,
-    m=4.5,
-    w=0.5,
-    a=0,
+    adata: AnnData,
+    t: float = 262144,
+    m: float = 4.5,
+    w: float = 0.5,
+    a: float = 0,
     inplace: bool = True,
 ):
     """Logicle transformation.
@@ -126,7 +125,7 @@ def normalize_logicle(
     return None if inplace else adata
 
 
-def _scale(value, p) -> float:
+def _scale(value: float, p: dict) -> float:
     """Scale helper function.
 
     Args:
@@ -194,7 +193,7 @@ def _scale(value, p) -> float:
     return -1
 
 
-def _solve(b, w) -> float:
+def _solve(b: float, w: float) -> float:
     """Helper function for biexponential transformation.
 
     Args:
@@ -269,7 +268,7 @@ def _solve(b, w) -> float:
     return -1
 
 
-def _seriesBiexponential(p, value) -> float:
+def _seriesBiexponential(p: dict, value: float) -> float:
     """Helper function to compute biex trafo.
 
     Args:
@@ -290,11 +289,11 @@ def _seriesBiexponential(p, value) -> float:
 
 
 def normalize_biExp(
-    adata,
-    negative=0.0,
-    width=-10.0,
-    positive=4.418540,
-    max_value=262144.000029,
+    adata: AnnData,
+    negative: Union[float, pd.Series] = 0.0,
+    width: Union[float, pd.Series] = -10.0,
+    positive: Union[float, pd.Series] = 4.418540,
+    max_value: Union[float, pd.Series] = 262144.000029,
     inplace: bool = True,
 ):
     """Biexponential transformation.
@@ -491,7 +490,7 @@ def _generate_biex_lut(
     return positive, values
 
 
-def _log_root(b, w) -> float:
+def _log_root(b: float, w: float) -> float:
     """Helper function.
 
     Args:
