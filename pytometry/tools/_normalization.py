@@ -1,8 +1,6 @@
 import numpy as np
-import pandas as pd
 from anndata import AnnData
 from scipy import interpolate
-from typing import Union
 
 def normalize_arcsinh(adata: AnnData, cofactor: float, inplace: bool = True):
     """Inverse hyperbolic sine transformation.
