@@ -1,5 +1,3 @@
-# from typing import Optional
-
 import numpy as np
 from anndata import AnnData
 from scipy import interpolate
@@ -26,14 +24,7 @@ def normalize_arcsinh(adata: AnnData, cofactor: float, inplace: bool = True):
     return None if inplace else adata
 
 
-def normalize_logicle(
-    adata,
-    t=262144,
-    m=4.5,
-    w=0.5,
-    a=0,
-    inplace: bool = True,
-):
+def normalize_logicle(adata, t=262144, m=4.5, w=0.5, a=0, inplace=True):
     """Logicle transformation.
 
     Args:
@@ -126,7 +117,7 @@ def normalize_logicle(
     return None if inplace else adata
 
 
-def _scale(value, p) -> float:
+def _scale(value: float, p: dict) -> float:
     """Scale helper function.
 
     Args:
@@ -194,7 +185,7 @@ def _scale(value, p) -> float:
     return -1
 
 
-def _solve(b, w) -> float:
+def _solve(b: float, w: float) -> float:
     """Helper function for biexponential transformation.
 
     Args:
@@ -214,7 +205,7 @@ def _solve(b, w) -> float:
 
     # based on RTSAFE from Numerical Recipes 1st Edition
     # bracket the root
-    d_lo = 0
+    d_lo = 0.0
     d_hi = b
 
     # bisection first step
@@ -269,7 +260,7 @@ def _solve(b, w) -> float:
     return -1
 
 
-def _seriesBiexponential(p, value) -> float:
+def _seriesBiexponential(p: dict, value: float) -> float:
     """Helper function to compute biex trafo.
 
     Args:
@@ -295,7 +286,7 @@ def normalize_biExp(
     width=-10.0,
     positive=4.418540,
     max_value=262144.000029,
-    inplace: bool = True,
+    inplace=True,
 ):
     """Biexponential transformation.
 
@@ -491,7 +482,7 @@ def _generate_biex_lut(
     return positive, values
 
 
-def _log_root(b, w) -> float:
+def _log_root(b: float, w: float) -> float:
     """Helper function.
 
     Args:
@@ -502,10 +493,10 @@ def _log_root(b, w) -> float:
         float: Solution to interpolation
     """
     # Code adopted from FlowKit Python package
-    x_lo = 0
+    x_lo = 0.0
     x_hi = b
     d = (x_lo + x_hi) / 2
-    dx = abs(int(x_lo - x_hi))
+    dx = abs(int(x_lo - x_hi))  # type: float
     dx_last = dx
     fb = -2 * np.log(b) + w * b
     f = 2.0 * np.log(d) + w * b + fb

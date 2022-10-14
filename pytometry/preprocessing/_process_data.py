@@ -33,8 +33,8 @@ def create_comp_mat(spillmat: pd.DataFrame, relevant_data: str = "") -> pd.DataF
 def find_indexes(
     adata: AnnData,
     var_key: str = None,
-    key_added="signal_type",
-    data_type="facs",
+    key_added: str = "signal_type",
+    data_type: str = "facs",
     inplace: bool = True,
 ) -> Optional[AnnData]:
     """Find channels of interest for computing compensation.
@@ -186,10 +186,10 @@ def compensate(
 
 def split_signal(
     adata: AnnData,
-    var_key=None,
-    key="signal_type",
-    option="area",
-    data_type="facs",
+    var_key: Optional[str] = None,
+    key: str = "signal_type",
+    option: str = "area",
+    data_type: str = "facs",
     inplace: bool = True,
 ) -> Optional[AnnData]:
     """Method to filter out height or area data.

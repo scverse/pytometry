@@ -1,3 +1,5 @@
+from typing import Tuple
+
 import numpy as np
 import seaborn as sns
 from anndata import AnnData
@@ -11,12 +13,12 @@ from ..tools._normalization import normalize_arcsinh, normalize_biExp, normalize
 # Plot data. Choose between Area, Height both(default)
 def plotdata(
     adata: AnnData,
-    key="signal_type",
+    key: str = "signal_type",
     normalize: str = None,
-    cofactor=10,
-    figsize=(15, 6),
-    option="area",
-    save="",
+    cofactor: float = 10,
+    figsize: Tuple[float, float] = (15, 6),
+    option: str = "area",
+    save: str = "",
     **kwargs,
 ):
     """Creating histogram plot from Anndata object.

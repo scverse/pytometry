@@ -1,3 +1,5 @@
+from typing import List, Optional, Union
+
 import datashader as ds
 import matplotlib.pyplot as plt
 import numpy as np
@@ -5,22 +7,24 @@ import pandas as pd
 import scanpy as sc
 from anndata import AnnData
 from datashader.mpl_ext import dsshow
+from matplotlib.axes import Axes
+from matplotlib.colors import Colormap
 
 
 def scatter_density(
     adata: AnnData,
-    x="FSC-A",
-    y="SSC-A",
-    x_label="FSC-A",
-    y_label="SSC-A",
-    x_scale="linear",
-    y_scale="linear",
-    x_lim=[-2 * 1e4, 3 * 1e5],
-    y_lim=[-2 * 1e4, 3 * 1e5],
-    ax=None,
-    cmap="jet",
-    vmin=None,
-    vmax=None,
+    x: str = "FSC-A",
+    y: str = "SSC-A",
+    x_label: str = "FSC-A",
+    y_label: str = "SSC-A",
+    x_scale: str = "linear",
+    y_scale: str = "linear",
+    x_lim: List[float] = [-2 * 1e4, 3 * 1e5],
+    y_lim: List[float] = [-2 * 1e4, 3 * 1e5],
+    ax: Optional[Axes] = None,
+    cmap: Union[str, List, Colormap] = "jet",
+    vmin: Optional[float] = None,
+    vmax: Optional[float] = None,
 ):
     """Plots the cell density across two adata.obs.
 
