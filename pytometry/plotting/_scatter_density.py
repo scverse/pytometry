@@ -6,7 +6,7 @@ import pandas as pd
 import scanpy as sc
 from anndata import AnnData
 from datashader.mpl_ext import dsshow
-from typing import List, Optional, Tuple, Union
+from typing import List, Optional, Union
 
 def scatter_density(
     adata: AnnData,
