@@ -1,3 +1,5 @@
+from typing import List, Optional, Union
+
 import datashader as ds
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -6,7 +8,7 @@ import pandas as pd
 import scanpy as sc
 from anndata import AnnData
 from datashader.mpl_ext import dsshow
-from typing import List, Optional, Union
+
 
 def scatter_density(
     adata: AnnData,

@@ -2,6 +2,7 @@ import numpy as np
 from anndata import AnnData
 from scipy import interpolate
 
+
 def normalize_arcsinh(adata: AnnData, cofactor: float, inplace: bool = True):
     """Inverse hyperbolic sine transformation.
 
