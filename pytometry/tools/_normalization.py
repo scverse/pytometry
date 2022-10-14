@@ -24,14 +24,7 @@ def normalize_arcsinh(adata: AnnData, cofactor: float, inplace: bool = True):
     return None if inplace else adata
 
 
-def normalize_logicle(
-    adata,
-    t = 262144,
-    m = 4.5,
-    w = 0.5,
-    a = 0,
-    inplace = True
-):
+def normalize_logicle(adata, t=262144, m=4.5, w=0.5, a=0, inplace=True):
     """Logicle transformation.
 
     Args:
@@ -289,11 +282,11 @@ def _seriesBiexponential(p: dict, value: float) -> float:
 
 def normalize_biExp(
     adata,
-    negative = 0.0,
-    width = -10.0,
-    positive = 4.418540,
-    max_value = 262144.000029,
-    inplace = True
+    negative=0.0,
+    width=-10.0,
+    positive=4.418540,
+    max_value=262144.000029,
+    inplace=True,
 ):
     """Biexponential transformation.
 

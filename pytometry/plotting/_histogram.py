@@ -7,8 +7,7 @@ from matplotlib import pyplot as plt
 from matplotlib import rcParams
 
 from ..preprocessing._process_data import find_indexes
-from ..tools._normalization import (normalize_arcsinh, normalize_biExp,
-                                    normalize_logicle)
+from ..tools._normalization import normalize_arcsinh, normalize_biExp, normalize_logicle
 
 
 # Plot data. Choose between Area, Height both(default)

@@ -33,8 +33,8 @@ def create_comp_mat(spillmat: pd.DataFrame, relevant_data: str = "") -> pd.DataF
 def find_indexes(
     adata: AnnData,
     var_key: str = None,
-    key_added: str ="signal_type",
-    data_type: str ="facs",
+    key_added: str = "signal_type",
+    data_type: str = "facs",
     inplace: bool = True,
 ) -> Optional[AnnData]:
     """Find channels of interest for computing compensation.
