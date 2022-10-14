@@ -26,12 +26,12 @@ def normalize_arcsinh(adata: AnnData, cofactor: float, inplace: bool = True):
 
 
 def normalize_logicle(
-    adata: AnnData,
-    t: float = 262144,
-    m: float = 4.5,
-    w: float = 0.5,
-    a: float = 0,
-    inplace: bool = True,
+    adata,
+    t = 262144,
+    m = 4.5,
+    w = 0.5,
+    a = 0,
+    inplace = True
 ):
     """Logicle transformation.
 
@@ -213,7 +213,7 @@ def _solve(b: float, w: float) -> float:
 
     # based on RTSAFE from Numerical Recipes 1st Edition
     # bracket the root
-    d_lo = 0
+    d_lo = 0.0
     d_hi = b
 
     # bisection first step
@@ -289,12 +289,12 @@ def _seriesBiexponential(p: dict, value: float) -> float:
 
 
 def normalize_biExp(
-    adata: AnnData,
-    negative: Union[float, pd.Series] = 0.0,
-    width: Union[float, pd.Series] = -10.0,
-    positive: Union[float, pd.Series] = 4.418540,
-    max_value: Union[float, pd.Series] = 262144.000029,
-    inplace: bool = True,
+    adata,
+    negative = 0.0,
+    width = -10.0,
+    positive = 4.418540,
+    max_value = 262144.000029,
+    inplace = True
 ):
     """Biexponential transformation.
 
@@ -501,10 +501,10 @@ def _log_root(b: float, w: float) -> float:
         float: Solution to interpolation
     """
     # Code adopted from FlowKit Python package
-    x_lo = 0
+    x_lo = 0.0
     x_hi = b
     d = (x_lo + x_hi) / 2
-    dx = abs(int(x_lo - x_hi))
+    dx = abs(int(x_lo - x_hi))  # type: float
     dx_last = dx
     fb = -2 * np.log(b) + w * b
     f = 2.0 * np.log(d) + w * b + fb
