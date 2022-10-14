@@ -1,7 +1,6 @@
 from typing import List, Optional, Union
 
 import datashader as ds
-import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -9,6 +8,7 @@ import scanpy as sc
 from anndata import AnnData
 from datashader.mpl_ext import dsshow
 from matplotlib.axes import Axes
+from matplotlib.colors import Colormap
 
 
 def scatter_density(
@@ -22,7 +22,7 @@ def scatter_density(
     x_lim: List[float] = [-2 * 1e4, 3 * 1e5],
     y_lim: List[float] = [-2 * 1e4, 3 * 1e5],
     ax: Optional[Axes] = None,
-    cmap: Union[str, List, mpl.cm.Colormap] = "jet",
+    cmap: Union[str, List, Colormap] = "jet",
     vmin: Optional[float] = None,
     vmax: Optional[float] = None,
 ):
