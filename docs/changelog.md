@@ -3,6 +3,7 @@
 <!-- prettier-ignore -->
 Name | PR | Developer | Date | Patch
 --- | --- | --- | --- | ---
+:memo: add annotation nb | [34](https://github.com/buettnerlab/pytometry/pull/34) | [mbuttner](https://github.com/mbuttner) | 2022-11-25 |
 💄 Added parameter type hints | [33](https://github.com/buettnerlab/pytometry/pull/33) | [Ma-Fi-94](https://github.com/Ma-Fi-94) | 2022-10-14 |
 :bug: add map channels | [32](https://github.com/buettnerlab/pytometry/pull/32) | [mbuttner](https://github.com/mbuttner) | 2022-10-14 |
 :memo: clean up docs | [31](https://github.com/buettnerlab/pytometry/pull/31) | [mbuttner](https://github.com/mbuttner) | 2022-10-12 |
