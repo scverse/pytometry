@@ -1,3 +1,10 @@
+__version__ = "0.1.3"  # denote a pre-release for 0.1.0 with 0.1a1
+
+from . import plotting as pl
+from . import preprocessing as pp
+from . import read_write as io
+from . import tools as tl
+
 """Flow & mass cytometry analytics.
 
 Import the package::
@@ -38,10 +45,3 @@ This is the complete API reference:
    tl.normalize_biExp
 
 """
-
-__version__ = "0.1.3"  # denote a pre-release for 0.1.0 with 0.1a1
-
-from . import plotting as pl
-from . import preprocessing as pp
-from . import read_write as io
-from . import tools as tl
