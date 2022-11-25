@@ -7,6 +7,7 @@ Import the package::
 This is the complete API reference:
 
 .. module pytometry.io
+.. currentmodule pytometry
 
 .. autosummary::
    :recursive:
@@ -15,6 +16,7 @@ This is the complete API reference:
    io.read_fcs
 
 .. module pytometry.pp
+.. currentmodule pytometry
 
 .. autosummary::
    :recursive:
@@ -25,6 +27,7 @@ This is the complete API reference:
    pp.find_indexes
 
 ..module pytometry.tl
+.. currentmodule pytometry
 
 .. autosummary::
    :recursive:
