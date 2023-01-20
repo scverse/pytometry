@@ -3,6 +3,7 @@
 <!-- prettier-ignore -->
 Name | PR | Developer | Date | Patch
 --- | --- | --- | --- | ---
+:arrow_up: Update readfcs dependency | [35](https://github.com/buettnerlab/pytometry/pull/35) | [mbuttner](https://github.com/mbuttner) | 2023-01-20 |
 :memo: add annotation nb | [34](https://github.com/buettnerlab/pytometry/pull/34) | [mbuttner](https://github.com/mbuttner) | 2022-11-25 |
 💄 Added parameter type hints | [33](https://github.com/buettnerlab/pytometry/pull/33) | [Ma-Fi-94](https://github.com/Ma-Fi-94) | 2022-10-14 |
 :bug: add map channels | [32](https://github.com/buettnerlab/pytometry/pull/32) | [mbuttner](https://github.com/mbuttner) | 2022-10-14 |
