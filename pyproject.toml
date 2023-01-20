@@ -17,7 +17,7 @@ dependencies = [
     "scipy",
     "seaborn",
     "matplotlib",
-    "readfcs",
+    "readfcs >=1.1.0",
     "datashader"
 ]
 
