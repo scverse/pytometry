@@ -151,11 +151,11 @@ def compensate(
     # the compensation matrix may have different index names than the adata.X matrix
     ref_col = adata.var.index
     idx_in = np.intersect1d(compens.columns, ref_col)
-    if idx_in is None:
+    if not idx_in.any():
         # try the adata.var['channel'] as reference
         ref_col = adata.var["channel"]
         idx_in = np.intersect1d(compens.columns, ref_col)
-        if idx_in is None:
+        if not idx_in.any():
             raise ValueError(
                 "Could not match the column names of the compensation matrix"
                 'with neither `adata.var.index` nor `adata.var["channel"].'
@@ -172,7 +172,16 @@ def compensate(
     # sort compensation matrix by adata.var_names
     compens = compens.iloc[idx_sort, idx_sort]
     X_comp = np.linalg.solve(compens.T, adata.X[:, ref_idx].T).T
+
+    X = adata.X.copy()
     adata.X[:, ref_idx] = X_comp
+
+    if np.array_equal(X, adata.X):
+        print(
+            "Compensation failed - matrices before and after are equivalent. Please check your compensation matrix."
+        )
+    del X
+
     # check for nan values
     nan_val = np.isnan(adata.X[:, ref_idx]).sum()
     if nan_val > 0:
