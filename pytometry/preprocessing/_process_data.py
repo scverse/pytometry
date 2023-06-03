@@ -178,7 +178,8 @@ def compensate(
 
     if np.array_equal(X, adata.X):
         print(
-            "Compensation failed - matrices before and after are equivalent. Please check your compensation matrix."
+            "Compensation failed - matrices before and after are equivalent. Please"
+            " check your compensation matrix."
         )
     del X
 
