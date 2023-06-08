@@ -1,7 +1,7 @@
 from pathlib import Path
 
+import nbproject_test as test
 from nbproject._logger import logger
-from nbproject.dev import test
 
 
 def test_notebooks():
