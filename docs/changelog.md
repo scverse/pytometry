@@ -3,6 +3,7 @@
 <!-- prettier-ignore -->
 Name | PR | Developer | Date | Patch
 --- | --- | --- | --- | ---
+🐛  Small fix for bug in compensation function. | [39](https://github.com/buettnerlab/pytometry/pull/39) | [ricomnl](https://github.com/ricomnl) | 2023-06-08 |
 :construction_worker: Update nbproject test | [40](https://github.com/buettnerlab/pytometry/pull/40) | [mbuttner](https://github.com/mbuttner) | 2023-06-08 |
 :arrow_up: Update readfcs dependency | [35](https://github.com/buettnerlab/pytometry/pull/35) | [mbuttner](https://github.com/mbuttner) | 2023-01-20 |
 :memo: add annotation nb | [34](https://github.com/buettnerlab/pytometry/pull/34) | [mbuttner](https://github.com/mbuttner) | 2022-11-25 |
