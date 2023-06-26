@@ -6,17 +6,47 @@ Import the package::
 
 This is the complete API reference:
 
+Read/write (`io`)
+=================
+
 .. autosummary::
    :recursive:
    :toctree: .
 
    read_write.read_fcs
+
+Preprocessing (`pp`)
+====================
+
+.. autosummary::
+   :recursive:
+   :toctree: .
+
    preprocessing.split_signal
    preprocessing.compensate
+   preprocessing.create_comp_mat
    preprocessing.find_indexes
+
+Tools (`tl`)
+============
+
+.. autosummary::
+   :recursive:
+   :toctree: .
+
    tools.normalize_arcsinh
    tools.normalize_logicle
    tools.normalize_biExp
+
+Plotting (`pl`)
+===============
+
+.. autosummary::
+   :recursive:
+   :toctree: .
+
+   plotting.plotdata
+   plotting.scatter_density
 
 """
 
