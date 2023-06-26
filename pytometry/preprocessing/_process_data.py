@@ -142,7 +142,7 @@ def compensate(
 
     # save original data as layer
     if "original" not in adata.layers:
-        adata.layers["original"] = adata.X
+        adata.layers["original"] = adata.X.copy()
 
     # Ignore channels 'FSC-H', 'FSC-A', 'SSC-H', 'SSC-A',
     # 'FSC-Width', 'Time'
