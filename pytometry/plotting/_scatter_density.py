@@ -1,4 +1,4 @@
-from typing import List, Optional, Union
+from typing import Optional, Literal, Tuple, Union, List
 
 import datashader as ds
 import matplotlib.pyplot as plt
@@ -9,22 +9,25 @@ from anndata import AnnData
 from datashader.mpl_ext import dsshow
 from matplotlib.axes import Axes
 from matplotlib.colors import Colormap
+from matplotlib.scale import ScaleBase
 
 
 def scatter_density(
     adata: AnnData,
     x: str = "FSC-A",
     y: str = "SSC-A",
-    x_label: str = "FSC-A",
-    y_label: str = "SSC-A",
-    x_scale: str = "linear",
-    y_scale: str = "linear",
-    x_lim: List[float] = [-2 * 1e4, 3 * 1e5],
-    y_lim: List[float] = [-2 * 1e4, 3 * 1e5],
+    x_label: Optional[str] = None,
+    y_label: Optional[str] = None,
+    x_scale: ScaleBase | Literal["linear", "log", "symlog", "logit"] = "linear",
+    y_scale: ScaleBase | Literal["linear", "log", "symlog", "logit"] = "linear",
+    x_lim: Optional[Tuple[float, float]] = None,
+    y_lim: Optional[Tuple[float, float]] = None,
     ax: Optional[Axes] = None,
     cmap: Union[str, List, Colormap] = "jet",
     vmin: Optional[float] = None,
     vmax: Optional[float] = None,
+    *,
+    layer: Optional[str] = None
 ):
     """Plots the cell density across two adata.obs.
 
@@ -58,14 +61,20 @@ def scatter_density(
             If vmin or vmax is None (default), the colormap autoscales to the
             range of data in the area displayed, unless the corresponding value is
             already set in the norm.
+        layer
+            layer in `adata` to use. If `None`, use `adata.X`.
 
     Returns:
         Scatter plot that displays cell density
     """
     fig, ax = plt.subplots()
+    if x_label is None:
+        x_label = x
+    if y_label is None:
+        y_label = y
     # Create df from anndata object
     markers = [x, y]
-    joined = sc.get.obs_df(adata, keys=[*markers])
+    joined = sc.get.obs_df(adata, keys=[*markers], layer=layer)
 
     # Convert variables to np.array
     x = np.array(joined[x])
@@ -95,4 +104,3 @@ def scatter_density(
     plt.ylabel(y_label)
 
     plt.show()
-    return
