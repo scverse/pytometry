@@ -1,4 +1,4 @@
-from typing import Optional, Literal, Tuple, Union, List
+from typing import List, Literal, Optional, Tuple, Union
 
 import datashader as ds
 import matplotlib.pyplot as plt
