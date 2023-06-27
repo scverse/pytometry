@@ -3,6 +3,7 @@
 <!-- prettier-ignore -->
 Name | PR | Developer | Date | Patch
 --- | --- | --- | --- | ---
+✏️  Update API docs | [42](https://github.com/buettnerlab/pytometry/pull/42) | [grst](https://github.com/grst) | 2023-06-27 |
 Copy original data in `compensate` | [41](https://github.com/buettnerlab/pytometry/pull/41) | [grst](https://github.com/grst) | 2023-06-26 |
 🐛  Small fix for bug in compensation function. | [39](https://github.com/buettnerlab/pytometry/pull/39) | [ricomnl](https://github.com/ricomnl) | 2023-06-08 |
 :construction_worker: Update nbproject test | [40](https://github.com/buettnerlab/pytometry/pull/40) | [mbuttner](https://github.com/mbuttner) | 2023-06-08 |
