@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Optional, Tuple
 
 import numpy as np
 import seaborn as sns
@@ -14,7 +14,7 @@ from ..tools._normalization import normalize_arcsinh, normalize_biExp, normalize
 def plotdata(
     adata: AnnData,
     key: str = "signal_type",
-    normalize: str = None,
+    normalize: Optional[str] = None,
     cofactor: float = 10,
     figsize: Tuple[float, float] = (15, 6),
     option: str = "area",
