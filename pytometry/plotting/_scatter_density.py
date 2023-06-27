@@ -1,4 +1,5 @@
-from typing import List, Literal, Optional, Tuple, Union
+from typing import Literal  # noqa: TYP001
+from typing import List, Optional, Tuple, Union
 
 import datashader as ds
 import matplotlib.pyplot as plt
@@ -18,8 +19,8 @@ def scatter_density(
     y: str = "SSC-A",
     x_label: Optional[str] = None,
     y_label: Optional[str] = None,
-    x_scale: ScaleBase | Literal["linear", "log", "symlog", "logit"] = "linear",
-    y_scale: ScaleBase | Literal["linear", "log", "symlog", "logit"] = "linear",
+    x_scale: Union[ScaleBase, Literal["linear", "log", "symlog", "logit"]] = "linear",
+    y_scale: Union[ScaleBase, Literal["linear", "log", "symlog", "logit"]] = "linear",
     x_lim: Optional[Tuple[float, float]] = None,
     y_lim: Optional[Tuple[float, float]] = None,
     ax: Optional[Axes] = None,
@@ -27,7 +28,7 @@ def scatter_density(
     vmin: Optional[float] = None,
     vmax: Optional[float] = None,
     *,
-    layer: Optional[str] = None
+    layer: Optional[str] = None,
 ):
     """Plots the cell density across two adata.obs.
 
