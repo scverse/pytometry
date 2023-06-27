@@ -8,7 +8,7 @@ import pytometry
 HERE = Path(__file__).parent
 sys.path[:0] = [str(HERE), str(HERE.parent)]
 from lamin_sphinx import *  # noqa
-from lamin_sphinx import html_context, html_theme_options  # noqa
+from lamin_sphinx import html_context, html_theme_options, extensions  # noqa
 
 project = "Pytometry"
 html_title = "Pytometry"
@@ -16,6 +16,7 @@ release = pytometry.__version__
 html_context["github_repo"] = "pytometry"  # noqa
 # We're actually using this for the link behind the brand of the page!
 html_theme_options["logo"] = {"link": "pytometry"}  # noqa
+extensions += ["sphinx.ext.intersphinx"]
 
 ogp_site_url = "https://pytometry.netlify.app"
 
@@ -39,3 +40,6 @@ html_static_path = ["_static", "../lamin_sphinx/_static"]
 ogp_image = (
     "https://raw.githubusercontent.com/buettnerlab/pytometry/main/docs/_static/logo.svg"
 )
+intersphinx_mapping = {
+    "matplotlib": ("https://matplotlib.org/stable", None),
+}
