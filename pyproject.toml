@@ -8,6 +8,7 @@ authors = [{name = "Maren Buettner", email = "maren.buettner@helmholtz-muenchen.
 readme = "README.md"
 dynamic = ["version"]
 description = "Pytometry is a Python package for flow and mass cytometry analysis."
+requires-python = '>= 3.9'
 dependencies = [
     "nbproject",
     "numpy",
