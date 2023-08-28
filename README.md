@@ -34,6 +34,7 @@ pip install git+https://github.com/buettnerlab/pytometry.git
 
 ## Updates
 
+- August 28th 2023: New release with various fixes and improvements.
 - October 12th 2022: First public release announcement on [Twitter](https://twitter.com/marenbuettner/status/1580160765201244161?s=20&t=mTBLcUaqKs9eMzEpOWnG0g)
 
 ## Citation
