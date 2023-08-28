@@ -3,6 +3,7 @@
 <!-- prettier-ignore -->
 Name | PR | Developer | Date | Patch
 --- | --- | --- | --- | ---
+:wrench: update maintainer mail | [44](https://github.com/buettnerlab/pytometry/pull/44) | [mbuttner](https://github.com/mbuttner) | 2023-08-28 |
 ⚡ Various improvements to scatter_density | [43](https://github.com/buettnerlab/pytometry/pull/43) | [grst](https://github.com/grst) | 2023-06-27 |
 ✏️  Update API docs | [42](https://github.com/buettnerlab/pytometry/pull/42) | [grst](https://github.com/grst) | 2023-06-27 |
 Copy original data in `compensate` | [41](https://github.com/buettnerlab/pytometry/pull/41) | [grst](https://github.com/grst) | 2023-06-26 |
