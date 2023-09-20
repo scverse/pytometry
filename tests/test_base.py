@@ -81,6 +81,14 @@ def test_normalize_arcsinh2():
     assert isinstance(adata2, anndata._core.anndata.AnnData)
 
 
+def test_normalize_arcsinh3():
+    path_data = readfcs.datasets.example()
+    adata = read_fcs(path_data)
+    cofactor = pandas.Series(numpy.repeat(1, adata.n_vars), index=adata.var_names)
+    adata2 = normalize_arcsinh(adata, cofactor=cofactor, inplace=False)
+    assert isinstance(adata2, anndata._core.anndata.AnnData)
+
+
 def test_normalize_biexp():
     path_data = readfcs.datasets.example()
     adata = read_fcs(path_data)

@@ -3,12 +3,12 @@ from anndata import AnnData
 from scipy import interpolate
 
 
-def normalize_arcsinh(adata: AnnData, cofactor: float, inplace: bool = True):
+def normalize_arcsinh(adata: AnnData, cofactor=5, inplace: bool = True):
     """Inverse hyperbolic sine transformation.
 
     Args:
         adata : AnnData object
-        cofactor (float): all values are divided by this
+        cofactor (float or pandas.Series): all values are divided by this
            factor before arcsinh transformation recommended value for
            cyTOF data is 5 and for flow data 150.
         inplace (bool, optional): Return a copy instead of writing to adata.
@@ -20,7 +20,27 @@ def normalize_arcsinh(adata: AnnData, cofactor: float, inplace: bool = True):
         adata object
     """
     adata = adata if inplace else adata.copy()
-    adata.X = np.arcsinh(adata.X / cofactor)
+    # check inputs
+
+    if hasattr(cofactor, "__len__") and (not isinstance(cofactor, str)):
+        # perform trafo per marker
+        len_param = len(cofactor)
+        if len_param == adata.n_vars:
+            for idx, marker in enumerate(adata.var_names):
+                # get correct row
+                row_idx = cofactor.index == marker
+                cofactor_tmp = cofactor[row_idx][0]
+                # transform adata values using the biexponential function
+                adata.X[:, idx] = np.arcsinh(adata.X[:, idx] / cofactor_tmp)
+        else:
+            print(
+                "One of the parameters has the incorrect length.               Return"
+                " adata without normalising."
+            )
+    else:  # integer values do not have len attribute
+        # use one cofactor on the entire dataset
+        adata.X = np.arcsinh(adata.X / cofactor)
+
     return None if inplace else adata
 
 
