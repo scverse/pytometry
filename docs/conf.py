@@ -44,6 +44,10 @@ intersphinx_mapping = {
     "matplotlib": ("https://matplotlib.org/stable", None),
 }
 
-def setup(app: Sphinx):
+
+def setup_replacement(app: Sphinx):
     app.warningiserror = False
     app.add_css_file("custom.css")
+
+
+setup = setup_replacement
