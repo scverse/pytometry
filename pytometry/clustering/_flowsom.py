@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from typing import TypedDict
 
 import numpy as np
 from anndata import AnnData
@@ -70,7 +71,7 @@ def meta_clustering(
     n_resamples: int = 100,
     resample_frac: float = 0.5,
     verbose: bool = False,
-) -> np.ndarray:
+) -> tuple[np.ndarray, ConsensusClustering]:
     """Meta-clustering of SOM nodes using consensus clustering.
 
     Consensus clustering is implemented using the `consensusclustering` package (see
@@ -86,9 +87,10 @@ def meta_clustering(
         verbose (bool, default=False)
 
     Returns:
-        numpy.array: meta-clustering of SOM nodes
+        tuple[numpy.array, ConsensusClustering]: meta-clustering of SOM nodes and the
+        consensus clustering object
     """
-    clustering_obj = AgglomerativeClustering(affinity="euclidean", linkage="ward")
+    clustering_obj = AgglomerativeClustering(affinity="euclidean", linkage="average")
     cc = ConsensusClustering(
         clustering_obj,
         min_clusters=min_clusters,
@@ -104,9 +106,16 @@ def meta_clustering(
     k = cc.best_k()
     clustering_obj.set_params(**{"n_clusters": k})
     meta_class = clustering_obj.fit_predict(flatten_weights)
-    return meta_class.reshape(
-        som._activation_map.shape[0], som._activation_map.shape[1]
+    return (
+        meta_class.reshape(som._activation_map.shape[0], som._activation_map.shape[1]),
+        cc,
     )
+
+
+class ClusteringObjects(TypedDict):
+    som: MiniSom
+    meta_class: np.ndarray
+    consensus_clustering: ConsensusClustering
 
 
 def flowsom_clustering(
@@ -122,10 +131,11 @@ def flowsom_clustering(
     min_clusters: int = 2,
     max_clusters: int = 10,
     n_resamples: int = 100,
-    resample_frac: float = 0.5,
+    resample_frac: float = 0.9,
     copy: bool = False,
     verbose: bool = False,
-) -> AnnData:
+    return_clustering_objs: bool = False,
+) -> AnnData | tuple[AnnData, ClusteringObjects]:
     """Cluster cytometry data using FlowSOM.
 
     Based on the original FlowSOM R package by Van Gassen et al. (2015)
@@ -151,9 +161,13 @@ def flowsom_clustering(
         resample_frac (float, default=0.5): fraction of samples to resample for
         copy (bool, default=False): whether to copy the AnnData object or modify it
         verbose (bool, default=False)
+        return_clustering_objs: whether to return the clustering objects in addition to
+        the annotated data matrix
 
     Returns:
-        AnnData: annotated data matrix with cluster labels added under `key_added`
+        AnnData | tuple[AnnData, ClusteringObjects]: annotated data matrix with cluster
+        labels added under `key_added`. If `return_clustering_objs` is True, a tuple
+        containing the annotated data matrix and the clustering objects is returned.
 
     """
     adata = adata.copy() if copy else adata
@@ -171,7 +185,7 @@ def flowsom_clustering(
         verbose=verbose,
     )
     logger.info("Meta-clustering of SOM nodes")
-    meta_class = meta_clustering(
+    meta_class, cc = meta_clustering(
         som,
         adata.X.shape[1],
         min_clusters=min_clusters,
@@ -191,4 +205,8 @@ def flowsom_clustering(
         winner = som.winner(xx)
         labels.append(meta_class[winner])
     adata.obs[key_added] = labels
+    if return_clustering_objs:
+        return adata, ClusteringObjects(
+            som=som, meta_class=meta_class, consensus_clustering=cc
+        )
     return adata
