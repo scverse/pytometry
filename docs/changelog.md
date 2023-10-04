@@ -3,6 +3,7 @@
 <!-- prettier-ignore -->
 Name | PR | Developer | Date | Patch
 --- | --- | --- | --- | ---
+💄 update example data | [57](https://github.com/buettnerlab/pytometry/pull/57) | [mbuttner](https://github.com/mbuttner) | 2023-10-04 |
 :sparkles: several cofactors for arcsinh | [55](https://github.com/buettnerlab/pytometry/pull/55) | [mbuttner](https://github.com/mbuttner) | 2023-09-20 |
 :pencil2: Update version | [45](https://github.com/buettnerlab/pytometry/pull/45) | [mbuttner](https://github.com/mbuttner) | 2023-08-28 |
 :wrench: update maintainer mail | [44](https://github.com/buettnerlab/pytometry/pull/44) | [mbuttner](https://github.com/mbuttner) | 2023-08-28 |
