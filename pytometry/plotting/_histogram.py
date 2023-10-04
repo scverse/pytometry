@@ -26,14 +26,14 @@ def plotdata(
     """Creating histogram plot from Anndata object.
 
     :param adata: AnnData object containing data.
-    :param key: string value to point to the column var metadata with the 
+    :param key: string value to point to the column var metadata with the
         signal type to plot (see `option` parameter). Defaults to "signal_type".
     :param option: Switch to choose directly between area and height data.
     :param n_bins: int value to control the number of bins per histogram plot
     :param normalize: choose between "arcsinh", "biExp" and "logicle"
     :param cofactor: float value to normalize with in arcsinh-transform
     :param figsize: tuple to control the overall figure size.
-    :param n_cols: int value, number of columns of the plot. 
+    :param n_cols: int value, number of columns of the plot.
     :param save: str value, filename to save the shown figure
     :param kwargs: Passed to :func:`matplotlib.pyplot.savefig`
     """
@@ -87,12 +87,13 @@ def plotdata(
 
     for idx in range(number):
         ax = fig.add_subplot(rows, columns, idx + 1)
-        p0 = sns.histplot(datax[:, names == names[idx]],
+        p0 = sns.histplot(
+            datax[:, names == names[idx]],
             kde=False,
             legend=False,
-            #stat="density",
+            # stat="density",
             bins=n_bins,
-            ax=ax,    
+            ax=ax,
         )
         p0.set_title(names[idx])
     plt.subplots_adjust(bottom=0.1)
