@@ -1,4 +1,5 @@
-from typing import Optional, Tuple
+from typing import Optional  # Special
+from typing import Tuple  # Classes
 
 import numpy as np
 import seaborn as sns
@@ -17,7 +18,7 @@ def plotdata(
     option: str = "area",
     n_bins: int = 400,
     normalize: Optional[str] = None,
-    cofactor: float = 10,
+    cofactor: Optional[float] = 10,
     figsize: Tuple[float, float] = (15, 6),
     n_cols: int = 3,
     save: str = "",
