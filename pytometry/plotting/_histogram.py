@@ -18,17 +18,35 @@ def plotdata(
     cofactor: float = 10,
     figsize: Tuple[float, float] = (15, 6),
     option: str = "area",
-    save: str = "",
+    bins: int = 400,
+    save: Optional[str] = None,
     **kwargs,
 ):
-    """Creating histogram plot from Anndata object.
+    """Creating histogram plot of channels from Anndata object.
 
-    :param adata: AnnData object containing data.
-    :param cofactor: float value to normalize with in arcsinh-transform
-    :param normalize: choose between "arcsinh", "biExp" and "logicle"
-    :param option: Switch to choose directly between area and height data.
-    :param save: Filename to save the shown figure
-    :param kwargs: Passed to :func:`matplotlib.pyplot.savefig`
+    Args:
+        adata (AnnData): Anndata object containing data.
+        key (str):
+            Key in adata.var to plot. Default is 'signal_type' which is generated
+            when calling the preprocessing function `split_signal`.
+        normalize (str):
+            Normalization type. Default is None but can be set to "arcsinh", "biExp"
+            or "logicle"
+        cofactor (float):
+            Cofactor for arcsinh normalization. Default is 10.
+        figsize (tuple):
+            Figure size (width, height). Default is (15, 6).
+        option (str):
+            Switch to choose directly between area and height data. Default is "area".
+        bins (int):
+            Number of bins for the histogram. Default is 400.
+        save (str, optional):
+            Path to save the figure.
+        **kwargs:
+            Additional arguments passed to `matplotlib.pyplot.savefig`
+
+    Returns:
+    matplotlib.pyplot.Figure
     """
     option_key = option
     key_in = key
@@ -80,16 +98,8 @@ def plotdata(
 
     for idx in range(number):
         ax = fig.add_subplot(rows, columns, idx + 1)
-        sns.distplot(
-            datax[:, names == names[idx]],
-            kde=False,
-            norm_hist=False,
-            bins=400,
-            ax=ax,
-            axlabel=names[idx],
-        )
-    if save != "":
+        sns.histplot(datax[:, names == names[idx]], bins=bins, ax=ax, legend=False)
+        ax.set_xlabel(names[idx])
+    if save:
         plt.savefig(save, bbox_inches="tight", **kwargs)
-    plt.show()
-
-    return
+    return fig

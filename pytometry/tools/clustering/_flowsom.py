@@ -71,6 +71,7 @@ def meta_clustering(
     n_resamples: int = 100,
     resample_frac: float = 0.5,
     verbose: bool = False,
+    agglomerative_clustering_kwargs: dict | None = None,
 ) -> tuple[np.ndarray, ConsensusClustering]:
     """Meta-clustering of SOM nodes using consensus clustering.
 
@@ -85,12 +86,20 @@ def meta_clustering(
         n_resamples (int, default=100): number of resamples for consensus clustering
         resample_frac (float, default=0.5): fraction of samples to resample for
         verbose (bool, default=False)
+        agglomerative_clustering_kwargs (dict, default=None): keyword arguments for
+        sklearn.cluster.AgglomerativeClustering. If None, defaults to
+        {"metric": "euclidean", "linkage": "average"}.
 
     Returns:
         tuple[numpy.array, ConsensusClustering]: meta-clustering of SOM nodes and the
         consensus clustering object
     """
-    clustering_obj = AgglomerativeClustering(affinity="euclidean", linkage="average")
+    agglomerative_clustering_kwargs = (
+        agglomerative_clustering_kwargs
+        if agglomerative_clustering_kwargs is not None
+        else {"metric": "euclidean", "linkage": "average"}
+    )
+    clustering_obj = AgglomerativeClustering(**agglomerative_clustering_kwargs)
     cc = ConsensusClustering(
         clustering_obj,
         min_clusters=min_clusters,
@@ -134,6 +143,7 @@ def flowsom_clustering(
     resample_frac: float = 0.9,
     copy: bool = False,
     verbose: bool = False,
+    agglomerative_clustering_kwargs: dict | None = None,
     return_clustering_objs: bool = False,
 ) -> AnnData | tuple[AnnData, ClusteringObjects]:
     """Cluster cytometry data using FlowSOM.
@@ -161,6 +171,9 @@ def flowsom_clustering(
         resample_frac (float, default=0.5): fraction of samples to resample for
         copy (bool, default=False): whether to copy the AnnData object or modify it
         verbose (bool, default=False)
+        agglomerative_clustering_kwargs (dict, default=None): keyword arguments for
+        sklearn.cluster.AgglomerativeClustering. If None, defaults to
+        {"metric": "euclidean", "linkage": "average"}.
         return_clustering_objs: whether to return the clustering objects in addition to
         the annotated data matrix
 
@@ -192,18 +205,19 @@ def flowsom_clustering(
         max_clusters=max_clusters,
         n_resamples=n_resamples,
         resample_frac=resample_frac,
+        verbose=verbose,
+        agglomerative_clustering_kwargs=agglomerative_clustering_kwargs,
     )
     logger.info("Assigning cluster labels to cells")
-    labels = []
-    for i in tqdm(
-        range(adata.shape[0]),
-        desc="Assigning cluster labels to cells",
-        total=adata.shape[0],
-        disable=not verbose,
-    ):
-        xx = adata.X[i, :]
-        winner = som.winner(xx)
-        labels.append(meta_class[winner])
+    x = np.array(adata.X)
+    labels = [
+        f"cluster_{meta_class[som.winner(x[i, :])]}"
+        for i in tqdm(
+            range(x.shape[0]),
+            disable=not verbose,
+            desc="Assigning cluster labels to cells",
+        )
+    ]
     adata.obs[key_added] = labels
     if return_clustering_objs:
         return adata, ClusteringObjects(
