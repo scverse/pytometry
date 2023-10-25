@@ -10,28 +10,28 @@ from pytometry.tools import normalize_arcsinh, normalize_biExp, normalize_logicl
 
 # test read function
 def test_read_fcs():
-    path_data = readfcs.datasets.example()
+    path_data = readfcs.datasets.Oetjen18_t1()
     adata = read_fcs(path_data, reindex=True)
     assert isinstance(adata, anndata._core.anndata.AnnData)
 
 
 # test reindex false
 def test_read_fcs2():
-    path_data = readfcs.datasets.example()
+    path_data = readfcs.datasets.Oetjen18_t1()
     adata = read_fcs(path_data, reindex=False)
     assert isinstance(adata, anndata._core.anndata.AnnData)
 
 
 # test compensate
 def test_compensate():
-    path_data = readfcs.datasets.example()
+    path_data = readfcs.datasets.Oetjen18_t1()
     adata = read_fcs(path_data)
     compensate(adata)
     assert isinstance(adata, anndata._core.anndata.AnnData)
 
 
 def test_compensate_inplace():
-    path_data = readfcs.datasets.example()
+    path_data = readfcs.datasets.Oetjen18_t1()
     adata = read_fcs(path_data)
     adata2 = compensate(adata, inplace=False)
     assert isinstance(adata2, anndata._core.anndata.AnnData)
@@ -53,7 +53,7 @@ def test_create_comp_mat():
 
 # test custom dummy compensation
 def test_compensate2():
-    path_data = readfcs.datasets.example()
+    path_data = readfcs.datasets.Oetjen18_t1()
     adata = read_fcs(path_data)
     # use extra compensation matrix
     spillmat = _dummy_spillover(
@@ -68,42 +68,50 @@ def test_compensate2():
 
 # test return types for normalization
 def test_normalize_arcsinh():
-    path_data = readfcs.datasets.example()
+    path_data = readfcs.datasets.Oetjen18_t1()
     adata = read_fcs(path_data)
     normalize_arcsinh(adata, cofactor=1, inplace=True)
     assert isinstance(adata, anndata._core.anndata.AnnData)
 
 
 def test_normalize_arcsinh2():
-    path_data = readfcs.datasets.example()
+    path_data = readfcs.datasets.Oetjen18_t1()
     adata = read_fcs(path_data)
     adata2 = normalize_arcsinh(adata, cofactor=1, inplace=False)
     assert isinstance(adata2, anndata._core.anndata.AnnData)
 
 
+def test_normalize_arcsinh3():
+    path_data = readfcs.datasets.Oetjen18_t1()
+    adata = read_fcs(path_data)
+    cofactor = pandas.Series(numpy.repeat(1, adata.n_vars), index=adata.var_names)
+    adata2 = normalize_arcsinh(adata, cofactor=cofactor, inplace=False)
+    assert isinstance(adata2, anndata._core.anndata.AnnData)
+
+
 def test_normalize_biexp():
-    path_data = readfcs.datasets.example()
+    path_data = readfcs.datasets.Oetjen18_t1()
     adata = read_fcs(path_data)
     normalize_biExp(adata, inplace=True)
     assert isinstance(adata, anndata._core.anndata.AnnData)
 
 
 def test_normalize_biexp2():
-    path_data = readfcs.datasets.example()
+    path_data = readfcs.datasets.Oetjen18_t1()
     adata = read_fcs(path_data)
     adata2 = normalize_biExp(adata, inplace=False)
     assert isinstance(adata2, anndata._core.anndata.AnnData)
 
 
 def test_normalize_logicle():
-    path_data = readfcs.datasets.example()
+    path_data = readfcs.datasets.Oetjen18_t1()
     adata = read_fcs(path_data)
     normalize_logicle(adata, inplace=True)
     assert isinstance(adata, anndata._core.anndata.AnnData)
 
 
 def test_normalize_logicle2():
-    path_data = readfcs.datasets.example()
+    path_data = readfcs.datasets.Oetjen18_t1()
     adata = read_fcs(path_data)
     adata2 = normalize_logicle(adata, inplace=False)
     assert isinstance(adata2, anndata._core.anndata.AnnData)

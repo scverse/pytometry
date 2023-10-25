@@ -2,7 +2,7 @@
 import sys
 from datetime import datetime
 from pathlib import Path
-
+from sphinx.application import Sphinx
 import pytometry
 
 HERE = Path(__file__).parent
@@ -43,3 +43,11 @@ ogp_image = (
 intersphinx_mapping = {
     "matplotlib": ("https://matplotlib.org/stable", None),
 }
+
+
+def setup_replacement(app: Sphinx):
+    app.warningiserror = False
+    app.add_css_file("custom.css")
+
+
+setup = setup_replacement

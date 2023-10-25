@@ -1,4 +1,5 @@
-from typing import Optional, Tuple
+from typing import Optional  # Special
+from typing import Tuple  # Classes
 
 import numpy as np
 import seaborn as sns
@@ -14,12 +15,13 @@ from ..tools._normalization import normalize_arcsinh, normalize_biExp, normalize
 def plotdata(
     adata: AnnData,
     key: str = "signal_type",
-    normalize: Optional[str] = None,
-    cofactor: float = 10,
-    figsize: Tuple[float, float] = (15, 6),
     option: str = "area",
+    normalize: Optional[str] = None,
+    cofactor: Optional[float] = 10,
+    figsize: Tuple[float, float] = (15, 6),
     bins: int = 400,
     save: Optional[str] = None,
+    n_cols: int = 3,
     **kwargs,
 ):
     """Creating histogram plot of channels from Anndata object.
@@ -90,7 +92,7 @@ def plotdata(
     names = var_names
     number = len(names)
 
-    columns = 3
+    columns = n_cols
     rows = int(np.ceil(number / columns))
 
     fig = plt.figure()
