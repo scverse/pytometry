@@ -31,8 +31,7 @@ def read_and_merge(
     sample_id_index: int = 0,
     sample_id_sep: str = "_",
 ) -> AnnData:
-    """Read and merge multiple FCS files into a single AnnData object with an
-    optional sample id column (named 'sample').
+    """Read and merge multiple FCS files into a single AnnData object.
 
     Args:
         files (str | list[str]): either a list of file paths or a directory path
