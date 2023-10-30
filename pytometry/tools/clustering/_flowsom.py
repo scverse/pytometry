@@ -141,7 +141,7 @@ def flowsom_clustering(
     max_clusters: int = 10,
     n_resamples: int = 100,
     resample_frac: float = 0.9,
-    copy: bool = False,
+    inplace: bool = True,
     verbose: bool = False,
     agglomerative_clustering_kwargs: dict | None = None,
     return_clustering_objs: bool = False,
@@ -169,7 +169,7 @@ def flowsom_clustering(
         max_clusters (int, default=10): maximum number of clusters to consider
         n_resamples (int, default=100): number of resamples for consensus clustering
         resample_frac (float, default=0.5): fraction of samples to resample for
-        copy (bool, default=False): whether to copy the AnnData object or modify it
+        inplace (bool, default=False): whether to copy the AnnData object or modify it
         verbose (bool, default=False)
         agglomerative_clustering_kwargs (dict, default=None): keyword arguments for
         sklearn.cluster.AgglomerativeClustering. If None, defaults to
@@ -183,7 +183,7 @@ def flowsom_clustering(
         containing the annotated data matrix and the clustering objects is returned.
 
     """
-    adata = adata.copy() if copy else adata
+    adata = adata if inplace else adata.copy()
     logger.info("Running FlowSOM clustering")
     logger.info("Training SOM")
     som = som_clustering(
