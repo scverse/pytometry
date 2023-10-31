@@ -8,5 +8,4 @@ These tutorials show how to use the pytometry functionality.
 quickstart
 read_fcs
 preprocessing
-flowsom
 ```
