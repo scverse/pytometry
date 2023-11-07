@@ -24,6 +24,7 @@ def scatter_density(
     x_lim: Optional[Tuple[float, float]] = None,
     y_lim: Optional[Tuple[float, float]] = None,
     ax: Optional[Axes] = None,
+    figsize: Optional[tuple[int, int]] = None,
     cmap: Union[str, List, Colormap] = "jet",
     vmin: Optional[float] = None,
     vmax: Optional[float] = None,
@@ -51,6 +52,8 @@ def scatter_density(
         ax (`matplotlib.Axes`), optional:
             Axes to draw into. If *None*, create a new figure or use ``fignum`` to
             draw into an existing figure.
+        figsize (tuple), optional:
+            Figure size (width, height) if ``ax`` not provided. Defaults to (10, 10).
         cmap (str or list or :class:`matplotlib.colors.Colormap`), optional:
             For scalar aggregates, a matplotlib colormap name or instance.
             Alternatively, an iterable of colors can be passed and will be converted
@@ -61,12 +64,13 @@ def scatter_density(
             range of data in the area displayed, unless the corresponding value is
             already set in the norm.
         layer
-            layer in `adata` to use. If `None`, use `adata.X`.
+            The layer in `adata` to use. If `None`, use `adata.X`.
 
     Returns:
         Scatter plot that displays cell density
     """
-    fig, ax = plt.subplots()
+    figsize = figsize if figsize is not None else (10, 10)
+    ax = plt.subplots(figsize=figsize)[1] if ax is None else ax
     if x_label is None:
         x_label = x
     if y_label is None:
