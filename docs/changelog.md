@@ -3,6 +3,7 @@
 <!-- prettier-ignore -->
 Name | PR | Developer | Date | Patch
 --- | --- | --- | --- | ---
+FlowSOM | [59](https://github.com/buettnerlab/pytometry/pull/59) | [burtonrj](https://github.com/burtonrj) | 2023-11-07 |
 💄 update example data | [57](https://github.com/buettnerlab/pytometry/pull/57) | [mbuttner](https://github.com/mbuttner) | 2023-10-04 |
 :sparkles: several cofactors for arcsinh | [55](https://github.com/buettnerlab/pytometry/pull/55) | [mbuttner](https://github.com/mbuttner) | 2023-09-20 |
 :pencil2: Update version | [45](https://github.com/buettnerlab/pytometry/pull/45) | [mbuttner](https://github.com/mbuttner) | 2023-08-28 |
