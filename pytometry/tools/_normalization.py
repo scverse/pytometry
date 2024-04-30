@@ -1,6 +1,7 @@
 import numpy as np
 from anndata import AnnData
 from scipy import interpolate
+from flowutils import transforms
 
 
 def normalize_arcsinh(adata: AnnData, cofactor=5, inplace: bool = True):
@@ -571,6 +572,12 @@ def autoLgcl(adata, channels, m=4.5, q=0.05):
 
     Returns:
     - dict: A dictionary with channel names as keys and dictionaries containing logicle transformation parameters as values.
+
+    Usage:
+    params = autoLgcl(adata, channels=list(adata.var_names))
+    for channel in adata.var_names:
+        channel_idx = np.where(adata.var_names == channel)[0][0]
+        adata.X[:, channel_idx] = transforms.logicle(adata.X[:, channel_idx], channel_indices=[channel_idx], **params[channel])
     """
     if not isinstance(adata, AnnData):
             raise TypeError("adata has to be an object of class 'AnnData'")
