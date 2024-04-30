@@ -554,3 +554,81 @@ def _log_root(b: float, w: float) -> float:
             x_hi = d
 
     return d
+
+def autoLgcl(adata, channels, m=4.5, q=0.05):
+    """
+    Automatically apply a logicle transformation to specified channels in an AnnData object.
+
+    Code adapated from the `Cytofkit` package (Chen et al. 2016).
+
+    This function processes multiple channels within an AnnData object by applying a logicle transformation to each one.
+
+    Parameters:
+    - adata (AnnData): The AnnData object containing the data to be transformed.
+    - channels (list of str): A list of channel names to be logicle transformed.
+    - m (float, optional): The upper limit for the transformation parameter 'm'. Defaults to 4.5.
+    - q (float, optional): The quantile to determine the lower threshold for the transformation. Defaults to 0.05.
+
+    Returns:
+    - dict: A dictionary with channel names as keys and dictionaries containing logicle transformation parameters as values.
+    """
+    if not isinstance(adata, AnnData):
+            raise TypeError("adata has to be an object of class 'AnnData'")
+        if not channels:
+            raise ValueError("Please specify the channels to be logicle transformed")
+        indx = [channel in adata.var_names for channel in channels]
+        if not all(indx):
+            missing_channels = [channels[i] for i in range(len(channels)) if not indx[i]]
+            raise ValueError(f"Channels {missing_channels} were not found in the adata object.")
+
+        trans = [logicleTransform(channel, adata, m, q) for channel in channels]
+        return dict(zip(channels, trans))
+
+def logicleTransform(channel, adata, m, q):
+    """
+    Helper function to apply a logicle transformation to a single channel in an AnnData object.
+
+    This is an internal helper function used by `autoLgcl` to transform the data of a specified channel using the logicle method.
+    
+
+    Parameters:
+    - channel (str): The name of the channel to be transformed.
+    - adata (AnnData): The AnnData object containing the data for the specified channel.
+    - m (float): The upper limit for the transformation parameter 'm'.
+    - q (float): The quantile to determine the lower threshold for the transformation.
+
+    Returns:
+    - dict: A dictionary with details of the logicle transformation parameters and results.
+
+    Note:
+    - If the computed parameter 'w' is NaN or exceeds 2, it resets to a default value of 0.1, and 't' and 'm' are set to default values of 4000 and 4.5, respectively.
+    """
+        data = adata.X[:, adata.var_names == channel].flatten()
+    w = 0
+    t = np.max(data)
+    ndata = data[data < 0]
+    nThres = np.quantile(ndata, 0.25) - 1.5 * np.subtract(*np.percentile(ndata, [75, 25]))
+    ndata = ndata[ndata >= nThres]
+    transId = f"{channel}_autolgclTransform"
+    
+    if len(ndata):
+        r = np.finfo(float).eps + np.quantile(ndata, q)
+        if 10**m * abs(r) <= t:
+            w = 0
+        else:
+            w = (m - np.log10(t/abs(r)))/2
+            if np.isnan(w) or w > 2:
+                print(f"autoLgcl failed for channel: {channel}; using default logicle transformation")
+                w = 0.1
+                t = 4000
+                m = 4.5
+    
+    return {
+        "channel": channel,
+        "transformation": "logicle",
+        "transformationId": transId,
+        "w": w,
+        "t": t,
+        "m": m,
+        "a": 0
+    }
