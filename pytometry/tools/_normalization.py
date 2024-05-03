@@ -2,6 +2,7 @@ import numpy as np
 from anndata import AnnData
 from flowutils import transforms
 from scipy import interpolate
+from flowutils import transforms
 
 
 def normalize_arcsinh(adata: AnnData, cofactor=5, inplace: bool = True):
