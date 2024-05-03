@@ -3,6 +3,7 @@
 <!-- prettier-ignore -->
 Name | PR | Developer | Date | Patch
 --- | --- | --- | --- | ---
+Add autologicle normalization function | [61](https://github.com/buettnerlab/pytometry/pull/61) | [KarolaM](https://github.com/KarolaM) | 2024-05-03 |
 FlowSOM | [59](https://github.com/buettnerlab/pytometry/pull/59) | [burtonrj](https://github.com/burtonrj) | 2023-11-07 |
 💄 update example data | [57](https://github.com/buettnerlab/pytometry/pull/57) | [mbuttner](https://github.com/mbuttner) | 2023-10-04 |
 :sparkles: several cofactors for arcsinh | [55](https://github.com/buettnerlab/pytometry/pull/55) | [mbuttner](https://github.com/mbuttner) | 2023-09-20 |
