@@ -37,6 +37,7 @@ Tools (`tl`)
    tools.normalize_arcsinh
    tools.normalize_logicle
    tools.normalize_biExp
+   tools.normalize_autologicle
 
 Plotting (`pl`)
 ===============
@@ -50,7 +51,7 @@ Plotting (`pl`)
 
 """
 
-__version__ = "0.1.4"  # denote a pre-release for 0.1.0 with 0.1a1
+__version__ = "0.1.5"  # denote a pre-release for 0.1.0 with 0.1a1
 
 from . import plotting as pl
 from . import preprocessing as pp
