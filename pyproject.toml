@@ -23,6 +23,7 @@ dependencies = [
     "seaborn",
     "matplotlib",
     "readfcs >=1.1.0",
+    "flowutils",
     "datashader",
     "consensusclustering",
     "minisom"
