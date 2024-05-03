@@ -37,7 +37,7 @@ Tools (`tl`)
    tools.normalize_arcsinh
    tools.normalize_logicle
    tools.normalize_biExp
-   tools.normalize_autoLgcl
+   tools.normalize_autologicle
 
 Plotting (`pl`)
 ===============

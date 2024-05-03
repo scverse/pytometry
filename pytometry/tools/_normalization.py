@@ -557,7 +557,7 @@ def _log_root(b: float, w: float) -> float:
     return d
 
 
-def normalize_autoLgcl(adata, channels, m=4.5, q=0.05, inplace=True):
+def normalize_autologicle(adata, channels=None, m=4.5, q=0.05, inplace=True):
     """Autologicle transformation.
 
     Automatically apply a logicle transformation to specified channels in an AnnData
@@ -590,22 +590,28 @@ def normalize_autoLgcl(adata, channels, m=4.5, q=0.05, inplace=True):
     # check inputs
     if not isinstance(adata, AnnData):
         raise TypeError("adata has to be an object of class 'AnnData'")
-    if not channels:
-        raise ValueError("Please specify the channels to be logicle transformed")
-    indx = [channel in adata.var_names for channel in channels]
-    if not all(indx):
-        missing_channels = [channels[i] for i in range(len(channels)) if not indx[i]]
-        raise ValueError(
-            f"Channels {missing_channels} were not found in the adata object."
-        )
-    # Get params for logicle transformation
-    trans = [_logicleTransform(channel, adata, m, q) for channel in channels]
-    # Create parameter list for the autologicle transformation
-    params = dict(zip(channels, trans))
-    for channel in adata.var_names:
+    if channels is None:
+        channels = adata.var_names
+    else:
+        # Turn string into a list
+        if isinstance(channels, str):
+            channels = [channels]
+            raise ValueError("channels have to be in list format.")
+        # Check if all channel names are valid
+        indx = [channel in adata.var_names for channel in channels]
+        if not all(indx):
+            missing_channels = [
+                channels[i] for i in range(len(channels)) if not indx[i]
+            ]
+            raise ValueError(
+                f"Channels {missing_channels} were not found in the adata object."
+            )
+    # Perform autologicle transformation on all specified channels
+    for channel in channels:
         channel_idx = np.where(adata.var_names == channel)[0][0]
+        params = _logicleTransform(channel, adata, m, q)
         adata.X[:, channel_idx] = transforms.logicle(
-            adata.X[:, channel_idx], channel_indices=[channel_idx], **params[channel]
+            adata.X[:, channel_idx], channel_indices=[channel_idx], **params
         )
     return None if inplace else adata
 
@@ -634,7 +640,7 @@ def _logicleTransform(channel, adata, m, q):
         If the computed parameter 'w' is NaN or exceeds 2, it resets to a default value
         of 0.1, and 't' and 'm' are set to default values of 4000 and 4.5, respectively.
     """
-    data = adata.X[:, adata.var_names == channel].flatten()
+    data = adata.X[:, adata.var_names == channel].flatten().copy()
     w = 0
     t = np.max(data)
     ndata = data[data < 0]
@@ -642,7 +648,7 @@ def _logicleTransform(channel, adata, m, q):
         *np.percentile(ndata, [75, 25])
     )
     ndata = ndata[ndata >= nThres]
-    transId = f"{channel}_autolgclTransform"
+    # transId = f"{channel}_autolgclTransform"
 
     if len(ndata):
         r = np.finfo(float).eps + np.quantile(ndata, q)
@@ -660,9 +666,8 @@ def _logicleTransform(channel, adata, m, q):
                 m = 4.5
 
     return {
-        "channel": channel,
-        "transformation": "logicle",
-        "transformationId": transId,
+        # "transformation": "logicle",
+        # "transformationId": transId,
         "w": w,
         "t": t,
         "m": m,
