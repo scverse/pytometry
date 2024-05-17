@@ -5,6 +5,7 @@ import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
 import numpy as np
 from anndata import AnnData
+from matplotlib import colormaps
 from matplotlib.axes import Axes
 from matplotlib.colors import Colormap
 from matplotlib.scale import ScaleBase
@@ -23,7 +24,7 @@ def scatter_density(
     ax: Optional[Axes] = None,
     figsize: Optional[tuple[int, int]] = None,
     bins: Union[int, tuple[int, int]] = 500,
-    cmap: Union[str, List, Colormap] = "jet",
+    cmap: Union[str, Colormap] = "jet",
     vmin: Optional[float] = None,
     vmax: Optional[float] = None,
     *,
@@ -101,9 +102,9 @@ def scatter_density(
     plt.show()
 
 
-def _get_cmap_white_background(cmap: Union[str, List, Colormap]) -> Colormap:
+def _get_cmap_white_background(cmap: Union[str, Colormap]) -> Colormap:
     if isinstance(cmap, str):
-        cmap = plt.cm.get_cmap(cmap)
+        cmap = colormaps.get_cmap(cmap)
 
     colors = cmap(np.arange(cmap.N))
     colors[0] = np.array([1, 1, 1, 1])
