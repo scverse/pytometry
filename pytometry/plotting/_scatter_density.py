@@ -1,5 +1,5 @@
 from typing import Literal  # noqa: TYP001
-from typing import List, Optional, Tuple, Union
+from typing import Optional, Tuple, Union
 
 import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
