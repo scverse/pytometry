@@ -3,6 +3,7 @@
 <!-- prettier-ignore -->
 Name | PR | Developer | Date | Patch
 --- | --- | --- | --- | ---
+Use numpy histogram in scatter_density | [70](https://github.com/scverse/pytometry/pull/70) | [quentinblampey](https://github.com/quentinblampey) | 2024-05-20 |
 📝 update readme | [63](https://github.com/buettnerlab/pytometry/pull/63) | [mbuttner](https://github.com/mbuttner) | 2024-05-03 |
 💄 add auxiliary files around autologicle normalization | [62](https://github.com/buettnerlab/pytometry/pull/62) | [mbuttner](https://github.com/mbuttner) | 2024-05-03 |
 ✨ Add autologicle normalization function | [61](https://github.com/buettnerlab/pytometry/pull/61) | [KarolaM](https://github.com/KarolaM) | 2024-05-03 |
