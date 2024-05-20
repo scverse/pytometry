@@ -25,7 +25,7 @@ dependencies = [
     "flowutils",
     "consensusclustering",
     "minisom"
-    
+
 ]
 
 [project.urls]
