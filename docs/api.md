@@ -1,6 +1,24 @@
 # API
 
-## Preprocessing
+Import pytometry as
+
+```python
+import pytometry as pt
+```
+
+## Read/write (`io`)
+
+```{eval-rst}
+.. module:: pytometry.io
+.. currentmodule:: pytometry
+
+.. autosummary::
+    :toctree: generated
+
+    io.read_fcs
+```
+
+## Preprocessing (`pp`)
 
 ```{eval-rst}
 .. module:: pytometry.pp
@@ -9,7 +27,10 @@
 .. autosummary::
     :toctree: generated
 
-    pp.basic_preproc
+   preprocessing.split_signal
+   preprocessing.compensate
+   preprocessing.create_comp_mat
+   preprocessing.find_indexes
 ```
 
 ## Tools
@@ -21,7 +42,10 @@
 .. autosummary::
     :toctree: generated
 
-    tl.basic_tool
+   tools.normalize_arcsinh
+   tools.normalize_logicle
+   tools.normalize_biExp
+   tools.normalize_autologicle
 ```
 
 ## Plotting
@@ -33,6 +57,6 @@
 .. autosummary::
     :toctree: generated
 
-    pl.basic_plot
-    pl.BasicClass
+    plotting.plotdata
+    plotting.scatter_density
 ```
