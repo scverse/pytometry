@@ -9,11 +9,10 @@
 
 This package provides efficient and scalable handling of flow and mass cytometry data analysis. It provides
 
-- the functionality to read in flow data in the fcs file format as [anndata](https://anndata.readthedocs.io/en/latest/) objects
-- flow and mass cytometry specific preprocessing tools
-- access to the entire [scanpy](https://scanpy.readthedocs.io/en/stable/) workflow functionality
-- GPU support through [rapids-singlecell](https://rapids-singlecell.readthedocs.io/)
-
+-   the functionality to read in flow data in the fcs file format as [anndata](https://anndata.readthedocs.io/en/latest/) objects
+-   flow and mass cytometry specific preprocessing tools
+-   access to the entire [scanpy](https://scanpy.readthedocs.io/en/stable/) workflow functionality
+-   GPU support through [rapids-singlecell](https://rapids-singlecell.readthedocs.io/)
 
 ## Getting started
 
@@ -28,13 +27,13 @@ Python installed, we recommend installing [Mambaforge](https://github.com/conda-
 
 There are several alternative options to install pytometry:
 
-1) Install the latest release of `pytometry` from `PyPI <https://pypi.org/project/pytometry/>`_:
+1. Install the latest release of `pytometry` from `PyPI <https://pypi.org/project/pytometry/>`\_:
 
 ```bash
 pip install pytometry
 ```
 
-2) Install the latest development version:
+2. Install the latest development version:
 
 ```bash
 pip install git+https://github.com/scverse/pytometry.git@main
