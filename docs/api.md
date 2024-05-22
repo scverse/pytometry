@@ -27,10 +27,10 @@ import pytometry as pt
 .. autosummary::
     :toctree: generated
 
-   preprocessing.split_signal
-   preprocessing.compensate
-   preprocessing.create_comp_mat
-   preprocessing.find_indexes
+   pp.split_signal
+   pp.compensate
+   pp.create_comp_mat
+   pp.find_indexes
 ```
 
 ## Tools
@@ -42,10 +42,10 @@ import pytometry as pt
 .. autosummary::
     :toctree: generated
 
-   tools.normalize_arcsinh
-   tools.normalize_logicle
-   tools.normalize_biExp
-   tools.normalize_autologicle
+   tl.normalize_arcsinh
+   tl.normalize_logicle
+   tl.normalize_biExp
+   tl.normalize_autologicle
 ```
 
 ## Plotting
@@ -57,6 +57,6 @@ import pytometry as pt
 .. autosummary::
     :toctree: generated
 
-    plotting.plotdata
-    plotting.scatter_density
+    pl.plotdata
+    pl.scatter_density
 ```
