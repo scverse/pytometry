@@ -20,15 +20,23 @@ urls.Documentation = "https://pytometry.readthedocs.io/"
 urls.Source = "https://github.com/scverse/pytometry"
 urls.Home-page = "https://github.com/scverse/pytometry"
 dependencies = [
+    "numpy>=1.20.0",
+    "numba>=0.57",
+    "pandas<2.0.0,>=1.5.3",
     "anndata",
-    # for debug logging (referenced from the issue template)
-    "session-info",
+    "scanpy",
+    "scipy",
+    "seaborn",
+    "matplotlib",
+    "readfcs >=1.1.0",
+    "flowutils",
+    "consensusclustering",
+    "minisom"
 ]
 
 [project.optional-dependencies]
 dev = [
     "pre-commit",
-    "twine>=4.0.2",
 ]
 doc = [
     "docutils>=0.8,!=0.18.*,!=0.19.*",
