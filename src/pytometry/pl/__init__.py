@@ -1,1 +1,2 @@
-from .basic import BasicClass, basic_plot
+from ._histogram import plotdata
+from ._scatter_density import scatter_density
