@@ -32,6 +32,7 @@ dependencies = [
     "flowutils",
     "consensusclustering",
     "minisom"
+
 ]
 
 [project.optional-dependencies]
