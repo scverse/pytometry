@@ -3,9 +3,9 @@ import numpy
 import pandas
 import readfcs
 
-from pytometry.preprocessing import _dummy_spillover, compensate, create_comp_mat
-from pytometry.read_write import read_fcs
-from pytometry.tools import normalize_arcsinh, normalize_biExp, normalize_logicle
+from pytometry.io import read_fcs
+from pytometry.pp import _dummy_spillover, compensate, create_comp_mat
+from pytometry.tl import normalize_arcsinh, normalize_biExp, normalize_logicle
 
 
 # test read function

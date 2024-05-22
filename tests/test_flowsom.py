@@ -4,7 +4,7 @@ from sklearn.datasets import make_classification
 from sklearn.metrics import fowlkes_mallows_score
 from sklearn.preprocessing import MinMaxScaler
 
-from pytometry.tools.clustering import flowsom_clustering
+from pytometry.tl.clustering import flowsom_clustering
 
 
 @pytest.fixture
