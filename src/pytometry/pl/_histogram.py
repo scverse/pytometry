@@ -20,33 +20,35 @@ def plotdata(
     save: str | None = None,
     n_cols: int = 3,
     **kwargs,
-):
+) -> plt.Figure:
     """Creating histogram plot of channels from Anndata object.
 
-    Args:
-        adata (AnnData): Anndata object containing data.
-        key (str):
-            Key in adata.var to plot. Default is 'signal_type' which is generated
-            when calling the preprocessing function `split_signal`.
-        normalize (str):
-            Normalization type. Default is None but can be set to "arcsinh", "biExp"
-            or "logicle"
-        cofactor (float):
-            Cofactor for arcsinh normalization. Default is 10.
-        figsize (tuple):
-            Figure size (width, height). Default is (15, 6).
-        option (str):
-            Switch to choose directly between area and height data. Default is "area".
-        bins (int):
-            Number of bins for the histogram. Default is 400.
-        save (str, optional):
-            Path to save the figure.
-        **kwargs:
-            Additional arguments passed to `matplotlib.pyplot.savefig`
+    Parameters
+    ----------
+    adata :
+        Anndata object containing data.
+    key :
+        Key in adata.var to plot. Default is 'signal_type' which is generated
+        when calling the preprocessing function `split_signal`.
+    normalize :
+        Normalization type. Default is None but can be set to "arcsinh", "biExp"
+        or "logicle"
+    cofactor :
+        Cofactor for arcsinh normalization. Default is 10.
+    figsize :
+        Figure size (width, height). Default is (15, 6).
+    option :
+        Switch to choose directly between area and height data. Default is "area".
+    bins :
+        Number of bins for the histogram. Default is 400.
+    save :
+        Path to save the figure.
+    **kwargs :
+        Additional arguments passed to `matplotlib.pyplot.savefig`
 
     Returns
     -------
-    matplotlib.pyplot.Figure
+    matplotlib figure
     """
     option_key = option
     key_in = key
