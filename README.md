@@ -27,7 +27,7 @@ Python installed, we recommend installing [Mambaforge](https://github.com/conda-
 
 There are several alternative options to install pytometry:
 
-1. Install the latest release of `pytometry` from `PyPI <https://pypi.org/project/pytometry/>`\_:
+1. Install the latest release of `pytometry` from [PyPI][link-pypi].
 
 ```bash
 pip install pytometry
@@ -57,3 +57,4 @@ Pytometry is currently a pre-print on [bioRxiv](https://www.biorxiv.org/content/
 [changelog]: https://github.com/scverse/pytometry/releases
 [link-docs]: https://pytometry.readthedocs.io
 [link-api]: https://pytometry.readthedocs.io/latest/api.html
+[link-pypi]: https://pypi.org/project/pytometry
