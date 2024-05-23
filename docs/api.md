@@ -25,7 +25,7 @@ import pytometry as pt
 .. currentmodule:: pytometry
 
 .. autosummary::
-    :toctree: generated
+   :toctree: generated
 
    pp.split_signal
    pp.compensate
@@ -40,7 +40,7 @@ import pytometry as pt
 .. currentmodule:: pytometry
 
 .. autosummary::
-    :toctree: generated
+   :toctree: generated
 
    tl.normalize_arcsinh
    tl.normalize_logicle
