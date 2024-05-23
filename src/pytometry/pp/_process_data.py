@@ -1,4 +1,5 @@
 import re
+from typing import Literal
 
 import numpy as np
 import pandas as pd
@@ -16,7 +17,7 @@ def create_comp_mat(spillmat: pd.DataFrame, relevant_data: str = "") -> pd.DataF
     spillmat
         Spillover matrix as pandas dataframe.
     relevant_data:
-        A list of channels for customized selection. Defaults to ''.
+        A list of channels for customized selection.
 
     Returns
     -------
@@ -36,7 +37,7 @@ def find_indexes(
     adata: AnnData,
     var_key: str = None,
     key_added: str = "signal_type",
-    data_type: str = "facs",
+    data_type: Literal["facs", "cytof"] = "facs",
     inplace: bool = True,
 ) -> AnnData | None:
     """Find channels of interest for computing compensation.
@@ -48,15 +49,14 @@ def find_indexes(
     var_key
         Key where to check if a feature is an area, height etc. type of value. Use `var_names` if None.
     key_added
-        Key where result vector is added to the adata.var. Defaults to 'signal_type'.
+        Key where result vector is added to the adata.var.
     data_type
-        Either 'facs' or 'cytof'. Defaults to 'facs'.
+        Type of cytometry data
     inplace
 
     Returns
     -------
-        Depending on `inplace`, returns or updates `adata` with the following
-        updated field adata.var[f'{key_added}']
+    Depending on `inplace`, returns or updates `adata` with the following updated field `adata.var[f'{key_added}']`
     """
     adata = adata if inplace else adata.copy()
 
@@ -108,7 +108,7 @@ def compensate(
     adata
         AnnData object.
     key
-        Key where result vector is added to the adata.var. Defaults to 'signal_type'.
+        Key where result vector is added to the adata.var.
     comp_matrix
         A custom compensation matrix. Please note that by default we use the spillover matrix directly for numeric stability.
     matrix_type
@@ -116,7 +116,7 @@ def compensate(
         matrices. Usually, custom compensation matrices are the inverse of the spillover matrix. If you want to use
         a compensation matrix, not the spillover matrix, set `matrix_type` to `compensation`.
     inplace
-        Return a copy instead of writing to adata. Defaults to True.
+        Return a copy instead of writing to adata.
 
     Returns
     -------
@@ -193,7 +193,7 @@ def split_signal(
     var_key: str | None = None,
     key: str = "signal_type",
     option: str = "area",
-    data_type: str = "facs",
+    data_type: Literal["facs", "cytof"] = "facs",
     inplace: bool = True,
 ) -> AnnData | None:
     """Method to filter out height or area data.
@@ -205,13 +205,13 @@ def split_signal(
     var_key
         Key where to check if a feature is an area, height etc. type of value. Use `var_names` if None.
     key
-        Key for adata.var where the variable type is stored. Defaults to 'signal_type'.
+        Key for adata.var where the variable type is stored.
     option
-        For choosing 'area' or 'height' in case of FACS data and 'element' for cyTOF data. Defaults to 'area'.
+        For choosing 'area' or 'height' in case of FACS data and 'element' for cyTOF data.
     data_type
-        Either 'facs' or 'cytof'/'cyTOF'. Defaults to 'facs'.
+        Type of cytometry data
     inplace
-        Return a copy instead of writing to adata. Defaults to True.
+        Return a copy instead of writing to adata.
 
     Returns
     -------
@@ -253,15 +253,15 @@ def split_signal(
 
 
 # create test compensation matrix
-def _dummy_spillover(n_rows=10, row_names=None) -> pd.DataFrame:
+def _dummy_spillover(n_rows: int = 10, row_names: pd.Index | list[str] | None = None) -> pd.DataFrame:
     """Create dummy spillover matrix for testing.
 
     Parameters
     ----------
     n_rows
-        number of rows and columns. Defaults to 10.
+        number of rows and columns.
     row_names
-        Index to use for the resulting dataframe. Also used as column names. Defaults to None.
+        Index to use for the resulting dataframe. Also used as column names.
 
     Returns
     -------

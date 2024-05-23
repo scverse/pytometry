@@ -16,6 +16,7 @@ import pytometry as pt
     :toctree: generated
 
     io.read_fcs
+    io.read_and_merge
 ```
 
 ## Preprocessing (`pp`)
@@ -44,7 +45,7 @@ import pytometry as pt
 
    tl.normalize_arcsinh
    tl.normalize_logicle
-   tl.normalize_biExp
+   tl.normalize_biexp
    tl.normalize_autologicle
 ```
 

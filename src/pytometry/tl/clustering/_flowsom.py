@@ -26,19 +26,27 @@ def som_clustering(
 ) -> MiniSom:
     """Train a SOM on the given cytometry data.
 
-    Args:
-        x (numpy.array): cytometry data of shape (n_samples, n_features)
-        som_dim (tuple[int, int], default=(10, 10)): dimensions of the SOM
-        sigma (float, default=1.0): radius of the different neighbourhoods in the SOM
-        learning_rate (float, default=0.5): learning rate of the SOM
-        batch_size (int, default=500): batch size for training the SOM
-        seed (int, default=42): random seed for reproducibility
-        weight_init (str, default="random"): weight initialization method, either
-        "random" or "pca". NOTE: if "pca" is chosen, the input data must be scaled to
+    Parameters
+    ----------
+    x
+        cytometry data of shape `(n_samples, n_features)`
+    som_dim
+        dimensions of the SOM
+    sigma
+        radius of the different neighbourhoods in the SOM
+    learning_rate
+        learning rate of the SOM
+    batch_size
+        batch size for training the SOM
+    seed
+        random seed for reproducibility
+    weight_init
+        weight initialization method, either "random" or "pca". NOTE: if "pca" is chosen, the input data must be scaled to
         zero mean and unit variance.
-        neighbourhood_function (str, default="gaussian"): neighbourhood function for
-        the SOM
-        verbose (bool, default=False)
+    neighbourhood_function
+        neighbourhood function for the SOM
+    verbose
+        whether to use verbose mode or not
 
     Returns
     -------
@@ -79,22 +87,29 @@ def meta_clustering(
     Consensus clustering is implemented using the `consensusclustering` package (see
     https://github.com/burtonrj/consensusclustering for details).
 
-    Args:
-        som (MiniSom): trained SOM
-        n_features (int): number of features in the cytometry data
-        min_clusters (int, default=2): minimum number of clusters to consider
-        max_clusters (int, default=10): maximum number of clusters to consider
-        n_resamples (int, default=100): number of resamples for consensus clustering
-        resample_frac (float, default=0.5): fraction of samples to resample for
-        verbose (bool, default=False)
-        agglomerative_clustering_kwargs (dict, default=None): keyword arguments for
-        sklearn.cluster.AgglomerativeClustering. If None, defaults to
+    Parameters
+    ----------
+    som
+        trained SOM
+    n_features
+        number of features in the cytometry data
+    min_clusters
+        minimum number of clusters to consider
+    max_clusters
+        maximum number of clusters to consider
+    n_resamples
+        number of resamples for consensus clustering
+    resample_frac
+        fraction of samples to resample for
+    verbose
+        whether to use verbose mode or not
+    agglomerative_clustering_kwargs
+        keyword arguments for `sklearn.cluster.AgglomerativeClustering`. If None, defaults to
         {"metric": "euclidean", "linkage": "average"}.
 
     Returns
     -------
-        tuple[numpy.array, ConsensusClustering]: meta-clustering of SOM nodes and the
-        consensus clustering object
+    meta-clustering of SOM nodes and the consensus clustering object
     """
     agglomerative_clustering_kwargs = (
         agglomerative_clustering_kwargs
@@ -152,36 +167,50 @@ def flowsom_clustering(
     (https://onlinelibrary.wiley.com/doi/full/10.1002/cyto.a.22625.) and the python
     implementation found at https://github.com/Hatchin/FlowSOM.
 
-    Args:
-        adata (AnnData): annotated data matrix of shape (n_samples, n_features)
-        key_added (str, default="clusters"): key under which to add the cluster labels
-        som_dim (tuple[int, int], default=(10, 10)): dimensions of the SOM
-        sigma (float, default=1.0): radius of the different neighbourhoods in the SOM
-        learning_rate (float, default=0.5): learning rate of the SOM
-        batch_size (int, default=500): batch size for training the SOM
-        seed (int, default=42): random seed for reproducibility
-        weight_init (str, default="random"): weight initialization method, either
-        "random" or "pca". NOTE: if "pca" is chosen, the input data must be scaled to
-        zero mean and unit variance.
-        neighbourhood_function (str, default="gaussian"): neighbourhood function for
-        the SOM
-        min_clusters (int, default=2): minimum number of clusters to consider
-        max_clusters (int, default=10): maximum number of clusters to consider
-        n_resamples (int, default=100): number of resamples for consensus clustering
-        resample_frac (float, default=0.5): fraction of samples to resample for
-        inplace (bool, default=False): whether to copy the AnnData object or modify it
-        verbose (bool, default=False)
-        agglomerative_clustering_kwargs (dict, default=None): keyword arguments for
-        sklearn.cluster.AgglomerativeClustering. If None, defaults to
+    Parameters
+    ----------
+    adata
+        annotated data matrix of shape `(n_samples, n_features)`
+    key_added
+        key under which to add the cluster labels
+    som_dim
+        dimensions of the SOM
+    sigma
+        radius of the different neighbourhoods in the SOM
+    learning_rate
+        learning rate of the SOM
+    batch_size
+        batch size for training the SOM
+    seed
+        random seed for reproducibility
+    weight_init
+        weight initialization method, either "random" or "pca". NOTE: if "pca" is chosen,
+        the input data must be scaled to zero mean and unit variance.
+    neighbourhood_function
+        neighbourhood function for the SOM
+    min_clusters
+        minimum number of clusters to consider
+    max_clusters
+        maximum number of clusters to consider
+    n_resamples
+        number of resamples for consensus clustering
+    resample_frac
+        fraction of samples to resample for
+    inplace
+        whether to copy the AnnData object or modify it
+    verbose
+        whether to use verbose mode or not
+    agglomerative_clustering_kwargs
+        keyword arguments for `sklearn.cluster.AgglomerativeClustering`. If None, defaults to
         {"metric": "euclidean", "linkage": "average"}.
-        return_clustering_objs: whether to return the clustering objects in addition to
-        the annotated data matrix
+    return_clustering_objs
+        whether to return the clustering objects in addition to the annotated data matrix
 
     Returns
     -------
-        AnnData | tuple[AnnData, ClusteringObjects]: annotated data matrix with cluster
-        labels added under `key_added`. If `return_clustering_objs` is True, a tuple
-        containing the annotated data matrix and the clustering objects is returned.
+    annotated data matrix with cluster labels added under `key_added`.
+    If `return_clustering_objs` is True, a tuple containing the annotated data matrix
+    and the clustering objects is returned.
 
     """
     adata = adata if inplace else adata.copy()

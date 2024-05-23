@@ -1,10 +1,11 @@
 import numpy as np
+import pandas as pd
 from anndata import AnnData
 from flowutils import transforms
 from scipy import interpolate
 
 
-def normalize_arcsinh(adata: AnnData, cofactor=5, inplace: bool = True):
+def normalize_arcsinh(adata: AnnData, cofactor: float | pd.Series = 5, inplace: bool = True) -> AnnData | None:
     """Inverse hyperbolic sine transformation.
 
     Parameters
@@ -14,7 +15,7 @@ def normalize_arcsinh(adata: AnnData, cofactor=5, inplace: bool = True):
     cofactor
         All values are divided by this factor before arcsinh transformation. Recommended value for cyTOF data is 5 and for flow data 150.
     inplace
-        Return a copy instead of writing to adata. Defaults to True.
+        Return a copy instead of writing to adata.
 
     Returns
     -------
@@ -42,7 +43,14 @@ def normalize_arcsinh(adata: AnnData, cofactor=5, inplace: bool = True):
     return None if inplace else adata
 
 
-def normalize_logicle(adata, t=262144, m=4.5, w=0.5, a=0, inplace=True):
+def normalize_logicle(
+    adata: AnnData,
+    t: int = 262144,
+    m: float = 4.5,
+    w: float = 0.5,
+    a: float = 0,
+    inplace: bool = True,
+) -> AnnData | None:
     """Logicle transformation.
 
     Logicle transformation, implemented as defined in the
@@ -67,15 +75,15 @@ def normalize_logicle(adata, t=262144, m=4.5, w=0.5, a=0, inplace=True):
     adata
         AnnData object.
     t
-        Parameter for the top of the linear scale. Defaults to 262144.
+        Parameter for the top of the linear scale.
     m
-        Parameter for the number of decades the true logarithmic scale approaches at the high end of the scale. Defaults to 4.5.
+        Parameter for the number of decades the true logarithmic scale approaches at the high end of the scale.
     w
-        Parameter for the approximate number of decades in the linear region. Defaults to 0.5.
+        Parameter for the approximate number of decades in the linear region.
     a
-        Parameter for the additional number of negative decades. Defaults to 0.
+        Parameter for the additional number of negative decades.
     copy
-        Return a inplace instead of writing to adata. Defaults to True.
+        Return a inplace instead of writing to adata.
 
     Returns
     -------
@@ -309,14 +317,18 @@ def _seriesBiexponential(p: dict, value: float) -> float:
     return (sum1 * x + p["taylor"][0]) * x
 
 
-def normalize_biExp(
-    adata,
-    negative=0.0,
-    width=-10.0,
-    positive=4.418540,
-    max_value=262144.000029,
-    inplace=True,
-):
+def normalize_biExp(*args, **kwargs):
+    return normalize_biexp(*args, **kwargs)
+
+
+def normalize_biexp(
+    adata: AnnData,
+    negative: float = 0.0,
+    width: float = -10.0,
+    positive: float = 4.418540,
+    max_value: float = 262144.000029,
+    inplace: bool = True,
+) -> AnnData | None:
     """Biexponential transformation.
 
     Biex transform as implemented in FlowJo 10. Adapted from FlowKit
@@ -359,15 +371,15 @@ def normalize_biExp(
     adata
         AnnData object representing the FCS data.
     negative
-        Value for the FlowJo biex option 'negative' or pd.Series. Defaults to 0.0.
+        Value for the FlowJo biex option 'negative' or pd.Series.
     width
-        Value for the FlowJo biex option 'width' or pd.Series. Defaults to -10.0.
+        Value for the FlowJo biex option 'width' or pd.Series.
     positive
-        Value for the FlowJo biex option 'positive' or pd.Series. Defaults to 4.418540.
+        Value for the FlowJo biex option 'positive' or pd.Series.
     max_value
-        Parameter for the top of the linear scale or pd.Series. Defaults to 262144.000029.
+        Parameter for the top of the linear scale or pd.Series.
     inplace
-        Return a copy instead of writing to adata. Defaults to True.
+        Return a copy instead of writing to adata.
 
     Returns
     -------
@@ -568,7 +580,13 @@ def _log_root(b: float, w: float) -> float:
     return d
 
 
-def normalize_autologicle(adata, channels=None, m=4.5, q=0.05, inplace=True):
+def normalize_autologicle(
+    adata: AnnData,
+    channels: str | list[str] | None = None,
+    m: float = 4.5,
+    q: float = 0.05,
+    inplace: bool = True,
+) -> AnnData | None:
     """Autologicle transformation.
 
     Automatically apply a logicle transformation to specified channels in an AnnData
@@ -583,14 +601,14 @@ def normalize_autologicle(adata, channels=None, m=4.5, q=0.05, inplace=True):
     channels
         A list of channel names to be logicle transformed.
     m
-        The upper limit for the transformation parameter 'm'. Defaults to 4.5.
+        The upper limit for the transformation parameter 'm'.
     q
-        The quantile to determine the lower threshold for the transformation. Defaults to 0.05.
+        The quantile to determine the lower threshold for the transformation.
 
     Returns
     -------
-    dict
-        A dictionary with channel names as keys and dictionaries containing logicle transformation parameters as values.
+    Depending on `inplace`, returns or updates `adata` in the
+    following field `adata.X` is then a normalised adata object
 
     Examples
     --------
@@ -628,7 +646,7 @@ def normalize_autologicle(adata, channels=None, m=4.5, q=0.05, inplace=True):
     return None if inplace else adata
 
 
-def _logicleTransform(channel, adata, m, q):
+def _logicleTransform(channel: str, adata: AnnData, m: float, q: float):
     """Helper function for logicle transform.
 
     Helper function to apply a logicle transformation to a single channel in
@@ -636,18 +654,20 @@ def _logicleTransform(channel, adata, m, q):
     This is an internal helper function used by `autoLgcl` to transform the data
     of a specified channel using the logicle method.
 
-    Args:
-        channel (str): The name of the channel to be transformed.
-        adata (AnnData): The AnnData object containing the data for the
-                        specified channel.
-        m (float): The upper limit for the transformation parameter 'm'.
-        q (float): The quantile to determine the lower threshold for the
-                   transformation.
+    Parameters
+    ----------
+    channel
+        The name of the channel to be transformed.
+    adata
+        The AnnData object containing the data for the specified channel.
+    m
+        The upper limit for the transformation parameter 'm'.
+    q
+        The quantile to determine the lower threshold for the transformation.
 
     Returns
     -------
-        dict: A dictionary with details of the logicle transformation parameters
-              and results.
+    A dictionary with details of the logicle transformation parameters and results.
 
     Note:
         If the computed parameter 'w' is NaN or exceeds 2, it resets to a default value

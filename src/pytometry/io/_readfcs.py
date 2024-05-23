@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from pathlib import Path
 from typing import Any
 
@@ -11,16 +9,16 @@ from tqdm.auto import tqdm
 def read_fcs(path: str, reindex: bool = True) -> AnnData:
     """Read FCS file and convert into AnnData format.
 
-    Args:
-        path: str or Path
-            location of fcs file to parse
-        reindex: boolean
-            use the marker info to reindex variable names
-            defaults to True
+    Parameters
+    ----------
+    path
+        location of fcs file to parse
+    reindex
+        use the marker info to reindex variable names
 
     Returns
     -------
-        an AnnData object of the fcs file
+    An AnnData object of the fcs file
     """
     return readfcs.read(path, reindex=reindex)
 
@@ -34,26 +32,27 @@ def read_and_merge(
 ) -> AnnData:
     """Read and merge multiple FCS files into a single AnnData object.
 
-    Args:
-        files (str | list[str]): either a list of file paths or a directory path
-        sample_ids (list[Any] | None): list of sample ids to use as a column in
-        the AnnData object
-        sample_id_from_filename (bool): whether to use the filename to extract the
-        sample id
-        sample_id_index (int): which index of the filename to use as the sample id,
-        defaults to 0
-        sample_id_sep (str): separator to use when splitting the filename, defaults
-        to "_"
+    Parameters
+    ----------
+    files
+        either a list of file paths or a directory path
+    sample_ids
+        list of sample ids to use as a column in the AnnData object
+    sample_id_from_filename
+        whether to use the filename to extract the sample id
+    sample_id_index
+        which index of the filename to use as the sample id
+    sample_id_sep
+        separator to use when splitting the filename
 
     Returns
     -------
-        AnnData: merged AnnData object
+    Merged AnnData object
     """
     if isinstance(files, str):
-        if Path(files).is_dir():
-            files = [str(f) for f in Path(files).glob("*.fcs")]
-        else:
+        if not Path(files).is_dir():
             raise ValueError("files must be a list of files or a directory path")
+        files = [str(f) for f in Path(files).glob("*.fcs")]
     elif isinstance(files, list):
         files = [str(Path(f)) for f in files if Path(f).suffix == ".fcs"]
 

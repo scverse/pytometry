@@ -1,6 +1,4 @@
-from typing import (
-    Literal,
-)
+from typing import Literal
 
 import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
@@ -30,7 +28,7 @@ def scatter_density(
     vmax: float | None = None,
     *,
     layer: str | None = None,
-):
+) -> None:
     """Plots the cell density across two adata.obs.
 
     Parameters
@@ -38,17 +36,17 @@ def scatter_density(
     adata
         AnnData object containing data.
     x
-        adata.obs to plot on x axis. Defaults to 'FSC-A'.
+        adata.obs to plot on x axis.
     y
-        adata.obs to plot on x axis. Defaults to 'SSC-A'.
+        adata.obs to plot on x axis.
     x_label
         x axis label.
     y_label
         y axis label.
     x_scale
-        x axis scale type to apply. Defaults to 'linear'.
+        x axis scale type to apply.
     y_scale
-        y axis scale type to apply. Defaults to 'linear'.
+        y axis scale type to apply.
     x_lim
         upper and lower limit of the x axis.
     y_lim
@@ -56,22 +54,18 @@ def scatter_density(
     ax
         Axes to draw into. If None, create a new figure or use fignum to draw into an existing figure.
     figsize
-        Figure size (width, height) if ax not provided. Defaults to (10, 10).
+        Figure size (width, height) if ax not provided.
     bins
         Number of bins for the np.histogram2d function.
     cmap
         For scalar aggregates, a matplotlib colormap name or instance. Alternatively, an iterable
-        of colors can be passed and will be converted to a colormap. Defaults to 'jet'.
+        of colors can be passed and will be converted to a colormap.
     vmin, vmax
         For scalar aggregates, the data range that the colormap covers. If vmin or vmax is None (default),
         the colormap autoscales to the range of data in the area displayed, unless the corresponding
         value is already set in the norm.
     layer
         The layer in adata to use. If None, use adata.X.
-
-    Returns
-    -------
-    Scatter plot that displays cell density
     """
     ax = plt.subplots(figsize=figsize)[1] if ax is None else ax
 
