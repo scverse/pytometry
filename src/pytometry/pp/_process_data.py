@@ -11,14 +11,16 @@ from anndata import AnnData
 def create_comp_mat(spillmat: pd.DataFrame, relevant_data: str = "") -> pd.DataFrame:
     """Creates a compensation matrix from a spillover matrix.
 
-    Args:
-        spillmat (pd.DataFrame): Spillover matrix as pandas dataframe.
-        relevant_data (str, optional):A list of channels for customized selection.
-            Defaults to ''.
+    Parameters
+    ----------
+    spillmat
+        Spillover matrix as pandas dataframe.
+    relevant_data:
+        A list of channels for customized selection. Defaults to ''.
 
     Returns
     -------
-        pd.DataFrame of the compensation matrix.
+    DataFrame of the compensation matrix.
     """
     comp_mat = np.linalg.inv(spillmat)
 
@@ -39,16 +41,17 @@ def find_indexes(
 ) -> AnnData | None:
     """Find channels of interest for computing compensation.
 
-    Args:
-        adata (AnnData): AnnData object
-        var_key (str, optional): key where to check if a feature is an area,
-             height etc. type of value. Use `var_names` if None.
-        key_added (str, optional): key where result vector is added to the adata.var.
-            Defaults to 'signal_type'.
-        data_type (str, optional): either 'facs' or 'cytof'.
-            Defaults to 'facs'.
-        inplace (bool, optional): Return a copy instead of writing to adata.
-            Defaults to True.
+    Parameters
+    ----------
+    adata
+        AnnData object.
+    var_key
+        Key where to check if a feature is an area, height etc. type of value. Use `var_names` if None.
+    key_added
+        Key where result vector is added to the adata.var. Defaults to 'signal_type'.
+    data_type
+        Either 'facs' or 'cytof'. Defaults to 'facs'.
+    inplace
 
     Returns
     -------
@@ -100,25 +103,24 @@ def compensate(
 ) -> AnnData | None:
     """Computes compensation for data channels.
 
-    Args:
-        adata (AnnData): AnnData object
-        key (str, optional): key where result vector is added
-            to the adata.var. Defaults to 'signal_type'.
-        comp_matrix (pd.DataFrame, optional): a custom compensation matrix.
-            Please note that by default we use the spillover matrix directly
-            for numeric stability.
-        matrix_type (str, optional): whether to use a spillover matrix (default)
-            or a compensation matrix. Only considered for custom compensation matrices.
-            Usually, custom compensation matrices are the inverse of the spillover
-            matrix.
-            If you want to use a compensation matrix, not the spillover matrix,
-            set `matrix_type` to `compensation`.
-        inplace (bool, optional): Return a copy instead of writing to adata.
-            Defaults to True.
+    Parameters
+    ----------
+    adata
+        AnnData object.
+    key
+        Key where result vector is added to the adata.var. Defaults to 'signal_type'.
+    comp_matrix
+        A custom compensation matrix. Please note that by default we use the spillover matrix directly for numeric stability.
+    matrix_type
+        Whether to use a spillover matrix (default) or a compensation matrix. Only considered for custom compensation
+        matrices. Usually, custom compensation matrices are the inverse of the spillover matrix. If you want to use
+        a compensation matrix, not the spillover matrix, set `matrix_type` to `compensation`.
+    inplace
+        Return a copy instead of writing to adata. Defaults to True.
 
     Returns
     -------
-        Depending on `inplace`, returns or updates `adata`
+    Depending on `inplace`, returns or updates `adata`
     """
     adata = adata if inplace else adata.copy()
 
@@ -196,22 +198,24 @@ def split_signal(
 ) -> AnnData | None:
     """Method to filter out height or area data.
 
-    Args:
-        adata (AnnData): AnnData object containing data.
-        var_key (str, optional): key where to check if a feature is an area,
-             height etc. type of value. Use `var_names` if None.
-        key (str, optional): key for adata.var where the variable type is stored.
-            Defaults to 'signal_type'.
-        option (str, optional):  for choosing 'area' or 'height' in case of FACS data
-            and 'element' for cyTOF data. Defaults to 'area'.
-        data_type (str, optional): either 'facs' or 'cytof'/'cyTOF'. Defaults to 'facs'.
-        inplace (bool, optional): Return a copy instead of writing to adata.
-            Defaults to True.
+    Parameters
+    ----------
+    adata
+        AnnData object containing data.
+    var_key
+        Key where to check if a feature is an area, height etc. type of value. Use `var_names` if None.
+    key
+        Key for adata.var where the variable type is stored. Defaults to 'signal_type'.
+    option
+        For choosing 'area' or 'height' in case of FACS data and 'element' for cyTOF data. Defaults to 'area'.
+    data_type
+        Either 'facs' or 'cytof'/'cyTOF'. Defaults to 'facs'.
+    inplace
+        Return a copy instead of writing to adata. Defaults to True.
 
     Returns
     -------
-        Depending on `inplace`, returns or updates `adata` with the following fields:
-            AnnData: AnnData object containing area or height data in `.var`
+    Depending on `inplace`, returns or updates `adata` with area or height data in `.var`
     """
     adata = adata if inplace else adata.copy()
 
@@ -252,14 +256,16 @@ def split_signal(
 def _dummy_spillover(n_rows=10, row_names=None) -> pd.DataFrame:
     """Create dummy spillover matrix for testing.
 
-    Args:
-        n_rows (int, optional): Number of rows and columns_. Defaults to 10.
-        row_names (index or array-like, optional): Index to use for the resulting
-            dataframe. Also used as column names. Defaults to None.
+    Parameters
+    ----------
+    n_rows
+        number of rows and columns. Defaults to 10.
+    row_names
+        Index to use for the resulting dataframe. Also used as column names. Defaults to None.
 
     Returns
     -------
-        pd.DataFrame: A dummy spillover matrix with 2's on the diagonal
+    A dummy spillover matrix with 2's on the diagonal
     """
     tmp_mat = np.diag(np.ones(n_rows) * 2)
     dummy_spill = pd.DataFrame(data=tmp_mat, index=row_names, columns=row_names)

@@ -25,25 +25,25 @@ def plotdata(
 
     Parameters
     ----------
-    adata:
+    adata
         Anndata object containing data.
-    key:
+    key
         Key in adata.var to plot. Default is 'signal_type' which is generated
         when calling the preprocessing function :func:`~pytometry.pp.split_signal`.
-    normalize:
+    normalize
         Normalization type. Default is None but can be set to "arcsinh", "biExp"
         or "logicle"
-    cofactor:
+    cofactor
         Cofactor for arcsinh normalization. Default is 10.
-    figsize:
+    figsize
         Figure size (width, height). Default is (15, 6).
-    option:
+    option
         Switch to choose directly between area and height data. Default is "area".
-    bins:
+    bins
         Number of bins for the histogram. Default is 400.
-    save:
+    save
         Path to save the figure.
-    **kwargs:
+    **kwargs
         Additional arguments passed to :func:`matplotlib.pyplot.savefig`
 
     Returns
