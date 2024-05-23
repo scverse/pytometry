@@ -7,19 +7,18 @@ from scipy import interpolate
 def normalize_arcsinh(adata: AnnData, cofactor=5, inplace: bool = True):
     """Inverse hyperbolic sine transformation.
 
-    Args:
-        adata : AnnData object
-        cofactor (float or pandas.Series): all values are divided by this
-           factor before arcsinh transformation recommended value for
-           cyTOF data is 5 and for flow data 150.
-        inplace (bool, optional): Return a copy instead of writing to adata.
-            Defaults to True.
+    Parameters
+    ----------
+    adata
+        AnnData object.
+    cofactor
+        All values are divided by this factor before arcsinh transformation. Recommended value for cyTOF data is 5 and for flow data 150.
+    inplace
+        Return a copy instead of writing to adata. Defaults to True.
 
     Returns
     -------
-        Depending on `inplace`, returns or updates `adata`
-        in the following field `adata.X` is then a normalised
-        adata object
+    Depending on `inplace`, returns or updates `adata` in the following field `adata.X` is then a normalised adata object
     """
     adata = adata if inplace else adata.copy()
     # check inputs
@@ -46,43 +45,45 @@ def normalize_arcsinh(adata: AnnData, cofactor=5, inplace: bool = True):
 def normalize_logicle(adata, t=262144, m=4.5, w=0.5, a=0, inplace=True):
     """Logicle transformation.
 
-    Args:
-        adata (AnnData): AnnData object
-        t (float, optional): parameter for the top of the linear scale.
-            Defaults to 262144.
-        m (float, optional): parameter for the number of decades
-            the true logarithmic scale approaches at the high end of
-            the scale. Defaults to 4.5.
-        w (float, optional): parameter for the approximate number of
-            decades in the linear region. Defaults to 0.5.
-        a (float, optional): parameter for the additional number of
-            negative decades. Defaults to 0.
-        copy (bool, optional): Return a inplace instead of writing to adata.
-            Defaults to True.
+    Logicle transformation, implemented as defined in the
+    GatingML 2.0 specification, adapted from FlowKit and Flowutils
+    Python packages.
+
+    logicle(x, T, W, M, A) = root(B(y, T, W, M, A) - x)
+
+    where B is a modified bi-exponential function defined as
+
+    B(y, T, W, M, A) = ae^(by) - ce^(-dy) - f
+
+    The Logicle transformation was originally defined in the
+    publication of
+
+    Moore WA and Parks DR. Update for the logicle data scale
+    including operational code implementations.
+    Cytometry A., 2012:81A(4):273-277.
+
+    Parameters
+    ----------
+    adata
+        AnnData object.
+    t
+        Parameter for the top of the linear scale. Defaults to 262144.
+    m
+        Parameter for the number of decades the true logarithmic scale approaches at the high end of the scale. Defaults to 4.5.
+    w
+        Parameter for the approximate number of decades in the linear region. Defaults to 0.5.
+    a
+        Parameter for the additional number of negative decades. Defaults to 0.
+    copy
+        Return a inplace instead of writing to adata. Defaults to True.
 
     Returns
     -------
-        Depending on `inplace`, returns or updates `adata`
-        in the following field `adata.X` is then a normalised
-        adata object
+    Depending on `inplace`, returns or updates `adata`
+    in the following field `adata.X` is then a normalised
+    adata object
 
-    Details:
-        Logicle transformation, implemented as defined in the
-        GatingML 2.0 specification, adapted from FlowKit and Flowutils
-        Python packages.
 
-        logicle(x, T, W, M, A) = root(B(y, T, W, M, A) - x)
-
-        where B is a modified bi-exponential function defined as
-
-        B(y, T, W, M, A) = ae^(by) - ce^(-dy) - f
-
-        The Logicle transformation was originally defined in the
-        publication of
-
-        Moore WA and Parks DR. Update for the logicle data scale
-        including operational code implementations.
-        Cytometry A., 2012:81A(4):273-277.
     """
     # initialise precision
     taylor_length = 16
@@ -140,13 +141,16 @@ def normalize_logicle(adata, t=262144, m=4.5, w=0.5, a=0, inplace=True):
 def _scale(value: float, p: dict) -> float:
     """Scale helper function.
 
-    Args:
-        value (float): Entry in the anndata matrix
-        p (dict): Parameter dictionary
+    Parameters
+    ----------
+    value
+        Entry in the anndata matrix
+    p
+        Parameter dictionary
 
     Returns
     -------
-       float: Scaled value or -1
+    Scaled value or -1
     """
     DBL_EPSILON = 1e-9  # from C++,
     # defined as the smallest difference between 1
@@ -209,9 +213,12 @@ def _scale(value: float, p: dict) -> float:
 def _solve(b: float, w: float) -> float:
     """Helper function for biexponential transformation.
 
-    Args:
-        b (float): parameter for biex trafo
-        w (float): parameter for biex trafo
+    Parameters
+    ----------
+    b
+        parameter for biex trafo
+    w
+        parameter for biex trafo
     """
     DBL_EPSILON = 1e-9  # from C++, defined as the
     # smallest difference between 1
@@ -282,9 +289,12 @@ def _solve(b: float, w: float) -> float:
 def _seriesBiexponential(p: dict, value: float) -> float:
     """Helper function to compute biex trafo.
 
-    Args:
-        p (dict): Parameter dictionary
-        value (float): Start value for Taylor series expansion
+    Parameters
+    ----------
+    p
+        Parameter dictionary
+    value
+        Start value for Taylor series expansion
     """
     # initialise precision
     taylor_length = 16
@@ -317,24 +327,6 @@ def normalize_biExp(
     Information on the input parameters from the FlowJo docs can be found in the
     details section.
 
-    Args:
-        adata: AnnData object representing the FCS data
-        negative (float, optional): Value for the FlowJo biex option 'negative' (float)
-            or pd.Series. Defaults to 0.0.
-        width (float, optional): Value for the FlowJo biex option 'width' (float) or
-            pd.Series. Defaults to -10.0.
-        positive (float, optional): Value for the FlowJo biex option 'positive' (float)
-            or pd.Series. Defaults to 4.418540.
-        max_value (float, optional): parameter for the top of the linear scale
-            or pd.Series. Defaults to 262144.000029.
-        inplace (bool, optional): Return a copy instead of writing to adata.
-            Defaults to True.
-
-    Returns
-    -------
-        Depending on `inplace`, returns or updates `adata` in the
-        following field `adata.X` is then a normalised adata object
-
     Details:
         Adjusting width: The value for `w` will determine the amount of channels to be
             compressed into linear space around zero. The space of linear does
@@ -361,6 +353,28 @@ def normalize_biExp(
             99.9% of the cases that require adjusting the biexponential
             transform. It may be appropriate to adjust this value only if you
             use data that displays data with a data range greater than 5 decades.
+
+    Parameters
+    ----------
+    adata
+        AnnData object representing the FCS data.
+    negative
+        Value for the FlowJo biex option 'negative' or pd.Series. Defaults to 0.0.
+    width
+        Value for the FlowJo biex option 'width' or pd.Series. Defaults to -10.0.
+    positive
+        Value for the FlowJo biex option 'positive' or pd.Series. Defaults to 4.418540.
+    max_value
+        Parameter for the top of the linear scale or pd.Series. Defaults to 262144.000029.
+    inplace
+        Return a copy instead of writing to adata. Defaults to True.
+
+    Returns
+    -------
+    Depending on `inplace`, returns or updates `adata` in the
+    following field `adata.X` is then a normalised adata object
+
+
     """
     # check inputs
     inputs = [negative, width, positive, max_value]
@@ -425,15 +439,22 @@ def _generate_biex_lut(channel_range=4096, pos=4.418540, neg=0.0, width_basis=-1
     Implementation ported from the R library cytolib, which claims to be
     directly ported from the legacy Java code from TreeStar.
 
-    :param channel_range: Maximum positive value of the output range
-    :param pos: Number of decades
-    :param neg: Number of extra negative decades
-    :param width_basis: Controls the amount of input range compressed in
-        the zero / linear region. A higher
-        width basis value will include more input values in
-        the zero / linear region.
-    :param max_value: maximum input value to scale
-    :return: 2-column NumPy array of the LUT (column order: input, output)
+    Parameters
+    ----------
+    channel_range
+        Maximum positive value of the output range.
+    pos
+        Number of decades.
+    neg
+        Number of extra negative decades.
+    width_basis
+        Controls the amount of input range compressed in the zero / linear region. A higher width basis value will include more input values in the zero / linear region.
+    max_value
+        Maximum input value to scale.
+
+    Returns
+    -------
+    2-column NumPy array of the LUT (column order: input, output).
     """
     ln10 = np.log(10.0)
     decades = pos
@@ -494,13 +515,16 @@ def _generate_biex_lut(channel_range=4096, pos=4.418540, neg=0.0, width_basis=-1
 def _log_root(b: float, w: float) -> float:
     """Helper function.
 
-    Args:
-        b (float): Upper bound
-        w (float): Step parameter
+    Parameters
+    ----------
+    b
+        Upper bound
+    w
+        Step parameter
 
     Returns
     -------
-        float: Solution to interpolation
+    Solution to interpolation
     """
     # Code adopted from FlowKit Python package
     x_lo = 0.0
@@ -548,31 +572,37 @@ def normalize_autologicle(adata, channels=None, m=4.5, q=0.05, inplace=True):
     """Autologicle transformation.
 
     Automatically apply a logicle transformation to specified channels in an AnnData
-    object.
-    Code adapated from the `Cytofkit` package (Chen et al. 2016).
+    object. Code adapted from the `Cytofkit` package (Chen et al. 2016).
     This function processes multiple channels within an AnnData object by applying a
     logicle transformation to each one.
 
-    Args:
-        adata (AnnData): The AnnData object containing the data to be transformed.
-        channels (list of str): A list of channel names to be logicle transformed.
-        m (float, optional): The upper limit for the transformation parameter 'm'.
-                             Defaults to 4.5.
-        q (float, optional): The quantile to determine the lower threshold for the
-                             transformation. Defaults to 0.05.
+    Parameters
+    ----------
+    adata
+        The AnnData object containing the data to be transformed.
+    channels
+        A list of channel names to be logicle transformed.
+    m
+        The upper limit for the transformation parameter 'm'. Defaults to 4.5.
+    q
+        The quantile to determine the lower threshold for the transformation. Defaults to 0.05.
 
     Returns
     -------
-        dict: A dictionary with channel names as keys and dictionaries containing
-              logicle transformation parameters as values.
+    dict
+        A dictionary with channel names as keys and dictionaries containing logicle transformation parameters as values.
 
-    Usage:
+    Examples
+    --------
+    .. code-block::
+
         params = pm.tl._autoLgcl_params(adata, channels=list(adata.var_names))
         for channel in adata.var_names:
             channel_idx = np.where(adata.var_names == channel)[0][0]
             adata.X[:, channel_idx] = transforms.logicle(adata.X[:, channel_idx],
                                                     channel_indices=[channel_idx],
                                                     **params[channel])
+
     """
     adata = adata if inplace else adata.copy()
     # check inputs
