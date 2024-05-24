@@ -72,7 +72,13 @@ def scatter_density(
     if isinstance(bins, int):
         bins = (bins, bins)
 
-    hist, xedges, yedges = np.histogram2d(adata.obs_vector(x, layer=layer), adata.obs_vector(y, layer=layer), bins=bins)
+    x_values = adata.obs_vector(x, layer=layer)
+    y_values = adata.obs_vector(y, layer=layer)
+
+    x_lim = [x_values.min(), x_values.max()] if x_lim is None else x_lim
+    y_lim = [y_values.min(), y_values.max()] if y_lim is None else y_lim
+
+    hist, xedges, yedges = np.histogram2d(x_values, y_values, bins=bins, range=[x_lim, y_lim])
 
     vmin = hist.min() if vmin is None else vmin
     vmax = hist.max() if vmax is None else vmax
