@@ -29,5 +29,5 @@ __pycache__/
 /.vscode/
 
 # Data files from tutorials
-/docs/tutorials/*.fcs
-/docs/tutorials/*.h5ad
+/docs/notebooks/*.fcs
+/docs/notebooks/*.h5ad
