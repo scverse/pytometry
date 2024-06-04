@@ -4,7 +4,7 @@ from sklearn.datasets import make_classification
 from sklearn.metrics import fowlkes_mallows_score
 from sklearn.preprocessing import MinMaxScaler
 
-from pytometry.tools.clustering import flowsom_clustering
+from pytometry.tl.clustering import flowsom_clustering
 
 
 @pytest.fixture
@@ -38,7 +38,5 @@ def test_flowsom_clustering(example_data):
         sigma=1.0,
     )
     assert example_data.obs["flowsom_labels"].nunique() == 5
-    score = fowlkes_mallows_score(
-        example_data.obs["ground_truth"], example_data.obs["flowsom_labels"]
-    )
+    score = fowlkes_mallows_score(example_data.obs["ground_truth"], example_data.obs["flowsom_labels"])
     assert score > 0.9

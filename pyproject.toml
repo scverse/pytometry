@@ -1,17 +1,24 @@
 [build-system]
-requires = ["flit_core >=3.2,<4"]
-build-backend = "flit_core.buildapi"
+build-backend = "hatchling.build"
+requires = ["hatchling", "hatch-vcs"]
 
 [project]
 name = "pytometry"
-authors = [
-    {name = "Maren Buettner", email = "maren.buettner@tum.de"},
-    {name = "Ross Burton", email = "burtonrossj@gmail.com"}
-]
-readme = "README.md"
 dynamic = ["version"]
-description = "Pytometry is a Python package for flow and mass cytometry analysis."
-requires-python = '>= 3.9'
+description = "Flow & mass cytometry analytics in scverse"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {file = "LICENSE"}
+authors = [
+    {name = "Maren Büttner"},
+]
+maintainers = [
+    {name = "Maren Büttner", email = "maren.buettner@tum.de"},
+    {name = "Quentin Blampey"},
+]
+urls.Documentation = "https://pytometry.readthedocs.io/"
+urls.Source = "https://github.com/scverse/pytometry"
+urls.Home-page = "https://github.com/scverse/pytometry"
 dependencies = [
     "numpy>=1.20.0",
     "numba>=0.57",
@@ -28,32 +35,113 @@ dependencies = [
 
 ]
 
-[project.urls]
-Home = "https://github.com/buettnerlab/pytometry"
-
 [project.optional-dependencies]
 dev = [
     "pre-commit",
-    "nox",
-    "lndocs==0.2.0",
+]
+doc = [
+    "docutils>=0.8,!=0.18.*,!=0.19.*",
+    "sphinx>=4",
+    "sphinx-book-theme>=1.0.0",
+    "myst-nb>=1.1.0",
+    "sphinxcontrib-bibtex>=1.0.0",
+    "sphinx-autodoc-typehints",
+    "sphinxext-opengraph",
+    # For notebooks
+    "ipykernel",
+    "ipython",
+    "sphinx-copybutton",
+    "pandas",
 ]
 test = [
-    "pytest>=6.0",
-    "pytest-cov",
+    "pytest",
+    "coverage",
     "nbproject",
-    "nbproject_test >= 0.2.0",
+    "nbproject_test",
 ]
 
-[tool.black]
-preview = true
-
-[tool.pytest.ini_options]
-testpaths = [
-    "tests",
-    "docs/tutorials",
-]
+[tool.hatch.version]
+source = "vcs"
 
 [tool.coverage.run]
+source = ["pytometry"]
 omit = [
-    "pytometry/*",
+    "**/test_*.py",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+xfail_strict = true
+addopts = [
+    "--import-mode=importlib",  # allow using test files with same name
+]
+
+[tool.ruff]
+line-length = 120
+src = ["src"]
+extend-include = ["*.ipynb"]
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.ruff.lint]
+select = [
+    "F",  # Errors detected by Pyflakes
+    "E",  # Error detected by Pycodestyle
+    "W",  # Warning detected by Pycodestyle
+    "I",  # isort
+    "D",  # pydocstyle
+    "B",  # flake8-bugbear
+    "TID",  # flake8-tidy-imports
+    "C4",  # flake8-comprehensions
+    "BLE",  # flake8-blind-except
+    "UP",  # pyupgrade
+    "RUF100",  # Report unused noqa directives
+]
+ignore = [
+    # line too long -> we accept long comment lines; formatter gets rid of long code lines
+    "E501",
+    # Do not assign a lambda expression, use a def -> lambda expression assignments are convenient
+    "E731",
+    # allow I, O, l as variable names -> I is the identity matrix
+    "E741",
+    # Missing docstring in public package
+    "D104",
+    # Missing docstring in public module
+    "D100",
+    # Missing docstring in __init__
+    "D107",
+    # Errors from function calls in argument defaults. These are fine when the result is immutable.
+    "B008",
+    # __magic__ methods are often self-explanatory, allow missing docstrings
+    "D105",
+    # first line should end with a period [Bug: doesn't work with single-line docstrings]
+    "D400",
+    # First line should be in imperative mood; try rephrasing
+    "D401",
+    ## Disable one in each pair of mutually incompatible rules
+    # We don’t want a blank line before a class docstring
+    "D203",
+    # We want docstrings to start immediately after the opening triple quote
+    "D213",
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+[tool.ruff.lint.per-file-ignores]
+"docs/*" = ["I"]
+"tests/*" = ["D"]
+"*/__init__.py" = ["F401"]
+
+[tool.cruft]
+skip = [
+    "tests",
+    "src/**/__init__.py",
+    "src/**/basic.py",
+    "docs/api.md",
+    "docs/changelog.md",
+    "docs/references.bib",
+    "docs/references.md",
+    "docs/notebooks/example.ipynb",
 ]

@@ -3,9 +3,9 @@ import numpy
 import pandas
 import readfcs
 
-from pytometry.preprocessing import _dummy_spillover, compensate, create_comp_mat
-from pytometry.read_write import read_fcs
-from pytometry.tools import normalize_arcsinh, normalize_biExp, normalize_logicle
+from pytometry.io import read_fcs
+from pytometry.pp import _dummy_spillover, compensate, create_comp_mat
+from pytometry.tl import normalize_arcsinh, normalize_biexp, normalize_logicle
 
 
 # test read function
@@ -60,9 +60,7 @@ def test_compensate2():
         n_rows=adata.uns["meta"]["spill"].shape[0],
         row_names=adata.uns["meta"]["spill"].index,
     )
-    adata2 = compensate(
-        adata, comp_matrix=spillmat, matrix_type="spillover", inplace=False
-    )
+    adata2 = compensate(adata, comp_matrix=spillmat, matrix_type="spillover", inplace=False)
     assert adata2.X.sum() != adata.X.sum()
 
 
@@ -92,14 +90,14 @@ def test_normalize_arcsinh3():
 def test_normalize_biexp():
     path_data = readfcs.datasets.Oetjen18_t1()
     adata = read_fcs(path_data)
-    normalize_biExp(adata, inplace=True)
+    normalize_biexp(adata, inplace=True)
     assert isinstance(adata, anndata._core.anndata.AnnData)
 
 
 def test_normalize_biexp2():
     path_data = readfcs.datasets.Oetjen18_t1()
     adata = read_fcs(path_data)
-    adata2 = normalize_biExp(adata, inplace=False)
+    adata2 = normalize_biexp(adata, inplace=False)
     assert isinstance(adata2, anndata._core.anndata.AnnData)
 
 

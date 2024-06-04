@@ -1,43 +1,60 @@
-[![pypi](https://img.shields.io/pypi/v/pytometry?color=blue&label=pypi%20package)](https://pypi.org/project/pytometry)
-[![codecov](https://codecov.io/gh/buettnerlab/pytometry/branch/main/graph/badge.svg?token=AEG5ra92HV)](https://codecov.io/gh/buettnerlab/pytometry)
-[![Stars](https://img.shields.io/github/stars/buettnerlab/pytometry?logo=GitHub&color=yellow)](https://github.com/buettnerlab/pytometry/stargazers)
-<a href="https://gitmoji.dev">
-<img src="https://img.shields.io/badge/gitmoji-%20😜%20😍-FFDD67.svg" alt="Gitmoji">
-</a>
+# pytometry: Flow & mass cytometry analytics
 
-# Pytometry: Flow & mass cytometry analytics
+[![Tests][badge-tests]][link-tests]
+[![Documentation][badge-docs]][link-docs]
+
+[badge-tests]: https://img.shields.io/github/actions/workflow/status/scverse/pytometry/test.yaml?branch=main
+[link-tests]: https://github.com/scverse/pytometry/actions/workflows/test.yml
+[badge-docs]: https://img.shields.io/readthedocs/pytometry
 
 This package provides efficient and scalable handling of flow and mass cytometry data analysis. It provides
 
-- the functionality to read in flow data in the fcs file format as [anndata](https://anndata.readthedocs.io/en/latest/) objects
-- flow and mass cytometry specific preprocessing tools
-- access to the entire [scanpy](https://scanpy.readthedocs.io/en/stable/) workflow functionality
-- GPU support through [rapids](https://github.com/clara-parabricks/rapids-single-cell-examples)
+-   the functionality to read in flow data in the fcs file format as [anndata](https://anndata.readthedocs.io/en/latest/) objects
+-   flow and mass cytometry specific preprocessing tools
+-   access to the entire [scanpy](https://scanpy.readthedocs.io/en/stable/) workflow functionality
+-   GPU support through [rapids-singlecell](https://rapids-singlecell.readthedocs.io/)
 
-Follow [https://twitter.com/marenbuettner](https://twitter.com/marenbuettner) for updates.
+## Getting started
 
-For the code enthusiasts: Find our code base on [Github](https://github.com/buettnerlab/pytometry).
+Please refer to the [documentation][link-docs]. In particular, the
+
+-   [API documentation][link-api].
 
 ## Installation
 
-You can install `pytometry` via [pip](https://pip.pypa.io/) from [PyPI](https://pypi.org/):
+You need to have Python 3.10 or newer installed on your system. If you don't have
+Python installed, we recommend installing [Mambaforge](https://github.com/conda-forge/miniforge#mambaforge).
 
-```
+There are several alternative options to install pytometry:
+
+1. Install the latest release of `pytometry` from [PyPI][link-pypi].
+
+```bash
 pip install pytometry
 ```
 
-or from GitHub:
+2. Install the latest development version:
 
+```bash
+pip install git+https://github.com/scverse/pytometry.git@main
 ```
-pip install git+https://github.com/buettnerlab/pytometry.git
-```
 
-## Updates
+## Release notes
 
-- May 3rd 2023: New release 0.1.5 with FlowSOM clustering and autologicle normalization.
-- August 28th 2023: New release with various fixes and improvements.
-- October 12th 2022: First public release announcement on [Twitter](https://twitter.com/marenbuettner/status/1580160765201244161?s=20&t=mTBLcUaqKs9eMzEpOWnG0g)
+See [GitHub releases][changelog].
+
+## Contact
+
+For questions and help requests, you can reach out in the [scverse discourse][scverse-discourse].
+If you found a bug, please use the [issue tracker][issue-tracker].
 
 ## Citation
 
 Pytometry is currently a pre-print on [bioRxiv](https://www.biorxiv.org/content/10.1101/2022.10.10.511546v1).
+
+[scverse-discourse]: https://discourse.scverse.org/
+[issue-tracker]: https://github.com/scverse/pytometry/issues
+[changelog]: https://github.com/scverse/pytometry/releases
+[link-docs]: https://pytometry.readthedocs.io
+[link-api]: https://pytometry.readthedocs.io/latest/api.html
+[link-pypi]: https://pypi.org/project/pytometry

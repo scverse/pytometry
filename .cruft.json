@@ -1,0 +1,29 @@
+{
+  "template": "https://github.com/scverse/cookiecutter-scverse",
+  "commit": "87a407a65408d75a949c0b54b19fd287475a56f8",
+  "checkout": null,
+  "context": {
+    "cookiecutter": {
+      "project_name": "pytometry",
+      "package_name": "pytometry",
+      "project_description": "Flow & mass cytometry analytics in scverse",
+      "author_full_name": "Maren Büttner",
+      "author_email": "maren.buettner@tum.de",
+      "github_user": "scverse",
+      "project_repo": "https://github.com/scverse/pytometry",
+      "license": "Apache License Version 2.0",
+      "_copy_without_render": [
+        ".github/workflows/build.yaml",
+        ".github/workflows/test.yaml",
+        "docs/_templates/autosummary/**.rst"
+      ],
+      "_render_devdocs": false,
+      "_jinja2_env_vars": {
+        "lstrip_blocks": true,
+        "trim_blocks": true
+      },
+      "_template": "https://github.com/scverse/cookiecutter-scverse"
+    }
+  },
+  "directory": null
+}
