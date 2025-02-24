@@ -71,7 +71,7 @@ def plotdata(
         elif normalize.lower().count("logicle") > 0:
             normalize_logicle(adata_)
         else:
-            print(f"{normalize} is not a valid normalization type. Continue without" " normalization.")
+            print(f"{normalize} is not a valid normalization type. Continue without normalization.")
 
     if option_key.lower() not in ["area", "height", "other"]:
         print(f"Option {option_key} is not a valid category. Return all.")
@@ -83,7 +83,7 @@ def plotdata(
         var_names = adata_.var_names[index].values
 
     if len(var_names) == 0:
-        print(f"Option {option_key} led to the selection of 0 variables.              " " Nothing to plot.")
+        print(f"Option {option_key} led to the selection of 0 variables.               Nothing to plot.")
         return
 
     rcParams["figure.figsize"] = figsize
