@@ -9,16 +9,16 @@
 
 This package provides efficient and scalable handling of flow and mass cytometry data analysis. It provides
 
--   the functionality to read in flow data in the fcs file format as [anndata](https://anndata.readthedocs.io/en/latest/) objects
--   flow and mass cytometry specific preprocessing tools
--   access to the entire [scanpy](https://scanpy.readthedocs.io/en/stable/) workflow functionality
--   GPU support through [rapids-singlecell](https://rapids-singlecell.readthedocs.io/)
+- the functionality to read in flow data in the fcs file format as [anndata](https://anndata.readthedocs.io/en/latest/) objects
+- flow and mass cytometry specific preprocessing tools
+- access to the entire [scanpy](https://scanpy.readthedocs.io/en/stable/) workflow functionality
+- GPU support through [rapids-singlecell](https://rapids-singlecell.readthedocs.io/)
 
 ## Getting started
 
 Please refer to the [documentation][link-docs]. In particular, the
 
--   [API documentation][link-api].
+- [API documentation][link-api].
 
 ## Installation
 

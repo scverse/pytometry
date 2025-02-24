@@ -89,7 +89,7 @@ def find_indexes(
             else:
                 index_array.append("other")
     else:
-        print(f"{data_type} not recognized. Must be either 'facs' or               " " 'cytof'")
+        print(f"{data_type} not recognized. Must be either 'facs' or                'cytof'")
     adata.var[key_added] = pd.Categorical(index_array)
     return None if inplace else adata
 
@@ -131,7 +131,7 @@ def compensate(
         elif matrix_type == "compensation":
             compens = create_comp_mat(comp_matrix)
         else:
-            raise KeyError("Expected 'spillover' or 'compensation' as `matrix_type`, but got" f" '{matrix_type}'.")
+            raise KeyError(f"Expected 'spillover' or 'compensation' as `matrix_type`, but got '{matrix_type}'.")
         # To Do: add checks that this input is correct
     elif adata.uns["meta"]["spill"] is not None:
         compens = adata.uns["meta"]["spill"]
@@ -175,15 +175,13 @@ def compensate(
     adata.X[:, ref_idx] = X_comp
 
     if np.array_equal(X, adata.X):
-        print(
-            "Compensation failed - matrices before and after are equivalent. Please" " check your compensation matrix."
-        )
+        print("Compensation failed - matrices before and after are equivalent. Please check your compensation matrix.")
     del X
 
     # check for nan values
     nan_val = np.isnan(adata.X[:, ref_idx]).sum()
     if nan_val > 0:
-        print(f"{nan_val} NaN values found after compensation. Please adjust " "compensation matrix.")
+        print(f"{nan_val} NaN values found after compensation. Please adjust compensation matrix.")
 
     return None if inplace else adata
 
