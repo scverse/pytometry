@@ -150,4 +150,4 @@ def test_return_params():
     # case 4: mutative, don't return params
     result = normalize_autologicle(adata, inplace=True, return_params=False)
     assert (adata.X == adata2.X).all() # check if inplace=True works
-    assert result == None
+    assert result is None
