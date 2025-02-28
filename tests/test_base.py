@@ -151,10 +151,5 @@ def test_return_params():
     adata = read_fcs(path_data)
     # case 4: mutative, don't return params
     result = normalize_autologicle(adata, inplace=True, return_params=False)
-<<<<<<< HEAD
     assert (adata.X == adata2.X).all() # check if inplace=True works
     assert result is None
-=======
-    assert (adata.X == adata2.X).all()  # check if inplace=True works
-    assert result == None
->>>>>>> 3422132421cce46544e545bd3de1eb36b2218734
