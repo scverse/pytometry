@@ -654,8 +654,15 @@ def normalize_autologicle(
         params_list.append(params)
         adata.X[:, channel_idx] = transforms.logicle(adata.X[:, channel_idx], channel_indices=[channel_idx], **params)
     if return_params:
-        return params_list if inplace else adata, params_list
-    return None if inplace else adata
+        if inplace:
+            return params_list
+        else:
+            return adata, params_list
+    else:
+        if inplace:
+            return
+        else:
+            return adata
 
 
 def _logicleTransform(channel: str, adata: AnnData, m: float, q: float):

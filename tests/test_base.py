@@ -128,4 +128,26 @@ def test_autologicle_param_override():
     params_list = [params for _ in range(adata.n_vars)] # list of identical params
     result1 = transforms.logicle(adata.X, channel_indices, **params)
     result2 = normalize_autologicle(adata, inplace=False, params_override=params_list).X
-    numpy.testing.assert_allclose(result1, result2, atol=1e-5)
+    assert (result1 == result2).all()
+
+def test_return_params():
+    path_data = readfcs.datasets.Oetjen18_t1()
+    adata = read_fcs(path_data)
+    # case 1: non-mutative, return params
+    adata2, params_list = normalize_autologicle(adata, inplace=False, return_params=True)
+    assert isinstance(adata2, anndata._core.anndata.AnnData)
+    assert isinstance(params_list, list)
+    assert isinstance(params_list[0], dict)
+    # case 2: non-mutative, don't return params
+    adata2 = normalize_autologicle(adata, inplace=False, return_params=False)
+    assert isinstance(adata2, anndata._core.anndata.AnnData)
+    # case 3: mutative, return params
+    params_list = normalize_autologicle(adata, inplace=True, return_params=True)
+    assert isinstance(params_list, list)
+    assert isinstance(params_list[0], dict)
+    assert (adata.X == adata2.X).all() # check if inplace=True works
+    adata = read_fcs(path_data)
+    # case 4: mutative, don't return params
+    result = normalize_autologicle(adata, inplace=True, return_params=False)
+    assert (adata.X == adata2.X).all() # check if inplace=True works
+    assert result == None
