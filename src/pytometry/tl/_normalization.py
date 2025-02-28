@@ -586,7 +586,9 @@ def normalize_autologicle(
     m: float = 4.5,
     q: float = 0.05,
     inplace: bool = True,
-) -> AnnData | None:
+    return_params: bool = False,
+    params_override: list[dict] | None = None
+) -> AnnData | list[dict] | None:
     """Autologicle transformation.
 
     Automatically apply a logicle transformation to specified channels in an AnnData
@@ -604,6 +606,10 @@ def normalize_autologicle(
         The upper limit for the transformation parameter 'm'.
     q
         The quantile to determine the lower threshold for the transformation.
+    return_params
+        Whether to return the parameters used for the transformation.
+    params_override
+        A list of known parameter values in the same order as channels, with empty dict in case of no override.
 
     Returns
     -------
@@ -628,6 +634,8 @@ def normalize_autologicle(
         raise TypeError("adata has to be an object of class 'AnnData'")
     if channels is None:
         channels = adata.var_names
+    if params_override and not len(params_override) == len(channels):
+        raise ValueError("params_override has to be the same length as channels.")
     else:
         # Turn string into a list
         if isinstance(channels, str):
@@ -639,10 +647,14 @@ def normalize_autologicle(
             missing_channels = [channels[i] for i in range(len(channels)) if not indx[i]]
             raise ValueError(f"Channels {missing_channels} were not found in the adata object.")
     # Perform autologicle transformation on all specified channels
+    params_list = []
     for channel in channels:
         channel_idx = np.where(adata.var_names == channel)[0][0]
-        params = _logicleTransform(channel, adata, m, q)
+        params = params_override[channel_idx] if params_override else _logicleTransform(channel, adata, m, q)
+        params_list.append(params)
         adata.X[:, channel_idx] = transforms.logicle(adata.X[:, channel_idx], channel_indices=[channel_idx], **params)
+    if return_params:
+        return params_list if inplace else adata, params_list
     return None if inplace else adata
 
 
@@ -677,11 +689,11 @@ def _logicleTransform(channel: str, adata: AnnData, m: float, q: float):
     w = 0
     t = np.max(data)
     ndata = data[data < 0]
-    nThres = np.quantile(ndata, 0.25) - 1.5 * np.subtract(*np.percentile(ndata, [75, 25]))
-    ndata = ndata[ndata >= nThres]
     # transId = f"{channel}_autolgclTransform"
 
     if len(ndata):
+        nThres = np.quantile(ndata, 0.25) - 1.5 * np.subtract(*np.percentile(ndata, [75, 25]))
+        ndata = ndata[ndata >= nThres]
         r = np.finfo(float).eps + np.quantile(ndata, q)
         if 10**m * abs(r) <= t:
             w = 0
