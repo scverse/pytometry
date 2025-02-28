@@ -2,11 +2,11 @@ import anndata
 import numpy
 import pandas
 import readfcs
+from flowutils import transforms
 
 from pytometry.io import read_fcs
 from pytometry.pp import _dummy_spillover, compensate, create_comp_mat
-from pytometry.tl import normalize_arcsinh, normalize_biexp, normalize_logicle, normalize_autologicle
-from flowutils import transforms
+from pytometry.tl import normalize_arcsinh, normalize_autologicle, normalize_biexp, normalize_logicle
 
 
 # test read function
@@ -115,6 +115,7 @@ def test_normalize_logicle2():
     adata2 = normalize_logicle(adata, inplace=False)
     assert isinstance(adata2, anndata._core.anndata.AnnData)
 
+
 def test_autologicle_param_override():
     path_data = readfcs.datasets.Oetjen18_t1()
     adata = read_fcs(path_data)
@@ -125,10 +126,11 @@ def test_autologicle_param_override():
         "m": 4.5,
         "a": 0,
     }
-    params_list = [params for _ in range(adata.n_vars)] # list of identical params
+    params_list = [params for _ in range(adata.n_vars)]  # list of identical params
     result1 = transforms.logicle(adata.X, channel_indices, **params)
     result2 = normalize_autologicle(adata, inplace=False, params_override=params_list).X
     assert (result1 == result2).all()
+
 
 def test_return_params():
     path_data = readfcs.datasets.Oetjen18_t1()
@@ -145,9 +147,9 @@ def test_return_params():
     params_list = normalize_autologicle(adata, inplace=True, return_params=True)
     assert isinstance(params_list, list)
     assert isinstance(params_list[0], dict)
-    assert (adata.X == adata2.X).all() # check if inplace=True works
+    assert (adata.X == adata2.X).all()  # check if inplace=True works
     adata = read_fcs(path_data)
     # case 4: mutative, don't return params
     result = normalize_autologicle(adata, inplace=True, return_params=False)
-    assert (adata.X == adata2.X).all() # check if inplace=True works
+    assert (adata.X == adata2.X).all()  # check if inplace=True works
     assert result == None

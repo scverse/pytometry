@@ -587,7 +587,7 @@ def normalize_autologicle(
     q: float = 0.05,
     inplace: bool = True,
     return_params: bool = False,
-    params_override: list[dict] | None = None
+    params_override: list[dict] | None = None,
 ) -> AnnData | list[dict] | None:
     """Autologicle transformation.
 
