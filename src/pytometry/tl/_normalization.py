@@ -35,7 +35,7 @@ def normalize_arcsinh(adata: AnnData, cofactor: float | pd.Series = 5, inplace: 
                 # transform adata values using the biexponential function
                 adata.X[:, idx] = np.arcsinh(adata.X[:, idx] / cofactor_tmp)
         else:
-            print("One of the parameters has the incorrect length.               Return" " adata without normalising.")
+            print("One of the parameters has the incorrect length.               Return adata without normalising.")
     else:  # integer values do not have len attribute
         # use one cofactor on the entire dataset
         adata.X = np.arcsinh(adata.X / cofactor)
@@ -437,7 +437,7 @@ def normalize_biexp(
             # transform adata values using the biexponential function
             adata.X[:, idx] = lut_func(adata.X[:, idx])
     else:
-        print("One of the parameters has the incorrect length.               Return adata" " without normalising.")
+        print("One of the parameters has the incorrect length.               Return adata without normalising.")
 
     return None if inplace else adata
 
@@ -707,7 +707,7 @@ def _logicleTransform(channel: str, adata: AnnData, m: float, q: float):
         else:
             w = (m - np.log10(t / abs(r))) / 2
             if np.isnan(w) or w > 2:
-                print(f"autoLgcl failed for channel: {channel}; using default logicle" " transformation")
+                print(f"autoLgcl failed for channel: {channel}; using default logicle transformation")
                 w = 0.1
                 t = 4000
                 m = 4.5
