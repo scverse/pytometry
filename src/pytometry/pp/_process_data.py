@@ -53,6 +53,7 @@ def find_indexes(
     data_type
         Type of cytometry data
     inplace
+        Update adata and return None if True. Otherwise, return a copy of adata with the changes.
 
     Returns
     -------
@@ -116,7 +117,7 @@ def compensate(
         matrices. Usually, custom compensation matrices are the inverse of the spillover matrix. If you want to use
         a compensation matrix, not the spillover matrix, set `matrix_type` to `compensation`.
     inplace
-        Return a copy instead of writing to adata.
+        Update adata and return None if True. Otherwise, return a copy of adata with the changes.
 
     Returns
     -------
@@ -209,7 +210,7 @@ def split_signal(
     data_type
         Type of cytometry data
     inplace
-        Return a copy instead of writing to adata.
+        Update adata and return None if True. Otherwise, return a copy of adata with the changes.
 
     Returns
     -------

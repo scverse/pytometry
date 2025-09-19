@@ -7,7 +7,7 @@ name = "pytometry"
 dynamic = ["version"]
 description = "Flow & mass cytometry analytics in scverse"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 license = {file = "LICENSE"}
 authors = [
     {name = "Maren Büttner"},
@@ -28,11 +28,10 @@ dependencies = [
     "scipy",
     "seaborn",
     "matplotlib",
-    "readfcs >=1.1.0",
+    "readfcs>=1.1.0",
     "flowutils",
-    "consensusclustering",
-    "minisom"
-
+    "consensusclustering>=0.2.4",
+    "minisom",
 ]
 
 [project.optional-dependencies]
