@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import logging
-from collections.abc import Sequence
 from typing import TypedDict
 
 import numpy as np
@@ -11,8 +10,7 @@ from minisom import MiniSom
 from sklearn.cluster import AgglomerativeClustering
 from tqdm.auto import tqdm
 
-SeedLike = int | np.integer | Sequence[int] | np.random.SeedSequence
-RNGLike = np.random.Generator | np.random.BitGenerator
+from pytometry._types import RNGLike, SeedLike
 
 logger = logging.getLogger("pytometry.flowsom")
 
