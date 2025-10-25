@@ -39,6 +39,10 @@ pip install pytometry
 pip install git+https://github.com/scverse/pytometry.git@main
 ```
 
+3. Install locally for development:
+
+Please refer to the [Contributing Guide][contributing].
+
 ## Release notes
 
 See [GitHub releases][changelog].
@@ -54,6 +58,7 @@ Pytometry is currently a pre-print on [bioRxiv](https://www.biorxiv.org/content/
 
 [scverse-discourse]: https://discourse.scverse.org/
 [issue-tracker]: https://github.com/scverse/pytometry/issues
+[changelog]: ./docs/contributing.md
 [changelog]: https://github.com/scverse/pytometry/releases
 [link-docs]: https://pytometry.readthedocs.io
 [link-api]: https://pytometry.readthedocs.io/latest/api.html
