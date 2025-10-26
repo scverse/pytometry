@@ -31,7 +31,7 @@ def normalize_arcsinh(adata: AnnData, cofactor: float | pd.Series = 5, inplace: 
             for idx, marker in enumerate(adata.var_names):
                 # get correct row
                 row_idx = cofactor.index == marker
-                cofactor_tmp = cofactor.iloc[row_idx, 0]
+                cofactor_tmp = cofactor[row_idx][0]
                 # transform adata values using the biexponential function
                 adata.X[:, idx] = np.arcsinh(adata.X[:, idx] / cofactor_tmp)
         else:
