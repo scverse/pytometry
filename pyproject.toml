@@ -96,6 +96,7 @@ select = [
     "C4",  # flake8-comprehensions
     "BLE",  # flake8-blind-except
     "UP",  # pyupgrade
+    "RUF022", # Reorder __all__ with isort-style rules
     "RUF100",  # Report unused noqa directives
 ]
 ignore = [
