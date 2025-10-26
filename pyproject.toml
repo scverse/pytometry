@@ -10,6 +10,7 @@ readme = "README.md"
 license = { file = "LICENSE" }
 maintainers = [
   { name = "Maren Büttner", email = "maren.buettner@tum.de" },
+  { name = "Quentin Blampey" },
 ]
 authors = [
   { name = "Maren Büttner" },
