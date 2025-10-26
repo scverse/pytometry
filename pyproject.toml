@@ -7,7 +7,7 @@ name = "pytometry"
 dynamic = ["version"]
 description = "Flow & mass cytometry analytics in scverse"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 license = {file = "LICENSE"}
 authors = [
     {name = "Maren Büttner"},
@@ -20,7 +20,7 @@ urls.Documentation = "https://pytometry.readthedocs.io/"
 urls.Source = "https://github.com/scverse/pytometry"
 urls.Home-page = "https://github.com/scverse/pytometry"
 dependencies = [
-    "numpy>=1.20.0",
+    "numpy>=2.0.0",
     "numba>=0.57",
     "pandas",
     "anndata",
@@ -28,16 +28,16 @@ dependencies = [
     "scipy",
     "seaborn",
     "matplotlib",
-    "readfcs >=1.1.0",
+    "readfcs>=1.1.0",
     "flowutils",
-    "consensusclustering",
-    "minisom"
-
+    "consensusclustering>=0.2.4",
+    "minisom",
 ]
 
 [project.optional-dependencies]
 dev = [
     "pre-commit",
+    "ruff==0.14.2"
 ]
 doc = [
     "docutils>=0.8,!=0.18.*,!=0.19.*",
@@ -96,6 +96,7 @@ select = [
     "C4",  # flake8-comprehensions
     "BLE",  # flake8-blind-except
     "UP",  # pyupgrade
+    "RUF022", # Reorder __all__ with isort-style rules
     "RUF100",  # Report unused noqa directives
 ]
 ignore = [

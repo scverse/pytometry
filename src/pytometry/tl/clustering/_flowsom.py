@@ -10,6 +10,8 @@ from minisom import MiniSom
 from sklearn.cluster import AgglomerativeClustering
 from tqdm.auto import tqdm
 
+from pytometry._types import RNGLike, SeedLike
+
 logger = logging.getLogger("pytometry.flowsom")
 
 
@@ -81,6 +83,7 @@ def meta_clustering(
     resample_frac: float = 0.5,
     verbose: bool = False,
     agglomerative_clustering_kwargs: dict | None = None,
+    rng: RNGLike | SeedLike | None = None,
 ) -> tuple[np.ndarray, ConsensusClustering]:
     """Meta-clustering of SOM nodes using consensus clustering.
 
@@ -106,6 +109,8 @@ def meta_clustering(
     agglomerative_clustering_kwargs
         keyword arguments for `sklearn.cluster.AgglomerativeClustering`. If None, defaults to
         {"metric": "euclidean", "linkage": "average"}.
+    rng
+        random number generator or seed for reproducibility
 
     Returns
     -------
@@ -123,6 +128,7 @@ def meta_clustering(
         max_clusters=max_clusters,
         n_resamples=n_resamples,
         resample_frac=resample_frac,
+        rng=rng,
     )
     weights = som.get_weights()
     flatten_weights = weights.reshape(som._activation_map.shape[0] * som._activation_map.shape[1], n_features)
@@ -237,6 +243,7 @@ def flowsom_clustering(
         resample_frac=resample_frac,
         verbose=verbose,
         agglomerative_clustering_kwargs=agglomerative_clustering_kwargs,
+        rng=seed,
     )
     logger.info("Assigning cluster labels to cells")
     x = np.array(adata.X)

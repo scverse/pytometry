@@ -22,7 +22,7 @@ Please refer to the [documentation][link-docs]. In particular, the
 
 ## Installation
 
-You need to have Python 3.10 or newer installed on your system. If you don't have
+You need to have Python 3.11 or newer installed on your system. If you don't have
 Python installed, we recommend installing [Mambaforge](https://github.com/conda-forge/miniforge#mambaforge).
 
 There are several alternative options to install pytometry:
@@ -39,6 +39,10 @@ pip install pytometry
 pip install git+https://github.com/scverse/pytometry.git@main
 ```
 
+3. Install locally for development:
+
+Please refer to the [Contributing Guide][contributing].
+
 ## Release notes
 
 See [GitHub releases][changelog].
@@ -54,6 +58,7 @@ Pytometry is currently a pre-print on [bioRxiv](https://www.biorxiv.org/content/
 
 [scverse-discourse]: https://discourse.scverse.org/
 [issue-tracker]: https://github.com/scverse/pytometry/issues
+[contributing]: https://pytometry.readthedocs.io/en/stable/contributing.html
 [changelog]: https://github.com/scverse/pytometry/releases
 [link-docs]: https://pytometry.readthedocs.io
 [link-api]: https://pytometry.readthedocs.io/latest/api.html

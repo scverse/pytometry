@@ -31,3 +31,9 @@ __pycache__/
 # Data files from tutorials
 /docs/notebooks/*.fcs
 /docs/notebooks/*.h5ad
+
+# uv lock file
+/uv.lock
+
+# Test FCS files
+/*.fcs
