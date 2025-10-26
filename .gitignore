@@ -15,7 +15,34 @@ __pycache__/
 /data/
 /node_modules/
 /.coverage*
+.mypy_cache/
+.ruff_cache/
+
+# Distribution / packaging
+/build/
+/dist/
+/*.egg-info/
+
+# Tests and coverage
+/.pytest_cache/
+/.cache/
+/data/
+/node_modules/
 
 # docs
 /docs/generated/
 /docs/_build/
+
+# IDEs
+/.idea/
+/.vscode/
+
+# Data files from tutorials
+/docs/notebooks/*.fcs
+/docs/notebooks/*.h5ad
+
+# uv lock file
+/uv.lock
+
+# Test FCS files
+/*.fcs

@@ -4,7 +4,7 @@ requires = [ "hatchling" ]
 
 [project]
 name = "pytometry"
-version = "0.0.1"
+version = "0.1.6"
 description = "Flow & mass cytometry analytics in scverse"
 readme = "README.md"
 license = { file = "LICENSE" }
@@ -14,18 +14,21 @@ maintainers = [
 authors = [
   { name = "Maren Büttner" },
 ]
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 classifiers = [
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
 ]
 dependencies = [
-  "anndata",
-  # for debug logging (referenced from the issue template)
-  "session-info2",
+    "numpy>=2.0.0",
+    "numba>=0.57",
+    "scanpy",
+    "readfcs>=1.1.0",
+    "flowutils",
+    "consensusclustering>=0.2.4",
+    "minisom",
 ]
 optional-dependencies.dev = [
   "pre-commit",
@@ -70,7 +73,7 @@ scripts.clean = "git clean -fdX -- {args:docs}"
 # Test the lowest and highest supported Python versions with normal deps
 [[tool.hatch.envs.hatch-test.matrix]]
 deps = [ "stable" ]
-python = [ "3.10", "3.13" ]
+python = [ "3.11", "3.13" ]
 
 # Test the newest supported Python version also with pre-release deps
 [[tool.hatch.envs.hatch-test.matrix]]
