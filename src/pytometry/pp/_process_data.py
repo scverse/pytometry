@@ -160,11 +160,11 @@ def compensate(
                 'with neither `adata.var.index` nor `adata.var["channel"].'
             )
     # match columns of spill mat such that they exactly correspond to adata.var.index
-    ref_names = ref_col[np.in1d(ref_col, idx_in)]
-    query_names = compens.columns[np.in1d(compens.columns, idx_in)]
+    ref_names = ref_col[np.isin(ref_col, idx_in)]
+    query_names = compens.columns[np.isin(compens.columns, idx_in)]
     idx_sort = [np.where(query_names == x)[0][0] for x in ref_names]
-    query_idx = np.in1d(compens.columns, query_names)
-    ref_idx = np.in1d(ref_col, ref_names)
+    query_idx = np.isin(compens.columns, query_names)
+    ref_idx = np.isin(ref_col, ref_names)
 
     # subset compensation matrix to the columns to run the compensation on
     compens = compens.iloc[query_idx, query_idx]

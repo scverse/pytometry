@@ -6,6 +6,15 @@ buck-out/
 # Compiled files
 .venv/
 __pycache__/
+.*cache/
+
+# Distribution / packaging
+/dist/
+
+# Tests and coverage
+/data/
+/node_modules/
+/.coverage*
 .mypy_cache/
 .ruff_cache/
 
@@ -26,7 +35,7 @@ __pycache__/
 
 # IDEs
 /.idea/
-/.vscode/
+.vscode/
 
 # Data files from tutorials
 /docs/notebooks/*.fcs
