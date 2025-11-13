@@ -23,6 +23,14 @@ def test_read_fcs2():
     assert isinstance(adata, anndata._core.anndata.AnnData)
 
 
+# test read function with ignore_offset_error=True
+# TODO: find available FCS file with offset error
+def test_read_fcs_with_offset_error():
+    path_data = readfcs.datasets.Oetjen18_t1()
+    adata = read_fcs(path_data, reindex=True, ignore_offset_error=True)
+    assert isinstance(adata, anndata._core.anndata.AnnData)
+
+
 # test compensate
 def test_compensate():
     path_data = readfcs.datasets.Oetjen18_t1()
