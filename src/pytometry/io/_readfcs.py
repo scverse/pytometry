@@ -21,12 +21,14 @@ def read_fcs(
         location of fcs file to parse
     reindex
         use the marker info to reindex variable names
-    ignore_offset_error: Ignore data offset error.
+    ignore_offset_error
+        Ignore data offset error. Default is False
+    ignore_offset_discrepancy
+        Ignore discrepancy between the HEADER and TEXT values for the DATA byte offset location.
         Default is False
-    ignore_offset_discrepancy: Ignore discrepancy between the HEADER and TEXT values for the DATA byte offset location.
-        Default is False
-    use_header_offsets: Use the HEADER section for the data offset locations.
-        Default is False. Setting this option to True also suppresses an error in cases of an offset discrepancy.
+    use_header_offsets
+        Use the HEADER section for the data offset locations. Default is False. 
+        Setting this option to True also suppresses an error in cases of an offset discrepancy.
 
     Returns
     -------
@@ -68,12 +70,14 @@ def read_and_merge(
         separator to use when splitting the filename
     reindex
         use the marker info to reindex variable names
-    ignore_offset_error: Ignore data offset error.
+    ignore_offset_error
+        Ignore data offset error. Default is False
+    ignore_offset_discrepancy
+        Ignore discrepancy between the HEADER and TEXT values for the DATA byte offset location.
         Default is False
-    ignore_offset_discrepancy: Ignore discrepancy between the HEADER and TEXT values for the DATA byte offset location.
-        Default is False
-    use_header_offsets: Use the HEADER section for the data offset locations.
-        Default is False. Setting this option to True also suppresses an error in cases of an offset discrepancy.
+    use_header_offsets
+        Use the HEADER section for the data offset locations. Default is False. 
+        Setting this option to True also suppresses an error in cases of an offset discrepancy.
 
     Returns
     -------
