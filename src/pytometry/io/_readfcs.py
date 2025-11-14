@@ -27,7 +27,7 @@ def read_fcs(
         Ignore discrepancy between the HEADER and TEXT values for the DATA byte offset location.
         Default is False
     use_header_offsets
-        Use the HEADER section for the data offset locations. Default is False. 
+        Use the HEADER section for the data offset locations. Default is False.
         Setting this option to True also suppresses an error in cases of an offset discrepancy.
 
     Returns
@@ -76,7 +76,7 @@ def read_and_merge(
         Ignore discrepancy between the HEADER and TEXT values for the DATA byte offset location.
         Default is False
     use_header_offsets
-        Use the HEADER section for the data offset locations. Default is False. 
+        Use the HEADER section for the data offset locations. Default is False.
         Setting this option to True also suppresses an error in cases of an offset discrepancy.
 
     Returns
