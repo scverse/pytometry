@@ -6,7 +6,13 @@ from anndata import AnnData
 from tqdm.auto import tqdm
 
 
-def read_fcs(path: str, reindex: bool = True) -> AnnData:
+def read_fcs(
+    path: str,
+    reindex: bool = True,
+    ignore_offset_error: bool = False,
+    ignore_offset_discrepancy: bool = False,
+    use_header_offsets: bool = False,
+) -> AnnData:
     """Read FCS file and convert into AnnData format.
 
     Parameters
@@ -15,12 +21,26 @@ def read_fcs(path: str, reindex: bool = True) -> AnnData:
         location of fcs file to parse
     reindex
         use the marker info to reindex variable names
+    ignore_offset_error
+        Ignore data offset error. Default is False
+    ignore_offset_discrepancy
+        Ignore discrepancy between the HEADER and TEXT values for the DATA byte offset location.
+        Default is False
+    use_header_offsets
+        Use the HEADER section for the data offset locations. Default is False.
+        Setting this option to True also suppresses an error in cases of an offset discrepancy.
 
     Returns
     -------
     An AnnData object of the fcs file
     """
-    return readfcs.read(path, reindex=reindex)
+    return readfcs.read(
+        path,
+        reindex=reindex,
+        ignore_offset_error=ignore_offset_error,
+        ignore_offset_discrepancy=ignore_offset_discrepancy,
+        use_header_offsets=use_header_offsets,
+    )
 
 
 def read_and_merge(
@@ -29,6 +49,10 @@ def read_and_merge(
     sample_id_from_filename: bool = False,
     sample_id_index: int = 0,
     sample_id_sep: str = "_",
+    reindex: bool = True,
+    ignore_offset_error: bool = False,
+    ignore_offset_discrepancy: bool = False,
+    use_header_offsets: bool = False,
 ) -> AnnData:
     """Read and merge multiple FCS files into a single AnnData object.
 
@@ -44,6 +68,16 @@ def read_and_merge(
         which index of the filename to use as the sample id
     sample_id_sep
         separator to use when splitting the filename
+    reindex
+        use the marker info to reindex variable names
+    ignore_offset_error
+        Ignore data offset error. Default is False
+    ignore_offset_discrepancy
+        Ignore discrepancy between the HEADER and TEXT values for the DATA byte offset location.
+        Default is False
+    use_header_offsets
+        Use the HEADER section for the data offset locations. Default is False.
+        Setting this option to True also suppresses an error in cases of an offset discrepancy.
 
     Returns
     -------
@@ -63,7 +97,13 @@ def read_and_merge(
 
     adata_stack = []
     for file, file_id in tqdm(zip(files, sample_ids, strict=False), total=len(files), desc="Loading FCS files"):
-        adata = read_fcs(file)
+        adata = read_fcs(
+            file,
+            reindex=reindex,
+            ignore_offset_error=ignore_offset_error,
+            ignore_offset_discrepancy=ignore_offset_discrepancy,
+            use_header_offsets=use_header_offsets,
+        )
         if file_id is not None:
             adata.obs["sample"] = file_id
         adata_stack.append(adata)

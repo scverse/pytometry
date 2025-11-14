@@ -29,7 +29,7 @@ dependencies = [
   "minisom",
   "numba>=0.57",
   "numpy>=2",
-  "readfcs>=1.1",
+  "readfcs>=2.1",
   "scanpy",
 ]
 optional-dependencies.dev = [
