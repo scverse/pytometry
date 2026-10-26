@@ -109,7 +109,6 @@ def read_and_merge(
         if sample_ids is not None:
             adata.obs["sample"] = sample_ids[i]
         adata_stack.append(adata)
-    # as the removed AnnData.concatenate did: the file index in obs["batch"], obs names made unique with its suffix
     return anndata.concat(
         adata_stack,
         join="outer",
