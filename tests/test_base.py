@@ -1,7 +1,6 @@
 import anndata
 import numpy
 import pandas
-import readfcs
 from flowutils import transforms
 
 from pytometry.io import read_fcs
@@ -10,38 +9,33 @@ from pytometry.tl import normalize_arcsinh, normalize_autologicle, normalize_bie
 
 
 # test read function
-def test_read_fcs():
-    path_data = readfcs.datasets.Oetjen18_t1()
-    adata = read_fcs(path_data, reindex=True)
+def test_read_fcs(oetjen18_t1):
+    adata = read_fcs(oetjen18_t1, reindex=True)
     assert isinstance(adata, anndata._core.anndata.AnnData)
 
 
 # test reindex false
-def test_read_fcs2():
-    path_data = readfcs.datasets.Oetjen18_t1()
-    adata = read_fcs(path_data, reindex=False)
+def test_read_fcs2(oetjen18_t1):
+    adata = read_fcs(oetjen18_t1, reindex=False)
     assert isinstance(adata, anndata._core.anndata.AnnData)
 
 
 # test read function with ignore_offset_error=True
 # TODO: find available FCS file with offset error
-def test_read_fcs_with_offset_error():
-    path_data = readfcs.datasets.Oetjen18_t1()
-    adata = read_fcs(path_data, reindex=True, ignore_offset_error=True)
+def test_read_fcs_with_offset_error(oetjen18_t1):
+    adata = read_fcs(oetjen18_t1, reindex=True, ignore_offset_error=True)
     assert isinstance(adata, anndata._core.anndata.AnnData)
 
 
 # test compensate
-def test_compensate():
-    path_data = readfcs.datasets.Oetjen18_t1()
-    adata = read_fcs(path_data)
+def test_compensate(oetjen18_t1):
+    adata = read_fcs(oetjen18_t1)
     compensate(adata)
     assert isinstance(adata, anndata._core.anndata.AnnData)
 
 
-def test_compensate_inplace():
-    path_data = readfcs.datasets.Oetjen18_t1()
-    adata = read_fcs(path_data)
+def test_compensate_inplace(oetjen18_t1):
+    adata = read_fcs(oetjen18_t1)
     adata2 = compensate(adata, inplace=False)
     assert isinstance(adata2, anndata._core.anndata.AnnData)
 
@@ -61,9 +55,8 @@ def test_create_comp_mat():
 
 
 # test custom dummy compensation
-def test_compensate2():
-    path_data = readfcs.datasets.Oetjen18_t1()
-    adata = read_fcs(path_data)
+def test_compensate2(oetjen18_t1):
+    adata = read_fcs(oetjen18_t1)
     # use extra compensation matrix
     spillmat = _dummy_spillover(
         n_rows=adata.uns["meta"]["spill"].shape[0],
@@ -74,45 +67,39 @@ def test_compensate2():
 
 
 # test return types for normalization
-def test_normalize_arcsinh():
-    path_data = readfcs.datasets.Oetjen18_t1()
-    adata = read_fcs(path_data)
+def test_normalize_arcsinh(oetjen18_t1):
+    adata = read_fcs(oetjen18_t1)
     normalize_arcsinh(adata, cofactor=1, inplace=True)
     assert isinstance(adata, anndata._core.anndata.AnnData)
 
 
-def test_normalize_arcsinh2():
-    path_data = readfcs.datasets.Oetjen18_t1()
-    adata = read_fcs(path_data)
+def test_normalize_arcsinh2(oetjen18_t1):
+    adata = read_fcs(oetjen18_t1)
     adata2 = normalize_arcsinh(adata, cofactor=1, inplace=False)
     assert isinstance(adata2, anndata._core.anndata.AnnData)
 
 
-def test_normalize_arcsinh3():
-    path_data = readfcs.datasets.Oetjen18_t1()
-    adata = read_fcs(path_data)
+def test_normalize_arcsinh3(oetjen18_t1):
+    adata = read_fcs(oetjen18_t1)
     cofactor = pandas.Series(numpy.repeat(1, adata.n_vars), index=adata.var_names)
     adata2 = normalize_arcsinh(adata, cofactor=cofactor, inplace=False)
     assert isinstance(adata2, anndata._core.anndata.AnnData)
 
 
-def test_normalize_biexp():
-    path_data = readfcs.datasets.Oetjen18_t1()
-    adata = read_fcs(path_data)
+def test_normalize_biexp(oetjen18_t1):
+    adata = read_fcs(oetjen18_t1)
     normalize_biexp(adata, inplace=True)
     assert isinstance(adata, anndata._core.anndata.AnnData)
 
 
-def test_normalize_biexp2():
-    path_data = readfcs.datasets.Oetjen18_t1()
-    adata = read_fcs(path_data)
+def test_normalize_biexp2(oetjen18_t1):
+    adata = read_fcs(oetjen18_t1)
     adata2 = normalize_biexp(adata, inplace=False)
     assert isinstance(adata2, anndata._core.anndata.AnnData)
 
 
-def test_normalize_biexp3():
-    path_data = readfcs.datasets.Oetjen18_t1()
-    adata = read_fcs(path_data)
+def test_normalize_biexp3(oetjen18_t1):
+    adata = read_fcs(oetjen18_t1)
     params = {
         name: pandas.Series(numpy.repeat(value, adata.n_vars), index=adata.var_names)
         for name, value in {"negative": 0.0, "width": -10.0, "positive": 4.41854, "max_value": 262144.0}.items()
@@ -121,23 +108,20 @@ def test_normalize_biexp3():
     assert isinstance(adata2, anndata._core.anndata.AnnData)
 
 
-def test_normalize_logicle():
-    path_data = readfcs.datasets.Oetjen18_t1()
-    adata = read_fcs(path_data)
+def test_normalize_logicle(oetjen18_t1):
+    adata = read_fcs(oetjen18_t1)
     normalize_logicle(adata, inplace=True)
     assert isinstance(adata, anndata._core.anndata.AnnData)
 
 
-def test_normalize_logicle2():
-    path_data = readfcs.datasets.Oetjen18_t1()
-    adata = read_fcs(path_data)
+def test_normalize_logicle2(oetjen18_t1):
+    adata = read_fcs(oetjen18_t1)
     adata2 = normalize_logicle(adata, inplace=False)
     assert isinstance(adata2, anndata._core.anndata.AnnData)
 
 
-def test_autologicle_param_override():
-    path_data = readfcs.datasets.Oetjen18_t1()
-    adata = read_fcs(path_data)
+def test_autologicle_param_override(oetjen18_t1):
+    adata = read_fcs(oetjen18_t1)
     channel_indices = list(range(adata.n_vars))
     params = {
         "w": 0.1,
@@ -151,9 +135,8 @@ def test_autologicle_param_override():
     assert (result1 == result2).all()
 
 
-def test_return_params():
-    path_data = readfcs.datasets.Oetjen18_t1()
-    adata = read_fcs(path_data)
+def test_return_params(oetjen18_t1):
+    adata = read_fcs(oetjen18_t1)
     # case 1: non-mutative, return params
     adata2, params_list = normalize_autologicle(adata, inplace=False, return_params=True)
     assert isinstance(adata2, anndata._core.anndata.AnnData)
@@ -167,7 +150,7 @@ def test_return_params():
     assert isinstance(params_list, list)
     assert isinstance(params_list[0], dict)
     assert (adata.X == adata2.X).all()  # check if inplace=True works
-    adata = read_fcs(path_data)
+    adata = read_fcs(oetjen18_t1)
     # case 4: mutative, don't return params
     result = normalize_autologicle(adata, inplace=True, return_params=False)
     assert (adata.X == adata2.X).all()  # check if inplace=True works
