@@ -163,3 +163,27 @@ def test_flowsom_clustering_kmeans(example_data, meta_clustering_method):
     with pytest.raises(ValueError, match="no grid"):
         flowsom_stars(adata, layout="grid")
     plt.close("all")
+
+
+def test_flowsom_clustering_markers(example_data):
+    import matplotlib
+
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    from pytometry.pl import flowsom_stars
+
+    informative = [f"marker_{i}" for i in range(example_data.n_vars)]
+    noise = np.random.default_rng(0).random((example_data.n_obs, 3))
+    adata = AnnData(np.hstack([example_data.X, noise]), obs=example_data.obs)
+    adata.var_names = [*informative, "noise_0", "noise_1", "noise_2"]
+    flowsom_clustering(adata, markers=informative, seed=0)
+    assert adata.uns["clusters"]["weights"].shape == (100, len(informative))
+    assert list(adata.uns["clusters"]["var_names"]) == informative
+    assert fowlkes_mallows_score(adata.obs["ground_truth"], adata.obs["clusters"]) > 0.9
+    flowsom_stars(adata)
+    with pytest.raises(KeyError, match="noise_0"):
+        flowsom_stars(adata, markers=["noise_0"])
+    with pytest.raises(KeyError):
+        flowsom_clustering(adata, markers=["not_a_marker"])
+    plt.close("all")

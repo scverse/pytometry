@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 import warnings
+from collections.abc import Sequence
 from typing import TYPE_CHECKING, Literal, TypedDict
 
 import graspologic_native as gn
@@ -316,6 +317,7 @@ def flowsom_clustering(
     resolution: float = 1.0,
     n_neighbors: int = 5,
     method: Literal["som", "kmeans"] = "som",
+    markers: Sequence[str] | None = None,
 ) -> AnnData | tuple[AnnData, ClusteringObjects]:
     """Cluster cytometry data using FlowSOM.
 
@@ -385,6 +387,8 @@ def flowsom_clustering(
     method
         "som" for the SOM of FlowSOM, or "kmeans" for k-means centroids instead of its nodes. k-means has no
         `sigma`, `n_epochs`, `weight_init` or manhattan `metric`.
+    markers
+        markers (`var_names`) to cluster on, e.g. lineage markers without functional ones. All markers if None.
 
     Returns
     -------
@@ -400,10 +404,12 @@ def flowsom_clustering(
     if method not in ("som", "kmeans"):
         raise ValueError('Unknown method, must be one of "som" or "kmeans"')
     adata = adata if inplace else adata.copy()
+    var_names = adata.var_names if markers is None else pd.Index(markers)
+    x = adata.X if markers is None else adata[:, var_names].X
     logger.info("Running FlowSOM clustering")
     if method == "som":
         som = som_clustering(
-            adata.X,
+            x,
             som_dim=som_dim,
             sigma=sigma,
             learning_rate=learning_rate,
@@ -419,7 +425,7 @@ def flowsom_clustering(
         )
     else:
         som = kmeans_clustering(
-            adata.X,
+            x,
             n_clusters=som_dim[0] * som_dim[1],
             seed=seed,
             metric=metric,
@@ -433,7 +439,7 @@ def flowsom_clustering(
     if meta_clustering_method == "consensus":
         meta_class, cc = meta_clustering(
             som,
-            adata.X.shape[1],
+            x.shape[1],
             min_clusters=min_clusters,
             max_clusters=max_clusters,
             n_resamples=n_resamples,
@@ -461,7 +467,7 @@ def flowsom_clustering(
         },
         "weights": _nodes(som)[0],
         "meta_class": meta_class,
-        "var_names": np.asarray(adata.var_names),
+        "var_names": np.asarray(var_names),
     }
     if return_clustering_objs:
         return adata, ClusteringObjects(som=som, meta_class=meta_class, consensus_clustering=cc)
