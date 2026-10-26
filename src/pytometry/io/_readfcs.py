@@ -34,17 +34,13 @@ def read_fcs(
     -------
     An AnnData object of the fcs file
     """
-    adata = readfcs.read(
+    return readfcs.read(
         path,
         reindex=reindex,
         ignore_offset_error=ignore_offset_error,
         ignore_offset_discrepancy=ignore_offset_discrepancy,
         use_header_offsets=use_header_offsets,
     )
-    # with pandas 3, X is a read-only view of readfcs' DataFrame, but pytometry's functions modify X in place
-    if not adata.X.flags.writeable:
-        adata.X = adata.X.copy()
-    return adata
 
 
 def read_and_merge(
