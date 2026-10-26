@@ -40,6 +40,9 @@ __pycache__/
 # Data files from tutorials
 /docs/notebooks/*.fcs
 /docs/notebooks/*.h5ad
+/docs/examples/*.fcs
+/docs/examples/*.xlsx
+/docs/examples/*.zip
 
 # uv lock file
 /uv.lock
