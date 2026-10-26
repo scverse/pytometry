@@ -31,7 +31,7 @@ def normalize_arcsinh(adata: AnnData, cofactor: float | pd.Series = 5, inplace: 
             for idx, marker in enumerate(adata.var_names):
                 # get correct row
                 row_idx = cofactor.index == marker
-                cofactor_tmp = cofactor[row_idx][0]
+                cofactor_tmp = cofactor[row_idx].iloc[0]
                 # transform adata values using the biexponential function
                 adata.X[:, idx] = np.arcsinh(adata.X[:, idx] / cofactor_tmp)
         else:
@@ -413,10 +413,10 @@ def normalize_biexp(
             # get correct row
             row_idx = negative.index == marker
 
-            negative_tmp = negative[row_idx][0]
-            width_tmp = width[row_idx][0]
-            positive_tmp = positive[row_idx][0]
-            max_value_tmp = max_value[row_idx][0]
+            negative_tmp = negative[row_idx].iloc[0]
+            width_tmp = width[row_idx].iloc[0]
+            positive_tmp = positive[row_idx].iloc[0]
+            max_value_tmp = max_value[row_idx].iloc[0]
 
             x, y = _generate_biex_lut(
                 neg=negative_tmp,
