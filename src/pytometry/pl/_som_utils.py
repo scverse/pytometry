@@ -96,8 +96,8 @@ def _layout(adata: AnnData, key: str, layout: Literal["mst", "grid"]) -> tuple[n
     positions = np.array([found[node] for node in range(len(weights))])
     edges = np.asarray(tree.edges)
     positions /= np.linalg.norm(positions[edges[:, 0]] - positions[edges[:, 1]], axis=1).mean()
-    # Kamada-Kawai is quadratic in the number of nodes, so the layout is kept with the clustering, as scanpy's
-    # pl.paga keeps its positions; not in a view, which anndata would copy on writing
+    # Kamada-Kawai is quadratic in the number of nodes, so the layout is kept with the clustering; not in a view,
+    # which anndata would copy on writing
     if not adata.is_view:
         result["mst_layout"] = {"positions": positions, "edges": edges}
     return positions, edges
