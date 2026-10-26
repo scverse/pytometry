@@ -11,7 +11,6 @@ from matplotlib import colormaps
 from matplotlib.axes import Axes
 from matplotlib.collections import PatchCollection
 from matplotlib.colors import Colormap, Normalize
-from matplotlib.figure import Figure
 from matplotlib.patches import Circle
 from natsort import natsorted
 
@@ -108,7 +107,7 @@ def flowsom_markers(
     cmap: str | Colormap = "viridis",
     n_cols: int = 4,
     panel_size: float = 4,
-) -> Figure:
+) -> np.ndarray:
     """Plot the SOM nodes colored by their weight for each marker, one panel per marker, as FlowSOM's `PlotMarker`.
 
     Parameters
@@ -127,7 +126,7 @@ def flowsom_markers(
 
     Returns
     -------
-    the figure
+    the Axes of the panels, of shape (rows, columns)
     """
     markers, values = _markers(_flowsom_result(adata, key), markers)
     n_cols = min(n_cols, len(markers))
@@ -149,7 +148,7 @@ def flowsom_markers(
         ax.add_collection(nodes)
         fig.colorbar(nodes, ax=ax, shrink=0.6)
         ax.set_title(marker)
-    return fig
+    return axes
 
 
 @_doc_params(som_plot=doc_som_plot, ax=doc_ax)

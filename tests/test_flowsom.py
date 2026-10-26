@@ -100,8 +100,9 @@ def test_flowsom_plots(example_data, layout):
     ax = flowsom_stars(example_data, layout=layout)
     assert len(ax.collections) >= 3
     flowsom_stars(example_data, markers=["marker_0", "marker_2"], layout=layout, node_size=None)
-    fig = flowsom_markers(example_data, ["marker_0", "marker_1", "marker_2"], layout=layout, n_cols=2)
-    assert len(fig.axes) == 4 + 3  # 2 x 2 panels and a colorbar per marker
+    axes = flowsom_markers(example_data, ["marker_0", "marker_1", "marker_2"], layout=layout, n_cols=2)
+    assert axes.shape == (2, 2)
+    assert len(axes[0, 0].figure.axes) == 4 + 3  # 2 x 2 panels and a colorbar per marker
     flowsom_pies(example_data, "ground_truth", layout=layout)
     with pytest.raises(KeyError, match="marker_9"):
         flowsom_stars(example_data, markers=["marker_9"], layout=layout)
