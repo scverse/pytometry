@@ -1,6 +1,7 @@
 from pathlib import Path
 from typing import Any
 
+import anndata
 import readfcs
 from anndata import AnnData
 from tqdm.auto import tqdm
@@ -61,13 +62,14 @@ def read_and_merge(
     files
         either a list of file paths or a directory path
     sample_ids
-        list of sample ids to use as a column in the AnnData object
+        sample id of each FCS file, in the order of `files` (sorted by name for a directory), added as
+        `adata.obs["sample"]`
     sample_id_from_filename
-        whether to use the filename to extract the sample id
+        whether to take the sample ids from the file names, if `sample_ids` is None
     sample_id_index
-        which index of the filename to use as the sample id
+        which part of the file name (without its extension) to use as the sample id
     sample_id_sep
-        separator to use when splitting the filename
+        separator to use when splitting the file name
     reindex
         use the marker info to reindex variable names
     ignore_offset_error
@@ -81,22 +83,22 @@ def read_and_merge(
 
     Returns
     -------
-    Merged AnnData object
+    Merged AnnData object, with the index of each cell's file in `adata.obs["batch"]`
     """
     if isinstance(files, str):
         if not Path(files).is_dir():
             raise ValueError("files must be a list of files or a directory path")
-        files = [str(f) for f in Path(files).glob("*.fcs")]
+        files = sorted(str(f) for f in Path(files).iterdir() if f.suffix.lower() == ".fcs")
     elif isinstance(files, list):
-        files = [str(Path(f)) for f in files if Path(f).suffix == ".fcs"]
+        files = [str(Path(f)) for f in files if Path(f).suffix.lower() == ".fcs"]
 
     if sample_ids is None and sample_id_from_filename:
-        sample_ids = [f.split(sample_id_sep)[sample_id_index] for f in files]
-    else:
-        sample_ids = [None for _ in range(len(files))]
+        sample_ids = [Path(f).stem.split(sample_id_sep)[sample_id_index] for f in files]
+    elif sample_ids is not None and len(sample_ids) != len(files):
+        raise ValueError(f"Got {len(sample_ids)} sample_ids for {len(files)} FCS files")
 
     adata_stack = []
-    for file, file_id in tqdm(zip(files, sample_ids, strict=False), total=len(files), desc="Loading FCS files"):
+    for i, file in enumerate(tqdm(files, desc="Loading FCS files")):
         adata = read_fcs(
             file,
             reindex=reindex,
@@ -104,7 +106,15 @@ def read_and_merge(
             ignore_offset_discrepancy=ignore_offset_discrepancy,
             use_header_offsets=use_header_offsets,
         )
-        if file_id is not None:
-            adata.obs["sample"] = file_id
+        if sample_ids is not None:
+            adata.obs["sample"] = sample_ids[i]
         adata_stack.append(adata)
-    return AnnData.concatenate(*adata_stack, join="outer", uns_merge="unique")
+    return anndata.concat(
+        adata_stack,
+        join="outer",
+        merge="same",
+        uns_merge="unique",
+        label="batch",
+        keys=[str(i) for i in range(len(adata_stack))],
+        index_unique="-",
+    )
