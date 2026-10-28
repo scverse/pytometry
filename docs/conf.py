@@ -135,7 +135,4 @@ nitpick_ignore = [
     # no Sphinx documentation to link to
     ("py:class", "consensusclustering.consensus.ConsensusClustering"),
     ("py:class", "pytometry.tl.clustering._flowsom.ClusteringObjects"),
-    # TODO: remove once fastersom's documentation includes KMeans (dschaub95/fastersom#18)
-    ("py:class", "fastersom.KMeans"),
-    ("py:class", "fastersom._kmeans.KMeans"),
 ]

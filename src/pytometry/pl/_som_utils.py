@@ -20,9 +20,9 @@ key
         `key_added` of :func:`pytometry.tl.flowsom_clustering`.
     layout
         "mst" places the nodes along the minimum spanning tree of their weights, as FlowSOM does; "grid" places
-        them on the grid of the SOM (not for k-means centroids). The tree only serves to lay the nodes out in two
-        dimensions. It does not show a lineage or a development over time, and nodes or meta-clusters drawn next to
-        each other are not necessarily more similar to each other than to the rest.
+        them on the grid of the SOM. The tree only serves to lay the nodes out in two dimensions. It does not show a
+        lineage or a development over time, and nodes or meta-clusters drawn next to each other are not necessarily
+        more similar to each other than to the rest.
     node_size
         "counts" scales the area of each node with its number of cells; None draws all nodes the same size.
     max_node_size
@@ -66,14 +66,10 @@ def _layout(adata: AnnData, key: str, layout: Literal["mst", "grid"]) -> tuple[n
     result = adata.uns[key]
     weights = np.asarray(result["weights"])
     no_edges = np.empty((0, 2), dtype=np.int64)
-    grid = None
-    if result["params"]["method"] == "som":
-        n_rows, n_cols = result["params"]["som_dim"]
-        rows, cols = np.divmod(np.arange(n_rows * n_cols), n_cols)
-        grid = np.column_stack([cols, -rows]).astype(float)
+    n_rows, n_cols = result["params"]["som_dim"]
+    rows, cols = np.divmod(np.arange(n_rows * n_cols), n_cols)
+    grid = np.column_stack([cols, -rows]).astype(float)
     if layout == "grid":
-        if grid is None:
-            raise ValueError('k-means centroids have no grid, use layout="mst"')
         return grid, no_edges
     if layout != "mst":
         raise ValueError('Unknown layout, must be one of "mst" or "grid"')
@@ -84,7 +80,7 @@ def _layout(adata: AnnData, key: str, layout: Literal["mst", "grid"]) -> tuple[n
     from fastersom import minimum_spanning_tree  # imports torch, so only when needed
 
     tree = minimum_spanning_tree(weights, result["params"]["metric"], device="cpu")
-    # Kamada-Kawai, started from a SOM's grid, places the nodes at their path lengths in the tree, as FlowSOM does;
+    # Kamada-Kawai, started from the SOM's grid, places the nodes at their path lengths in the tree, as FlowSOM does;
     # identical nodes, joined by edges of length 0, get a small length instead
     floor = 1e-3 * max(tree.weights.max(), 1e-12)
     graph = nx.Graph()
@@ -92,7 +88,7 @@ def _layout(adata: AnnData, key: str, layout: Literal["mst", "grid"]) -> tuple[n
     graph.add_weighted_edges_from(
         (int(a), int(b), max(float(w), floor)) for (a, b), w in zip(tree.edges, tree.weights, strict=True)
     )
-    found = nx.kamada_kawai_layout(graph, pos=None if grid is None else dict(enumerate(grid)), weight="weight")
+    found = nx.kamada_kawai_layout(graph, pos=dict(enumerate(grid)), weight="weight")
     positions = np.array([found[node] for node in range(len(weights))])
     edges = np.asarray(tree.edges)
     positions /= np.linalg.norm(positions[edges[:, 0]] - positions[edges[:, 1]], axis=1).mean()

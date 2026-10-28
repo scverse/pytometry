@@ -55,18 +55,8 @@ def test_flowsom_clustering(example_data):
     assert score > 0.9
 
 
-@pytest.mark.parametrize(
-    "kwargs",
-    [
-        {"weight_init": "pca"},
-        {"meta_clustering_method": "leiden"},
-        {"method": "kmeans", "min_clusters": 5, "max_clusters": 5},
-        {"method": "kmeans", "meta_clustering_method": "leiden"},
-    ],
-    ids=["pca", "leiden", "kmeans", "kmeans-leiden"],
-)
-def test_flowsom_clustering_options(example_data, kwargs):
-    adata = flowsom_clustering(example_data, seed=0, **kwargs)
+def test_flowsom_clustering_pca_init(example_data):
+    adata = flowsom_clustering(example_data, seed=0, weight_init="pca")
     assert fowlkes_mallows_score(adata.obs["ground_truth"], adata.obs["clusters"]) > 0.9
 
 
@@ -95,19 +85,20 @@ def test_learning_rate_deprecated(example_data):
         som_clustering(example_data.X, learning_rate=0.5, n_epochs=1)
 
 
-def _centroids(codes: np.ndarray) -> SimpleNamespace:
-    """Stand-in for fitted k-means with the given centroids, which is all that meta-clustering reads."""
-    return SimpleNamespace(cluster_centers_=codes, n_clusters=len(codes))
+def _som(codes: np.ndarray) -> SimpleNamespace:
+    """Stand-in for a trained SOM of one row with the given node weights, which is all that meta-clustering reads."""
+    return SimpleNamespace(weights_=codes, n_rows=1, n_cols=len(codes))
 
 
 def test_meta_clustering_uses_consensus():
     codes = np.random.default_rng(19).normal(size=(30, 2))
-    meta, cc = meta_clustering(_centroids(codes), 2, min_clusters=4, max_clusters=4, rng=0)
+    meta, cc = meta_clustering(_som(codes), 2, min_clusters=4, max_clusters=4, rng=0)
+    meta = meta.ravel()
     distance = 1 - cc.consensus_k(4)
     np.fill_diagonal(distance, 0)
     consensus = AgglomerativeClustering(n_clusters=4, metric="precomputed", linkage="average").fit_predict(distance)
     assert adjusted_rand_score(meta, consensus) == 1
-    assert (meta == meta_clustering(_centroids(codes), 2, min_clusters=4, max_clusters=4, rng=0)[0]).all()
+    assert (meta == meta_clustering(_som(codes), 2, min_clusters=4, max_clusters=4, rng=0)[0].ravel()).all()
 
 
 @pytest.mark.parametrize(("min_clusters", "max_clusters"), [(4, 4), (2, 8)], ids=["fixed-k", "chosen-k"])
@@ -115,8 +106,8 @@ def test_meta_clustering_separated_groups(min_clusters, max_clusters):
     rng = np.random.default_rng(0)
     groups = np.repeat(np.arange(4), 10)
     codes = 10 * rng.normal(size=(4, 3))[groups] + rng.normal(scale=0.3, size=(40, 3))
-    meta, _ = meta_clustering(_centroids(codes), 3, min_clusters=min_clusters, max_clusters=max_clusters, rng=0)
-    assert adjusted_rand_score(meta, groups) == 1
+    meta, _ = meta_clustering(_som(codes), 3, min_clusters=min_clusters, max_clusters=max_clusters, rng=0)
+    assert adjusted_rand_score(meta.ravel(), groups) == 1
 
 
 def test_flowsom_clustering_markers(example_data):

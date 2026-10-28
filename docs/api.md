@@ -49,9 +49,7 @@ import pytometry as pt
    tl.normalize_autologicle
    tl.flowsom_clustering
    tl.som_clustering
-   tl.kmeans_clustering
    tl.meta_clustering
-   tl.leiden_meta_clustering
 ```
 
 ## Plotting
