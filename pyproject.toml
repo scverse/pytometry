@@ -24,7 +24,8 @@ classifiers = [
 ]
 dependencies = [
   "anndata>=0.10.8",
-  "consensusclustering>=0.2.4",
+  # TODO: consensusclustering>=0.2.5 once burtonrj/consensusclustering#9 (resamples of small grids) is released
+  "consensusclustering @ git+https://github.com/maltekuehl/consensusclustering@fix/small-resamples",
   # TODO: fastersom>=0.6 once dschaub95/fastersom#18 and #21 are released
   "fastersom @ git+https://github.com/maltekuehl/fastersom@feat/mst",
   "flowutils>=1.2",
