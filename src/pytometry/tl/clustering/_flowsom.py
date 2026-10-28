@@ -171,15 +171,20 @@ def meta_clustering(
     min_clusters: int = 2,
     max_clusters: int = 10,
     n_resamples: int = 100,
-    resample_frac: float = 0.5,
+    resample_frac: float = 0.9,
     verbose: bool = False,
     agglomerative_clustering_kwargs: dict | None = None,
     rng: RNGLike | SeedLike | None = None,
 ) -> tuple[np.ndarray, ConsensusClustering]:
-    """Meta-clustering of SOM nodes (or k-means centroids) using consensus clustering.
+    """Meta-clustering of SOM nodes (or k-means centroids) using consensus clustering, as in FlowSOM (R).
 
-    Consensus clustering is implemented using the `consensusclustering` package (see
-    https://github.com/burtonrj/consensusclustering for details).
+    The nodes are resampled `n_resamples` times, each time a fraction `resample_frac` of them, and every resample is
+    clustered hierarchically into k clusters. The consensus of two nodes is the fraction of the resamples containing
+    both in which they fall into the same cluster. The meta-clusters are the average-linkage hierarchical clustering of
+    one minus the consensus, cut into k clusters, as `metaClustering_consensus` of FlowSOM (R) with ConsensusClusterPlus
+    does. The consensus matrices are computed with the `consensusclustering` package
+    (https://github.com/burtonrj/consensusclustering), which also chooses k between `min_clusters` and `max_clusters`
+    by the knee of the area under the cumulative distribution of the consensus.
 
     Parameters
     ----------
@@ -190,16 +195,17 @@ def meta_clustering(
     min_clusters
         minimum number of clusters to consider
     max_clusters
-        maximum number of clusters to consider
+        maximum number of clusters to consider; k is fixed if it equals `min_clusters`
     n_resamples
         number of resamples for consensus clustering
     resample_frac
-        fraction of samples to resample for
+        fraction of the nodes in each resample. Defaults to 0.9 as in FlowSOM (R); the default was 0.5 before.
     verbose
         whether to use verbose mode or not
     agglomerative_clustering_kwargs
-        keyword arguments for `sklearn.cluster.AgglomerativeClustering`. If None, defaults to
-        {"metric": "euclidean", "linkage": "average"}.
+        keyword arguments for the `sklearn.cluster.AgglomerativeClustering` of each resample. If None, defaults to
+        {"metric": "euclidean", "linkage": "average"}, as in FlowSOM (R). The final clustering of the consensus always
+        uses average linkage.
     rng
         random number generator or seed for reproducibility
 
@@ -212,9 +218,8 @@ def meta_clustering(
         if agglomerative_clustering_kwargs is not None
         else {"metric": "euclidean", "linkage": "average"}
     )
-    clustering_obj = AgglomerativeClustering(**agglomerative_clustering_kwargs)
     cc = ConsensusClustering(
-        clustering_obj,
+        AgglomerativeClustering(**agglomerative_clustering_kwargs),
         min_clusters=min_clusters,
         max_clusters=max_clusters,
         n_resamples=n_resamples,
@@ -232,8 +237,10 @@ def meta_clustering(
             UserWarning,
             stacklevel=2,
         )
-    clustering_obj.set_params(**{"n_clusters": k})
-    meta_class = clustering_obj.fit_predict(flatten_weights)
+    distance = 1 - cc.consensus_k(k)
+    np.fill_diagonal(distance, 0)  # nodes never resampled have no consensus, not even with themselves
+    final = AgglomerativeClustering(n_clusters=k, metric="precomputed", linkage="average")
+    meta_class = final.fit_predict(distance)
     return meta_class.reshape(shape), cc
 
 
@@ -356,14 +363,15 @@ def flowsom_clustering(
     n_resamples
         number of resamples for consensus clustering
     resample_frac
-        fraction of samples to resample for
+        fraction of the SOM nodes in each resample of consensus clustering
     inplace
         whether to copy the AnnData object or modify it
     verbose
         whether to use verbose mode or not
     agglomerative_clustering_kwargs
-        keyword arguments for `sklearn.cluster.AgglomerativeClustering`. If None, defaults to
-        {"metric": "euclidean", "linkage": "average"}.
+        keyword arguments for the `sklearn.cluster.AgglomerativeClustering` of each resample in consensus clustering.
+        If None, defaults to {"metric": "euclidean", "linkage": "average"}, as in FlowSOM (R). The final clustering of
+        the consensus always uses average linkage.
     return_clustering_objs
         whether to return the clustering objects in addition to the annotated data matrix
     n_epochs
@@ -377,9 +385,9 @@ def flowsom_clustering(
         further keyword arguments for :class:`fastersom.SOM`, e.g. `sigma_final` or `deterministic`, or for
         :class:`fastersom.KMeans` with `method="kmeans"`
     meta_clustering_method
-        how to cluster the SOM nodes: "consensus" for consensus hierarchical clustering, which chooses the number of
-        clusters between `min_clusters` and `max_clusters`, or "leiden" for Leiden clustering of their
-        nearest-neighbour graph
+        how to cluster the SOM nodes: "consensus" for consensus hierarchical clustering as in FlowSOM (R) (see
+        :func:`pytometry.tl.meta_clustering`), which chooses the number of clusters between `min_clusters` and
+        `max_clusters`, or "leiden" for Leiden clustering of their nearest-neighbour graph
     resolution
         resolution of the Leiden clustering (Leiden meta-clustering only)
     n_neighbors

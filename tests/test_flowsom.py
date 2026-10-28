@@ -1,14 +1,17 @@
+from types import SimpleNamespace
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pytest
 from anndata import AnnData
+from sklearn.cluster import AgglomerativeClustering
 from sklearn.datasets import make_classification
-from sklearn.metrics import fowlkes_mallows_score
+from sklearn.metrics import adjusted_rand_score, fowlkes_mallows_score
 from sklearn.preprocessing import MinMaxScaler
 
 from pytometry.pl import flowsom_markers, flowsom_pies, flowsom_stars
 from pytometry.tl.clustering import flowsom_clustering
-from pytometry.tl.clustering._flowsom import som_clustering
+from pytometry.tl.clustering._flowsom import meta_clustering, som_clustering
 
 
 @pytest.fixture
@@ -90,6 +93,30 @@ def test_som_uses_all_cells(example_data):
 def test_learning_rate_deprecated(example_data):
     with pytest.warns(FutureWarning, match="learning_rate"):
         som_clustering(example_data.X, learning_rate=0.5, n_epochs=1)
+
+
+def _centroids(codes: np.ndarray) -> SimpleNamespace:
+    """Stand-in for fitted k-means with the given centroids, which is all that meta-clustering reads."""
+    return SimpleNamespace(cluster_centers_=codes, n_clusters=len(codes))
+
+
+def test_meta_clustering_uses_consensus():
+    codes = np.random.default_rng(19).normal(size=(30, 2))
+    meta, cc = meta_clustering(_centroids(codes), 2, min_clusters=4, max_clusters=4, rng=0)
+    distance = 1 - cc.consensus_k(4)
+    np.fill_diagonal(distance, 0)
+    consensus = AgglomerativeClustering(n_clusters=4, metric="precomputed", linkage="average").fit_predict(distance)
+    assert adjusted_rand_score(meta, consensus) == 1
+    assert (meta == meta_clustering(_centroids(codes), 2, min_clusters=4, max_clusters=4, rng=0)[0]).all()
+
+
+@pytest.mark.parametrize(("min_clusters", "max_clusters"), [(4, 4), (2, 8)], ids=["fixed-k", "chosen-k"])
+def test_meta_clustering_separated_groups(min_clusters, max_clusters):
+    rng = np.random.default_rng(0)
+    groups = np.repeat(np.arange(4), 10)
+    codes = 10 * rng.normal(size=(4, 3))[groups] + rng.normal(scale=0.3, size=(40, 3))
+    meta, _ = meta_clustering(_centroids(codes), 3, min_clusters=min_clusters, max_clusters=max_clusters, rng=0)
+    assert adjusted_rand_score(meta, groups) == 1
 
 
 def test_flowsom_clustering_markers(example_data):
