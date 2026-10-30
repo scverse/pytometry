@@ -1,0 +1,331 @@
+from __future__ import annotations
+
+import logging
+import warnings
+from collections.abc import Sequence
+from typing import TYPE_CHECKING, Literal, TypedDict
+
+import numpy as np
+import pandas as pd
+from anndata import AnnData
+from consensusclustering import ConsensusClustering
+from natsort import natsorted
+from sklearn.cluster import AgglomerativeClustering
+
+from pytometry._types import RNGLike, SeedLike
+
+if TYPE_CHECKING:
+    from fastersom import SOM
+
+logger = logging.getLogger("pytometry.flowsom")
+
+# pytometry's names of the initialisations, as fastersom calls them
+_WEIGHT_INITS = {"random": "sample", "pca": "pca"}
+
+
+def som_clustering(
+    x: np.ndarray,
+    som_dim: tuple[int, int] = (10, 10),
+    sigma: float | None = None,
+    learning_rate: float | None = None,
+    batch_size: int | None = None,
+    seed: int = 42,
+    weight_init: Literal["random", "pca"] = "random",
+    neighbourhood_function: Literal["gaussian"] = "gaussian",
+    verbose: bool = False,
+    n_epochs: int = 10,
+    metric: Literal["euclidean", "manhattan", "cosine", "correlation"] = "euclidean",
+    device: str = "cpu",
+    som_kwargs: dict | None = None,
+) -> SOM:
+    """Train a batch SOM on the given cytometry data with :class:`fastersom.SOM`.
+
+    Parameters
+    ----------
+    x
+        cytometry data of shape `(n_samples, n_features)`
+    som_dim
+        dimensions of the SOM
+    sigma
+        initial width of the gaussian neighbourhood in grid units, which decays to a tenth of it (at most one grid
+        unit). If None, defaults to a quarter of the shorter side of the SOM (rounded up to half a unit).
+    learning_rate
+        deprecated, has no effect: the batch SOM moves each node to the neighbourhood-weighted mean of the cells.
+    batch_size
+        number of cells processed at once. Affects memory and speed only, not the result. If None, chosen by fastersom.
+    seed
+        random seed for reproducibility
+    weight_init
+        weight initialization method: "random" starts from randomly chosen cells, "pca" from a regular grid in the
+        plane of the first two principal components of the data.
+    neighbourhood_function
+        neighbourhood function for the SOM; only "gaussian" is supported.
+    verbose
+        whether to use verbose mode or not
+    n_epochs
+        number of training epochs, each of which updates the SOM once from all cells
+    metric
+        distance between cells and nodes
+    device
+        torch device to train on, e.g. "cpu", "cuda" or "mps"
+    som_kwargs
+        further keyword arguments for :class:`fastersom.SOM`, e.g. `sigma_final` or `deterministic`
+
+    Returns
+    -------
+        trained SOM
+    """
+    from fastersom import SOM  # imports torch, so only when needed
+
+    if learning_rate is not None:
+        warnings.warn(
+            "`learning_rate` has no effect with the batch SOM and will be removed in a future version.",
+            FutureWarning,
+            stacklevel=2,
+        )
+    if neighbourhood_function != "gaussian":
+        raise ValueError('Unknown neighbourhood_function, only "gaussian" is supported')
+    if weight_init not in _WEIGHT_INITS:
+        raise ValueError('Unknown weight_init, must be one of "random" or "pca"')
+    som = SOM(
+        n_rows=som_dim[0],
+        n_cols=som_dim[1],
+        n_epochs=n_epochs,
+        sigma_initial=sigma,
+        init=_WEIGHT_INITS[weight_init],
+        metric=metric,
+        random_state=seed,
+        device=device,
+        batch_size=batch_size,
+        verbose=verbose,
+        **(som_kwargs or {}),
+    )
+    logger.info("Training SOM")
+    som.fit(x)
+    return som
+
+
+def meta_clustering(
+    som: SOM,
+    n_features: int,
+    min_clusters: int = 2,
+    max_clusters: int = 10,
+    n_resamples: int = 100,
+    resample_frac: float = 0.9,
+    verbose: bool = False,
+    agglomerative_clustering_kwargs: dict | None = None,
+    rng: RNGLike | SeedLike | None = None,
+) -> tuple[np.ndarray, ConsensusClustering]:
+    """Meta-clustering of SOM nodes using consensus clustering, as in FlowSOM (R).
+
+    The nodes are resampled `n_resamples` times, each time a fraction `resample_frac` of them, and every resample is
+    clustered hierarchically into k clusters. The consensus of two nodes is the fraction of the resamples containing
+    both in which they fall into the same cluster. The meta-clusters are the average-linkage hierarchical clustering of
+    one minus the consensus, cut into k clusters, as `metaClustering_consensus` of FlowSOM (R) with ConsensusClusterPlus
+    does. The consensus matrices are computed with the `consensusclustering` package
+    (https://github.com/burtonrj/consensusclustering), which also chooses k between `min_clusters` and `max_clusters`
+    by the knee of the area under the cumulative distribution of the consensus.
+
+    Parameters
+    ----------
+    som
+        trained SOM
+    n_features
+        number of features in the cytometry data
+    min_clusters
+        minimum number of clusters to consider
+    max_clusters
+        maximum number of clusters to consider; k is fixed if it equals `min_clusters`
+    n_resamples
+        number of resamples for consensus clustering
+    resample_frac
+        fraction of the nodes in each resample. Defaults to 0.9 as in FlowSOM (R); the default was 0.5 before.
+    verbose
+        whether to use verbose mode or not
+    agglomerative_clustering_kwargs
+        keyword arguments for the `sklearn.cluster.AgglomerativeClustering` of each resample. If None, defaults to
+        {"metric": "euclidean", "linkage": "average"}, as in FlowSOM (R). The final clustering of the consensus always
+        uses average linkage.
+    rng
+        random number generator or seed for reproducibility
+
+    Returns
+    -------
+    meta-clustering of SOM nodes and the consensus clustering object
+    """
+    agglomerative_clustering_kwargs = (
+        agglomerative_clustering_kwargs
+        if agglomerative_clustering_kwargs is not None
+        else {"metric": "euclidean", "linkage": "average"}
+    )
+    cc = ConsensusClustering(
+        AgglomerativeClustering(**agglomerative_clustering_kwargs),
+        min_clusters=min_clusters,
+        max_clusters=max_clusters,
+        n_resamples=n_resamples,
+        resample_frac=resample_frac,
+        rng=rng,
+    )
+    flatten_weights = som.weights_.reshape(-1, n_features)
+    cc.fit(flatten_weights, progress_bar=verbose)
+    k = min_clusters if min_clusters == max_clusters else cc.best_k()
+    if k is None:
+        k = cc.best_k(method="change_in_auc")
+        warnings.warn(
+            f"No knee found in the area under the consensus CDF; choosing k={k} by its largest change instead.",
+            UserWarning,
+            stacklevel=2,
+        )
+    distance = 1 - cc.consensus_k(k)
+    np.fill_diagonal(distance, 0)  # nodes never resampled have no consensus, not even with themselves
+    final = AgglomerativeClustering(n_clusters=k, metric="precomputed", linkage="average")
+    meta_class = final.fit_predict(distance)
+    return meta_class.reshape(som.n_rows, som.n_cols), cc
+
+
+class ClusteringObjects(TypedDict):
+    som: SOM
+    meta_class: np.ndarray
+    consensus_clustering: ConsensusClustering
+
+
+def flowsom_clustering(
+    adata: AnnData,
+    key_added: str = "clusters",
+    som_dim: tuple[int, int] = (10, 10),
+    sigma: float | None = None,
+    learning_rate: float | None = None,
+    batch_size: int | None = None,
+    seed: int = 42,
+    weight_init: Literal["random", "pca"] = "random",
+    neighbourhood_function: Literal["gaussian"] = "gaussian",
+    min_clusters: int = 2,
+    max_clusters: int = 10,
+    n_resamples: int = 100,
+    resample_frac: float = 0.9,
+    inplace: bool = True,
+    verbose: bool = False,
+    agglomerative_clustering_kwargs: dict | None = None,
+    return_clustering_objs: bool = False,
+    n_epochs: int = 10,
+    metric: Literal["euclidean", "manhattan", "cosine", "correlation"] = "euclidean",
+    device: str = "cpu",
+    som_kwargs: dict | None = None,
+    markers: Sequence[str] | None = None,
+) -> AnnData | tuple[AnnData, ClusteringObjects]:
+    """Cluster cytometry data using FlowSOM.
+
+    Based on the original FlowSOM R package by Van Gassen et al. (2015)
+    (https://onlinelibrary.wiley.com/doi/full/10.1002/cyto.a.22625.) and the python
+    implementation found at https://github.com/Hatchin/FlowSOM. The SOM is a batch SOM trained with
+    fastersom (https://github.com/dschaub95/fastersom).
+
+    Parameters
+    ----------
+    adata
+        annotated data matrix of shape `(n_samples, n_features)`
+    key_added
+        key under which to add the cluster labels
+    som_dim
+        dimensions of the SOM
+    sigma
+        initial width of the gaussian neighbourhood in grid units, which decays to a tenth of it (at most one grid
+        unit). If None, defaults to a quarter of the shorter side of the SOM (rounded up to half a unit).
+    learning_rate
+        deprecated, has no effect: the batch SOM moves each node to the neighbourhood-weighted mean of the cells.
+    batch_size
+        number of cells processed at once. Affects memory and speed only, not the result. If None, chosen by fastersom.
+    seed
+        random seed for reproducibility
+    weight_init
+        weight initialization method: "random" starts from randomly chosen cells, "pca" from a regular grid in the
+        plane of the first two principal components of the data.
+    neighbourhood_function
+        neighbourhood function for the SOM; only "gaussian" is supported.
+    min_clusters
+        minimum number of clusters to consider
+    max_clusters
+        maximum number of clusters to consider
+    n_resamples
+        number of resamples for consensus clustering
+    resample_frac
+        fraction of the SOM nodes in each resample of consensus clustering
+    inplace
+        whether to copy the AnnData object or modify it
+    verbose
+        whether to use verbose mode or not
+    agglomerative_clustering_kwargs
+        keyword arguments for the `sklearn.cluster.AgglomerativeClustering` of each resample in consensus clustering.
+        If None, defaults to {"metric": "euclidean", "linkage": "average"}, as in FlowSOM (R). The final clustering of
+        the consensus always uses average linkage.
+    return_clustering_objs
+        whether to return the clustering objects in addition to the annotated data matrix
+    n_epochs
+        number of SOM training epochs, each of which updates the SOM once from all cells
+    metric
+        distance between cells and SOM nodes; the meta-clustering takes its metric from
+        `agglomerative_clustering_kwargs`
+    device
+        torch device to train the SOM on, e.g. "cpu", "cuda" or "mps"
+    som_kwargs
+        further keyword arguments for :class:`fastersom.SOM`, e.g. `sigma_final` or `deterministic`
+    markers
+        markers (`var_names`) to cluster on, e.g. lineage markers without functional ones. All markers if None.
+
+    Returns
+    -------
+    annotated data matrix with cluster labels added under `key_added`, the SOM node of every cell under
+    `f"{key_added}_som_node"` (-1 for cells without one) and the SOM's weights and meta-clusters under
+    `adata.uns[key_added]`, as used by :func:`pytometry.pl.flowsom_stars` and the other FlowSOM plots.
+    If `return_clustering_objs` is True, a tuple containing the annotated data matrix
+    and the clustering objects is returned.
+
+    """
+    adata = adata if inplace else adata.copy()
+    var_names = adata.var_names if markers is None else pd.Index(markers)
+    x = adata.X if markers is None else adata[:, var_names].X
+    logger.info("Running FlowSOM clustering")
+    som = som_clustering(
+        x,
+        som_dim=som_dim,
+        sigma=sigma,
+        learning_rate=learning_rate,
+        batch_size=batch_size,
+        seed=seed,
+        weight_init=weight_init,
+        neighbourhood_function=neighbourhood_function,
+        verbose=verbose,
+        n_epochs=n_epochs,
+        metric=metric,
+        device=device,
+        som_kwargs=som_kwargs,
+    )
+    logger.info("Meta-clustering of SOM nodes")
+    meta_class, cc = meta_clustering(
+        som,
+        x.shape[1],
+        min_clusters=min_clusters,
+        max_clusters=max_clusters,
+        n_resamples=n_resamples,
+        resample_frac=resample_frac,
+        verbose=verbose,
+        agglomerative_clustering_kwargs=agglomerative_clustering_kwargs,
+        rng=seed,
+    )
+    logger.info("Assigning cluster labels to cells")
+    # som.labels_ holds the node of every cell, -1 for cells without one (all-zero cells under cosine, constant cells
+    # under correlation), which get no cluster
+    node_labels = np.array([f"cluster_{c}" for c in meta_class.ravel()], dtype=object)
+    labels = node_labels[som.labels_]
+    labels[som.labels_ == -1] = None
+    adata.obs[key_added] = pd.Categorical(labels, categories=natsorted(set(node_labels)))
+    adata.obs[f"{key_added}_som_node"] = som.labels_
+    adata.uns[key_added] = {
+        "params": {"som_dim": list(som_dim), "metric": metric},
+        "weights": som.weights_,
+        "meta_class": meta_class,
+        "var_names": np.asarray(var_names),
+    }
+    if return_clustering_objs:
+        return adata, ClusteringObjects(som=som, meta_class=meta_class, consensus_clustering=cc)
+    return adata

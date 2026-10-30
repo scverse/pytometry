@@ -19,3 +19,8 @@ __pycache__/
 # docs
 /docs/generated/
 /docs/_build/
+
+# Data files downloaded by the tutorials and examples
+/docs/notebooks/*.fcs
+/docs/notebooks/*.h5ad
+/*.fcs

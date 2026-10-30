@@ -15,6 +15,10 @@ concurrency:
 permissions:
   contents: read
 
+env:
+  # CPU-only torch (for fastersom): PyPI's Linux wheels pull several GB of CUDA libraries
+  UV_TORCH_BACKEND: cpu
+
 jobs:
   # Get the test environment from hatch as defined in pyproject.toml.
   # This ensures that the pyproject.toml is the single point of truth for test definitions and the same tests are
