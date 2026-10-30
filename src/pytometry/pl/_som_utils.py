@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import inspect
 from collections.abc import Callable, Sequence
 from typing import Literal
 
@@ -36,8 +37,11 @@ ax
 
 
 def _doc_params(**replacements: str) -> Callable:
+    # Python >= 3.13 strips the common indentation of docstrings at compile time, so normalise both sides
+    replacements = {name: inspect.cleandoc(text) for name, text in replacements.items()}
+
     def decorate(func: Callable) -> Callable:
-        func.__doc__ = func.__doc__.format_map(replacements)
+        func.__doc__ = inspect.cleandoc(func.__doc__).format_map(replacements)
         return func
 
     return decorate
