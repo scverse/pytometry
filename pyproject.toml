@@ -4,7 +4,7 @@ requires = [ "hatchling" ]
 
 [project]
 name = "pytometry"
-version = "0.1.6"
+version = "0.2.0"
 description = "Flow & mass cytometry analytics in scverse"
 readme = "README.md"
 license = { file = "LICENSE" }
@@ -15,22 +15,30 @@ maintainers = [
 authors = [
   { name = "Maren Büttner" },
 ]
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 classifiers = [
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
-  "consensusclustering>=0.2.4",
-  "flowutils",
-  "minisom",
-  "numba>=0.57",
+  "anndata>=0.10.8",
+  # TODO: consensusclustering>=0.2.5 once burtonrj/consensusclustering#9 (resamples of small grids) is released
+  "consensusclustering @ git+https://github.com/maltekuehl/consensusclustering@fix/small-resamples",
+  # TODO: fastersom>=0.6 once dschaub95/fastersom#18 and #21 are released
+  "fastersom @ git+https://github.com/maltekuehl/fastersom@feat/mst",
+  "flowutils>=1.2",
+  "matplotlib>=3.8.4",
+  "natsort>=8",
+  "networkx>=3.2",
   "numpy>=2",
-  "readfcs>=2.1",
-  "scanpy",
+  "pandas>=2.2.2",
+  "readfcs>=2.1.1",
+  "scikit-learn>=1.4.2",
+  "scipy>=1.13",
+  "seaborn>=0.13",
+  "tqdm>=4.66.1",
 ]
 optional-dependencies.dev = [
   "pre-commit",
@@ -42,6 +50,9 @@ optional-dependencies.doc = [
   "ipython",
   "myst-nb>=1.1",
   "pandas",
+  # for the tutorials
+  "scanpy",
+  "session-info2",
   # Until pybtex >0.24.0 releases: https://bitbucket.org/pybtex-devs/pybtex/issues/169/
   "setuptools",
   "sphinx>=8.1",
@@ -62,6 +73,9 @@ urls.Documentation = "https://pytometry.readthedocs.io/"
 urls.Homepage = "https://github.com/scverse/pytometry"
 urls.Source = "https://github.com/scverse/pytometry"
 
+[tool.hatch.metadata]
+allow-direct-references = true
+
 [tool.hatch.envs.default]
 installer = "uv"
 features = [ "dev" ]
@@ -75,12 +89,12 @@ scripts.clean = "git clean -fdX -- {args:docs}"
 # Test the lowest and highest supported Python versions with normal deps
 [[tool.hatch.envs.hatch-test.matrix]]
 deps = [ "stable" ]
-python = [ "3.11", "3.13" ]
+python = [ "3.12", "3.14" ]
 
 # Test the newest supported Python version also with pre-release deps
 [[tool.hatch.envs.hatch-test.matrix]]
 deps = [ "pre" ]
-python = [ "3.13" ]
+python = [ "3.14" ]
 
 [tool.hatch.envs.hatch-test]
 features = [ "dev", "test" ]

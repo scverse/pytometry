@@ -110,6 +110,17 @@ def test_normalize_biexp2():
     assert isinstance(adata2, anndata._core.anndata.AnnData)
 
 
+def test_normalize_biexp3():
+    path_data = readfcs.datasets.Oetjen18_t1()
+    adata = read_fcs(path_data)
+    params = {
+        name: pandas.Series(numpy.repeat(value, adata.n_vars), index=adata.var_names)
+        for name, value in {"negative": 0.0, "width": -10.0, "positive": 4.41854, "max_value": 262144.0}.items()
+    }
+    adata2 = normalize_biexp(adata, inplace=False, **params)
+    assert isinstance(adata2, anndata._core.anndata.AnnData)
+
+
 def test_normalize_logicle():
     path_data = readfcs.datasets.Oetjen18_t1()
     adata = read_fcs(path_data)
