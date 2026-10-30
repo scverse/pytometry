@@ -15,28 +15,27 @@ maintainers = [
 authors = [
   { name = "Maren Büttner" },
 ]
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 classifiers = [
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
-  "anndata>=0.10.8",
+  "anndata>=0.11",
   # TODO: consensusclustering>=0.2.5 once burtonrj/consensusclustering#9 (resamples of small grids) is released
   "consensusclustering @ git+https://github.com/maltekuehl/consensusclustering@fix/small-resamples",
   # TODO: fastersom>=0.6 once dschaub95/fastersom#18 and #21 are released
   "fastersom @ git+https://github.com/maltekuehl/fastersom@feat/mst",
   "flowutils>=1.2",
-  "matplotlib>=3.8.4",
+  "matplotlib>=3.10",
   "natsort>=8",
-  "networkx>=3.2",
-  "numpy>=2",
-  "pandas>=2.2.2",
+  "networkx>=3.5",
+  "numpy>=2.2",
+  "pandas>=2.3",
   "readfcs>=2.1.1",
-  "scikit-learn>=1.4.2",
-  "scipy>=1.13",
+  "scikit-learn>=1.6",
+  "scipy>=1.15",
   "seaborn>=0.13",
   "tqdm>=4.66.1",
 ]
@@ -85,7 +84,7 @@ envs.docs.scripts.open = "python -m webbrowser -t docs/_build/html/index.html"
 envs.docs.dependency-groups = [ "doc" ]
 envs.hatch-test.matrix = [
   # Test the lowest and highest supported Python versions with normal deps
-  { deps = [ "stable" ], python = [ "3.12", "3.14" ] },
+  { deps = [ "stable" ], python = [ "3.13", "3.14" ] },
   # Test the newest supported Python version also with pre-release deps
   { deps = [ "pre" ], python = [ "3.14" ] },
 ]
