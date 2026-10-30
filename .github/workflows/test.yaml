@@ -12,14 +12,12 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 env:
   # CPU-only torch (for fastersom): PyPI's Linux wheels pull several GB of CUDA libraries
   UV_TORCH_BACKEND: cpu
-
-defaults:
-  run:
-    # to fail on error in multiline statements (-e), in pipes (-o pipefail), and on unset variables (-u).
-    shell: bash -euo pipefail {0}
 
 jobs:
   # Get the test environment from hatch as defined in pyproject.toml.
@@ -28,16 +26,17 @@ jobs:
   # Check [[tool.hatch.envs.hatch-test.matrix]] in pyproject.toml and https://hatch.pypa.io/latest/environment/ for
   # more details.
   get-environments:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     outputs:
       envs: ${{ steps.get-envs.outputs.envs }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           filter: blob:none
           fetch-depth: 0
+          persist-credentials: false
       - name: Install uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
       - name: Get test environments
         id: get-envs
         run: |
@@ -55,6 +54,9 @@ jobs:
   # Run tests through hatch. Spawns a separate runner for each environment defined in the hatch matrix obtained above.
   test:
     needs: get-environments
+    permissions:
+       id-token: write  # for codecov OIDC
+       contents: read
 
     strategy:
       fail-fast: false
@@ -64,19 +66,22 @@ jobs:
 
     name: ${{ matrix.env.label }}
     runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ contains(matrix.env.name, 'pre') }}  # make "all-green" pass even if pre-release job fails
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           filter: blob:none
           fetch-depth: 0
+          persist-credentials: false
       - name: Install uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
         with:
           python-version: ${{ matrix.env.python }}
-          cache-dependency-glob: pyproject.toml
       - name: create hatch environment
         run: uvx hatch env create ${{ matrix.env.name }}
+      - name: list all all installed package versions
+        run: uvx hatch run ${{ matrix.env.name }}:uv pip list
       - name: run tests using hatch
         env:
           MPLBACKEND: agg
@@ -85,12 +90,15 @@ jobs:
         run: uvx hatch run ${{ matrix.env.name }}:run-cov -v --color=yes -n auto
       - name: generate coverage report
         run: |
-          # See https://coverage.readthedocs.io/en/latest/config.html#run-patch
+          # See https://coverage.readthedocs.io/page/config.html#run-patch
           test -f .coverage || uvx hatch run ${{ matrix.env.name }}:cov-combine
           uvx hatch run ${{ matrix.env.name }}:cov-report   # report visibly
           uvx hatch run ${{ matrix.env.name }}:coverage xml # create report for upload
       - name: Upload coverage
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
+        with:
+          fail_ci_if_error: true
+          use_oidc: true
 
   # Check that all tests defined above pass. This makes it easy to set a single "required" test in branch
   # protection instead of having to update it frequently. See https://github.com/re-actors/alls-green#why.
@@ -102,6 +110,6 @@ jobs:
       - test
     runs-on: ubuntu-latest
     steps:
-        - uses: re-actors/alls-green@release/v1
+        - uses: re-actors/alls-green@b5b5b37504aa4183270bd3d855c52a67f212be35 # v1.3.0
           with:
             jobs: ${{ toJSON(needs) }}

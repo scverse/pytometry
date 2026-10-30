@@ -4,12 +4,9 @@ on:
   release:
     types: [published]
 
-defaults:
-  run:
-    # to fail on error in multiline statements (-e), in pipes (-o pipefail), and on unset variables (-u).
-    shell: bash -euo pipefail {0}
-
 # Use "trusted publishing", see https://docs.pypi.org/trusted-publishers/
+permissions: {}
+
 jobs:
   release:
     name: Upload release to PyPI
@@ -18,17 +15,19 @@ jobs:
       name: pypi
       url: https://pypi.org/p/pytometry
     permissions:
+      contents: read
       id-token: write # IMPORTANT: this permission is mandatory for trusted publishing
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           filter: blob:none
           fetch-depth: 0
+          persist-credentials: false
       - name: Install uv
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
         with:
-          cache-dependency-glob: pyproject.toml
+          enable-cache: false
       - name: Build package
         run: uv build
       - name: Publish package distributions to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
+        uses: pypa/gh-action-pypi-publish@7245906fb61fa33a13554f9d5fb856fe61758086 # v1.14.3
