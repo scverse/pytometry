@@ -47,6 +47,9 @@ import pytometry as pt
    tl.normalize_logicle
    tl.normalize_biexp
    tl.normalize_autologicle
+   tl.flowsom_clustering
+   tl.som_clustering
+   tl.meta_clustering
 ```
 
 ## Plotting
@@ -60,4 +63,7 @@ import pytometry as pt
 
     pl.plotdata
     pl.scatter_density
+    pl.flowsom_stars
+    pl.flowsom_markers
+    pl.flowsom_pies
 ```

@@ -22,7 +22,7 @@ Please refer to the [documentation][link-docs]. In particular, the
 
 ## Installation
 
-You need to have Python 3.11 or newer installed on your system. If you don't have
+You need to have Python 3.12 or newer installed on your system. If you don't have
 Python installed, we recommend installing [Mambaforge](https://github.com/conda-forge/miniforge#mambaforge).
 
 There are several alternative options to install pytometry:
@@ -32,6 +32,18 @@ There are several alternative options to install pytometry:
 ```bash
 pip install pytometry
 ```
+
+FlowSOM clustering uses PyTorch. On Linux, `pip` installs PyTorch with its CUDA libraries, which take several GB.
+If you don't need a GPU, install the CPU-only PyTorch first:
+
+```bash
+pip install torch --index-url https://download.pytorch.org/whl/cpu
+pip install pytometry
+# or, with uv
+uv pip install pytometry --torch-backend cpu
+```
+
+In a uv project, see [uv's PyTorch guide](https://docs.astral.sh/uv/guides/integration/pytorch/).
 
 2. Install the latest development version:
 

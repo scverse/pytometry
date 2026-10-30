@@ -98,6 +98,7 @@ intersphinx_mapping = {
     "numpy": ("https://numpy.org/doc/stable/", None),
     "matplotlib": ("https://matplotlib.org/stable", None),
     "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
+    "fastersom": ("https://fastersom.readthedocs.io/en/latest/", None),
 }
 
 # List of patterns, relative to source directory, that match files and
@@ -131,4 +132,7 @@ nitpick_ignore = [
     # you can add an exception to this list.
     #     ("py:class", "igraph.Graph"),
     ("py:data", "typing.Union"),
+    # no Sphinx documentation to link to
+    ("py:class", "consensusclustering.consensus.ConsensusClustering"),
+    ("py:class", "pytometry.tl.clustering._flowsom.ClusteringObjects"),
 ]

@@ -12,6 +12,10 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  # CPU-only torch (for fastersom): PyPI's Linux wheels pull several GB of CUDA libraries
+  UV_TORCH_BACKEND: cpu
+
 defaults:
   run:
     # to fail on error in multiline statements (-e), in pipes (-o pipefail), and on unset variables (-u).
