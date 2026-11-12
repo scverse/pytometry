@@ -13,10 +13,10 @@ import pytometry as pt
 .. currentmodule:: pytometry
 
 .. autosummary::
-    :toctree: generated
+   :toctree: generated
 
-    io.read_fcs
-    io.read_and_merge
+   io.read_fcs
+   io.read_and_merge
 ```
 
 ## Preprocessing (`pp`)
@@ -59,11 +59,11 @@ import pytometry as pt
 .. currentmodule:: pytometry
 
 .. autosummary::
-    :toctree: generated
+   :toctree: generated
 
-    pl.plotdata
-    pl.scatter_density
-    pl.flowsom_stars
-    pl.flowsom_markers
-    pl.flowsom_pies
+   pl.plotdata
+   pl.scatter_density
+   pl.flowsom_stars
+   pl.flowsom_markers
+   pl.flowsom_pies
 ```
